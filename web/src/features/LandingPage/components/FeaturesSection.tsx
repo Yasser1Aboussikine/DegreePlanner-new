@@ -51,6 +51,29 @@ export default function FeaturesSection() {
                     </h2>
                 </div>
 
+                {/* Features Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    {features.map((feature, index) => {
+                        const Icon = feature.icon;
+                        return (
+                            <div
+                                key={index}
+                                className="bg-background border rounded-xl p-6 hover:shadow-md transition-shadow"
+                            >
+                                <div className="flex items-start gap-4">
+                                    <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/20">
+                                        <Icon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                                        <p className="text-sm text-muted-foreground">{feature.description}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
                 
             </div>
         </section>
