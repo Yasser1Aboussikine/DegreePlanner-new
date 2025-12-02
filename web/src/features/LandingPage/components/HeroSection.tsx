@@ -8,7 +8,7 @@ export default function HeroSection() {
     return (
         <div className="relative min-h-screen bg-background flex items-center justify-center px-4 py-16 overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-emerald-50/70 via-transparent to-transparent" />
-            <div className="relative w-full max-w-6xl bg-background rounded-3xl shadow-md border flex flex-col lg:flex-row overflow-hidden">
+            <div className="relative w-full max-w-6xl bg-background flex flex-col lg:flex-row overflow-hidden">
                 
                 {/* LEFT SECTION */}
                 <div className="w-full lg:w-1/2 px-10 py-16 flex flex-col justify-center">
@@ -27,7 +27,7 @@ export default function HeroSection() {
 
                     <Button
                         size="lg"
-                        onClick={() => navigate('/sign-in')}
+                        onClick={() => navigate('/sign-up')}
                         className="w-fit font-medium bg-emerald-600 hover:bg-emerald-500 text-white"
                     >
                         Get Started
