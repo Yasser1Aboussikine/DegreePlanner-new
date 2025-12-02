@@ -1,10 +1,7 @@
-import { useState } from 'react'
 import Home from './features/LandingPage/pages/Home'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <BrowserRouter>
     <Routes> 
