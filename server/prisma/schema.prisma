@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role { 
+  STUDENT
+  ADMIN
+  ADVISOR
+  MENTOR
+  REGISTRAR
+}
+
+model User {
+  id         String      @id @default(cuid())
+  email      String      @unique
+  password   String
+  name       String?
+  role       Role        @default(STUDENT)
+  degreePlan DegreePlan?
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([email])
+}
+
+enum Term {
+  FALL
+  SPRING
+  SUMMER
+  WINTER
+}
+
+enum Category {
+  GENERAL_EDUCATION
+  COMPUTER_SCIENCE
+  MINOR
+  SPECIALIZATION
+  ENGINEERING_SCIENCE_MATHS
+  FREE_ELECTIVES
+}
+
+enum PlannedCourseStatus {
+  PLANNED
+  COMPLETED
+  DROPPED
+  IN_PROGRESS
+}
+
+model DegreePlan {
+  id        String         @id @default(cuid())
+  userId    String         @unique
+  user      User           @relation(fields: [userId], references: [id])
+  semesters PlanSemester[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlanSemester {
+  id             String          @id @default(cuid())
+  degreePlanId   String
+  degreePlan     DegreePlan      @relation(fields: [degreePlanId], references: [id])
+  year           Int
+  term           Term
+  nth_semestre   Int
+  plannedCourses PlannedCourse[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([degreePlanId])
+  @@index([degreePlanId, nth_semestre])
+}
+
+model PlannedCourse {
+  id             String              @id @default(cuid())
+  planSemesterId String
+  planSemester   PlanSemester        @relation(fields: [planSemesterId], references: [id])
+  courseCode     String
+  status         PlannedCourseStatus @default(PLANNED)
+  courseTitle    String?
+  credits        Int?
+  category       Category?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@unique([planSemesterId, courseCode]) // prevent duplicates in same semester
+  @@index([planSemesterId])
+  @@index([courseCode])
+}
