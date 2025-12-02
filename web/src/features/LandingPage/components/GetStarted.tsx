@@ -57,7 +57,34 @@ export default function GetStarted() {
                             </div>
                         </div>
 
-                        
+                        {/* RIGHT: CTA Card */}
+                        <div className="w-full lg:w-auto lg:min-w-[320px]">
+                            <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-8 text-white shadow-xl">
+                                <h3 className="text-2xl font-bold mb-2">Start Planning Today</h3>
+                                <p className="text-emerald-100 text-sm mb-6">
+                                    Create your free account and begin building your personalized degree plan.
+                                </p>
+                                
+                                <Button
+                                    size="lg"
+                                    onClick={() => navigate('/sign-up')}
+                                    className="w-full font-medium bg-white text-emerald-600 hover:bg-emerald-50 mb-4"
+                                >
+                                    Create Your Account
+                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+
+                                <p className="text-xs text-center text-emerald-100">
+                                    Already have an account?{' '}
+                                    <button
+                                        onClick={() => navigate('/sign-in')}
+                                        className="text-white hover:text-emerald-100 underline font-medium"
+                                    >
+                                        Sign in
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
