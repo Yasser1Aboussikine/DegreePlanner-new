@@ -38,6 +38,22 @@ export default function FeaturesSection() {
         { icon: Network, title: 'Visual Graphs', description: 'See progress' }
     ];
 
-    
+    return (
+        <section className="relative py-16 px-4 bg-background">
+            <div className="max-w-6xl mx-auto">
+                {/* Header */}
+                <div className="text-center mb-12">
+                    <p className="text-xs tracking-widest text-muted-foreground mb-3 uppercase">
+                        Features
+                    </p>
+                    <h2 className="text-3xl lg:text-4xl font-bold mb-3">
+                        Everything You Need to <span className="text-emerald-600">Plan Your Degree</span>
+                    </h2>
+                </div>
+
+                
+            </div>
+        </section>
+    );
 }
 
