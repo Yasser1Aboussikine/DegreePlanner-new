@@ -12,7 +12,7 @@ export default function FeaturesSection() {
         {
             icon: GraduationCap,
             title: 'Personalized Degree Planning',
-            description: 'Build and manage your degree plan with drag-and-drop course planning, automatic validation, and smart eligibility tracking.'
+            description: 'Build your degree plan with drag-and-drop course management, automatic validation, and smart eligibility tracking.'
         },
         {
             icon: Bot,
@@ -22,12 +22,12 @@ export default function FeaturesSection() {
         {
             icon: Network,
             title: 'Visual Progress Tracking',
-            description: 'See your academic journey with interactive graphs showing course relationships and progress status.'
+            description: 'Interactive graphs showing course relationships, progress status, and prerequisite chains for students and admins.'
         },
         {
             icon: Users,
             title: 'Advisor & Admin Tools',
-            description: 'Comprehensive tools for advisors to review plans and admins to manage catalogs and prerequisites.'
+            description: 'Comprehensive tools for advisors to review plans and admins to manage catalogs, prerequisites, and curriculum.'
         }
     ];
 
@@ -39,7 +39,7 @@ export default function FeaturesSection() {
     ];
 
     return (
-        <section className="relative py-16 px-4 bg-background">
+        <section className="relative py-20 px-4 bg-background">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
@@ -52,21 +52,21 @@ export default function FeaturesSection() {
                 </div>
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
                     {features.map((feature, index) => {
                         const Icon = feature.icon;
                         return (
                             <div
                                 key={index}
-                                className="bg-background border rounded-xl p-6 hover:shadow-md transition-shadow"
+                                className="bg-background border rounded-xl p-6 hover:shadow-md transition-all"
                             >
                                 <div className="flex items-start gap-4">
-                                    <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/20">
+                                    <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 flex-shrink-0">
                                         <Icon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                                     </div>
-                                    <div className="flex-1">
+                                    <div>
                                         <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                                        <p className="text-sm text-muted-foreground">{feature.description}</p>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
                                     </div>
                                 </div>
                             </div>
@@ -75,12 +75,12 @@ export default function FeaturesSection() {
                 </div>
 
                 {/* Highlights */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {highlights.map((highlight, index) => {
                         const Icon = highlight.icon;
                         return (
                             <div key={index} className="text-center">
-                                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-600 text-white mb-2">
+                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-600 text-white mb-3">
                                     <Icon className="h-5 w-5" />
                                 </div>
                                 <h4 className="text-sm font-semibold mb-1">{highlight.title}</h4>
