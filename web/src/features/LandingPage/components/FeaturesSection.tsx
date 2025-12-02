@@ -74,7 +74,21 @@ export default function FeaturesSection() {
                     })}
                 </div>
 
-                
+                {/* Highlights */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {highlights.map((highlight, index) => {
+                        const Icon = highlight.icon;
+                        return (
+                            <div key={index} className="text-center">
+                                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-600 text-white mb-2">
+                                    <Icon className="h-5 w-5" />
+                                </div>
+                                <h4 className="text-sm font-semibold mb-1">{highlight.title}</h4>
+                                <p className="text-xs text-muted-foreground">{highlight.description}</p>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         </section>
     );
