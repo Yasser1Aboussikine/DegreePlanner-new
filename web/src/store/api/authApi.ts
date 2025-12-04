@@ -1,4 +1,4 @@
-import { apiSlice } from './apiSlice';
+import { apiSlice } from "./apiSlice";
 import type {
   User,
   SignupInput,
@@ -6,35 +6,35 @@ import type {
   RefreshTokenInput,
   AuthResponse,
   RefreshResponse,
-} from '../types';
+} from "../types";
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // POST /api/auth/signup
     signup: builder.mutation<AuthResponse, SignupInput>({
       query: (credentials) => ({
-        url: '/auth/signup',
-        method: 'POST',
+        url: "/auth/signup",
+        method: "POST",
         body: credentials,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
 
     // POST /api/auth/login
     login: builder.mutation<AuthResponse, LoginInput>({
       query: (credentials) => ({
-        url: '/auth/login',
-        method: 'POST',
+        url: "/auth/login",
+        method: "POST",
         body: credentials,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
 
     // POST /api/auth/refresh
     refresh: builder.mutation<RefreshResponse, RefreshTokenInput>({
       query: (body) => ({
-        url: '/auth/refresh',
-        method: 'POST',
+        url: "/auth/refresh",
+        method: "POST",
         body,
       }),
     }),
@@ -42,16 +42,18 @@ export const authApi = apiSlice.injectEndpoints({
     // POST /api/auth/logout
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: '/auth/logout',
-        method: 'POST',
+        url: "/auth/logout",
+        method: "POST",
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
 
     // GET /api/auth/me
     getMe: builder.query<User, void>({
-      query: () => '/auth/me',
-      providesTags: ['User'],
+      query: () => "/auth/me",
+      providesTags: ["User"],
+      // Handle 401 errors gracefully by not retrying
+      extraOptions: { maxRetries: 0 },
     }),
   }),
 });

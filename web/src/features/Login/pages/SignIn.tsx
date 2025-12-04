@@ -1,6 +1,7 @@
-import { useState } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,10 +17,9 @@ import { useLoginMutation } from "@/store";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials, selectIsAuthenticated } from "@/store";
 import { toast } from "sonner";
+import { signInSchema, type SignInFormData } from "@/schemas/auth.schema";
 
 export default function SignInPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -27,20 +27,25 @@ export default function SignInPage() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
-  // Get the redirect path from location state, or default to "/"
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
+  });
+
   const from = (location.state as any)?.from?.pathname || "/";
 
-  // If user is already authenticated, redirect them away from signin page
   if (isAuthenticated) {
     return <Navigate to={from} replace />;
   }
 
-  const handleSubmit = async () => {
+  const onSubmit = async (data: SignInFormData) => {
     const toastId = toast.loading("Signing in...");
 
     try {
-      // Call the login mutation
-      const result = await login({ email, password }).unwrap();
+      const result = await login(data).unwrap();
 
       console.log("Login successful, result:", result);
 
@@ -77,16 +82,19 @@ export default function SignInPage() {
     <div className="min-h-screen bg-sidebar flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl border-border">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold text-foreground">Welcome Back</CardTitle>
-          <CardDescription className="text-muted-foreground">Sign in to your account to continue</CardDescription>
+          <CardTitle className="text-3xl font-bold text-foreground">
+            Welcome Back
+          </CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Sign in to your account to continue
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Button
               type="button"
               variant="outline"
-              className="w-full cursor-pointer border-border hover:bg-accent hover:text-accent-foreground"
-              disabled
+              className="w-full cursor-not-allowed border-border hover:bg-accent hover:text-accent-foreground"
             >
               <Mail className="mr-2 h-4 w-4" />
               Continue with Outlook
@@ -104,30 +112,29 @@ export default function SignInPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground">Email</Label>
+              <Label htmlFor="email" className="text-foreground">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && email && password) {
-                    handleSubmit();
-                  }
-                }}
+                {...register("email")}
                 className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary [&:-webkit-autofill]:bg-background [&:-webkit-autofill]:text-foreground [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_hsl(var(--background))] [&:-webkit-autofill]:[-webkit-text-fill-color:hsl(var(--foreground))]"
               />
+              {errors.email && (
+                <p className="text-sm text-destructive">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-foreground">Password</Label>
+                <Label htmlFor="password" className="text-foreground">
+                  Password
+                </Label>
                 <button
                   type="button"
-                  onClick={() => {
-                    window.location.href = "/forgot-password";
-                  }}
+                  onClick={() => navigate("/forgot-password")}
                   className="text-sm text-primary hover:text-primary/80 hover:underline cursor-pointer transition-colors"
                 >
                   Forgot password?
@@ -137,21 +144,18 @@ export default function SignInPage() {
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && email && password) {
-                    handleSubmit();
-                  }
-                }}
+                {...register("password")}
                 className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary [&:-webkit-autofill]:bg-background [&:-webkit-autofill]:text-foreground [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_hsl(var(--background))] [&:-webkit-autofill]:[-webkit-text-fill-color:hsl(var(--foreground))]"
               />
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password.message}</p>
+              )}
             </div>
 
             <Button
-              onClick={handleSubmit}
+              type="submit"
               className="w-full font-medium cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              disabled={isLoading || !email || !password}
+              disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
@@ -160,15 +164,13 @@ export default function SignInPage() {
               Don't have an account?{" "}
               <button
                 type="button"
-                onClick={() => {
-                  console.log("Navigate to sign up");
-                }}
+                onClick={() => navigate("/signup")}
                 className="text-primary hover:text-primary/80 hover:underline cursor-pointer font-medium transition-colors"
               >
                 Sign Up
               </button>
             </div>
-          </div>
+          </form>
         </CardContent>
       </Card>
     </div>

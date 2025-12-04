@@ -1,5 +1,11 @@
 // User & Auth Types
 export type Role = "STUDENT" | "ADMIN" | "ADVISOR" | "MENTOR" | "REGISTRAR";
+export type Classification =
+  | "FRESHMAN"
+  | "SOPHOMORE"
+  | "JUNIOR"
+  | "SENIOR"
+  | "OTHER";
 
 export interface User {
   id: string;
@@ -7,6 +13,13 @@ export interface User {
   name?: string | null;
   role: Role;
   isActive: boolean;
+  major?: string | null;
+  minor?: string | null;
+  classification?: Classification | null;
+  isFYEStudent?: boolean;
+  joinDate?: Date | null;
+  expectedGraduation?: Date | null;
+  transcriptUrl?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -14,7 +27,14 @@ export interface User {
 export interface SignupInput {
   email: string;
   password: string;
-  name?: string;
+  name: string;
+  major: string;
+  minor?: string;
+  classification: Classification;
+  isFYEStudent: boolean;
+  joinDate: string;
+  expectedGraduation: string;
+  transcriptFile?: File;
 }
 
 export interface LoginInput {
@@ -27,9 +47,7 @@ export interface RefreshTokenInput {
 }
 
 export interface AuthResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
+  data: { user: User; accessToken: string; refreshToken: string };
 }
 
 export interface RefreshResponse {
@@ -82,19 +100,61 @@ export interface CourseRelationship {
 }
 
 // Degree Plan Types
+export type DegreeLevel = "BACHELOR" | "MASTER" | "DOCTORATE" | "OTHER";
+
+export interface Program {
+  id: string;
+  code: string;
+  name: string;
+  level: DegreeLevel;
+  totalCredits: number;
+  isActive: boolean;
+  requirements?: ProgramRequirement[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ProgramRequirement {
+  id: string;
+  programId: string;
+  category: Category;
+  credits: number;
+  program?: Program;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface CreateProgramInput {
+  code: string;
+  name: string;
+  level?: DegreeLevel;
+  totalCredits: number;
+  isActive?: boolean;
+}
+
+export interface UpdateProgramInput extends Partial<CreateProgramInput> {}
+
+export interface CreateProgramWithRequirementsInput extends CreateProgramInput {
+  requirements: Array<{ category: Category; credits: number }>;
+}
+
 export interface DegreePlan {
   id: string;
   userId: string;
+  programId?: string | null;
+  program?: Program | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export interface CreateDegreePlanInput {
   userId: string;
+  programId?: string;
 }
 
 export interface UpdateDegreePlanInput {
   userId?: string;
+  programId?: string | null;
 }
 
 // Plan Semester Types
@@ -176,4 +236,78 @@ export interface PaginatedResponse<T> {
   total: number;
   page: number;
   limit: number;
+}
+
+// Assignment Types
+export interface MentorAssignment {
+  id: string;
+  mentorId: string;
+  studentId: string;
+  mentor?: Partial<User>;
+  student?: Partial<User>;
+  createdAt?: Date;
+}
+
+export interface AdvisorAssignment {
+  id: string;
+  advisorId: string;
+  studentId: string;
+  advisor?: Partial<User>;
+  student?: Partial<User>;
+  createdAt?: Date;
+}
+
+export interface CreateMentorAssignmentInput {
+  mentorId: string;
+  studentId: string;
+}
+
+export interface CreateAdvisorAssignmentInput {
+  advisorId: string;
+  studentId: string;
+}
+
+// Review Request Types
+export type ReviewStatus =
+  | "PENDING_MENTOR"
+  | "PENDING_ADVISOR"
+  | "APPROVED"
+  | "REJECTED";
+
+export interface PlanSemesterReviewRequest {
+  id: string;
+  planSemesterId: string;
+  studentId: string;
+  mentorId?: string | null;
+  advisorId?: string | null;
+  status: ReviewStatus;
+  requestedAt: Date;
+  mentorReviewedAt?: Date | null;
+  advisorReviewedAt?: Date | null;
+  mentorComment?: string | null;
+  advisorComment?: string | null;
+  rejectionReason?: string | null;
+  planSemester?: PlanSemester;
+  student?: Partial<User>;
+  mentor?: Partial<User> | null;
+  advisor?: Partial<User> | null;
+}
+
+export interface CreateReviewRequestInput {
+  planSemesterId: string;
+  studentId: string;
+  mentorId?: string;
+  advisorId?: string;
+}
+
+export interface SubmitMentorReviewInput {
+  mentorComment?: string;
+  approve: boolean;
+  rejectionReason?: string;
+}
+
+export interface SubmitAdvisorReviewInput {
+  advisorComment?: string;
+  approve: boolean;
+  rejectionReason?: string;
 }
