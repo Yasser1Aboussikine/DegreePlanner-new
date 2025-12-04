@@ -1,0 +1,142 @@
+[
+  {
+    "id": "semester_001",
+    "degreePlanId": "plan_001",
+    "year": 2024,
+    "term": "FALL",
+    "nth_semestre": 1
+  },
+  {
+    "id": "semester_002",
+    "degreePlanId": "plan_001",
+    "year": 2025,
+    "term": "SPRING",
+    "nth_semestre": 2
+  },
+  {
+    "id": "semester_003",
+    "degreePlanId": "plan_001",
+    "year": 2025,
+    "term": "FALL",
+    "nth_semestre": 3
+  },
+  {
+    "id": "semester_004",
+    "degreePlanId": "plan_001",
+    "year": 2026,
+    "term": "SPRING",
+    "nth_semestre": 4
+  },
+  {
+    "id": "semester_005",
+    "degreePlanId": "plan_002",
+    "year": 2023,
+    "term": "FALL",
+    "nth_semestre": 1
+  },
+  {
+    "id": "semester_006",
+    "degreePlanId": "plan_002",
+    "year": 2024,
+    "term": "SPRING",
+    "nth_semestre": 2
+  },
+  {
+    "id": "semester_007",
+    "degreePlanId": "plan_002",
+    "year": 2024,
+    "term": "FALL",
+    "nth_semestre": 3
+  },
+  {
+    "id": "semester_008",
+    "degreePlanId": "plan_002",
+    "year": 2025,
+    "term": "SPRING",
+    "nth_semestre": 4
+  },
+  {
+    "id": "semester_009",
+    "degreePlanId": "plan_002",
+    "year": 2025,
+    "term": "FALL",
+    "nth_semestre": 5
+  },
+  {
+    "id": "semester_010",
+    "degreePlanId": "plan_003",
+    "year": 2024,
+    "term": "FALL",
+    "nth_semestre": 1
+  },
+  {
+    "id": "semester_011",
+    "degreePlanId": "plan_003",
+    "year": 2025,
+    "term": "SPRING",
+    "nth_semestre": 2
+  },
+  {
+    "id": "semester_012",
+    "degreePlanId": "plan_003",
+    "year": 2025,
+    "term": "FALL",
+    "nth_semestre": 3
+  },
+  {
+    "id": "semester_013",
+    "degreePlanId": "plan_004",
+    "year": 2023,
+    "term": "SPRING",
+    "nth_semestre": 1
+  },
+  {
+    "id": "semester_014",
+    "degreePlanId": "plan_004",
+    "year": 2023,
+    "term": "FALL",
+    "nth_semestre": 2
+  },
+  {
+    "id": "semester_015",
+    "degreePlanId": "plan_004",
+    "year": 2024,
+    "term": "SPRING",
+    "nth_semestre": 3
+  },
+  {
+    "id": "semester_016",
+    "degreePlanId": "plan_004",
+    "year": 2024,
+    "term": "FALL",
+    "nth_semestre": 4
+  },
+  {
+    "id": "semester_017",
+    "degreePlanId": "plan_005",
+    "year": 2024,
+    "term": "SPRING",
+    "nth_semestre": 1
+  },
+  {
+    "id": "semester_018",
+    "degreePlanId": "plan_005",
+    "year": 2024,
+    "term": "FALL",
+    "nth_semestre": 2
+  },
+  {
+    "id": "semester_019",
+    "degreePlanId": "plan_006",
+    "year": 2024,
+    "term": "FALL",
+    "nth_semestre": 1
+  },
+  {
+    "id": "semester_020",
+    "degreePlanId": "plan_006",
+    "year": 2025,
+    "term": "SPRING",
+    "nth_semestre": 2
+  }
+]

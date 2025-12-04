@@ -1,0 +1,139 @@
+[
+  {
+    "id": "review_req_001",
+    "planSemesterId": "semester_001",
+    "studentId": "user_008",
+    "mentorId": "user_006",
+    "advisorId": "user_004",
+    "status": "APPROVED",
+    "requestedAt": "2024-09-15T10:00:00Z",
+    "mentorReviewedAt": "2024-09-16T14:30:00Z",
+    "advisorReviewedAt": "2024-09-17T09:15:00Z",
+    "mentorComment": "Excellent course selection for Fall semester. Good balance between core CS courses and general education requirements.",
+    "advisorComment": "Approved. Student is on track with the degree plan. Keep up the good work."
+  },
+  {
+    "id": "review_req_002",
+    "planSemesterId": "semester_005",
+    "studentId": "user_009",
+    "mentorId": "user_006",
+    "advisorId": "user_005",
+    "status": "APPROVED",
+    "requestedAt": "2024-01-10T09:00:00Z",
+    "mentorReviewedAt": "2024-01-11T10:30:00Z",
+    "advisorReviewedAt": "2024-01-12T14:20:00Z",
+    "mentorComment": "Solid foundation courses selected. Recommend taking MAT2302 early as it's a prerequisite for many upper-level courses.",
+    "advisorComment": "Approved with mentor's recommendation noted."
+  },
+  {
+    "id": "review_req_003",
+    "planSemesterId": "semester_009",
+    "studentId": "user_010",
+    "mentorId": "user_006",
+    "advisorId": "user_005",
+    "status": "APPROVED",
+    "requestedAt": "2023-09-01T11:00:00Z",
+    "mentorReviewedAt": "2023-09-02T15:00:00Z",
+    "advisorReviewedAt": "2023-09-03T10:00:00Z",
+    "mentorComment": "Great mix of advanced CS courses and electives. The specialization track looks well-planned.",
+    "advisorComment": "Excellent planning for senior year. Approved."
+  },
+  {
+    "id": "review_req_004",
+    "planSemesterId": "semester_013",
+    "studentId": "user_011",
+    "mentorId": "user_007",
+    "advisorId": "user_004",
+    "status": "APPROVED",
+    "requestedAt": "2023-08-25T13:00:00Z",
+    "mentorReviewedAt": "2023-08-26T09:30:00Z",
+    "advisorReviewedAt": "2023-08-27T11:00:00Z",
+    "mentorComment": "Well-structured plan. Consider joining study groups for the math-heavy courses.",
+    "advisorComment": "Approved. Good course load distribution."
+  },
+  {
+    "id": "review_req_005",
+    "planSemesterId": "semester_002",
+    "studentId": "user_008",
+    "mentorId": "user_006",
+    "advisorId": "user_004",
+    "status": "PENDING_ADVISOR",
+    "requestedAt": "2024-12-01T10:00:00Z",
+    "mentorReviewedAt": "2024-12-02T14:00:00Z",
+    "mentorComment": "Spring 2025 plan looks good. Student is progressing well through the CS core requirements."
+  },
+  {
+    "id": "review_req_006",
+    "planSemesterId": "semester_007",
+    "studentId": "user_009",
+    "mentorId": "user_006",
+    "advisorId": "user_005",
+    "status": "PENDING_ADVISOR",
+    "requestedAt": "2024-08-15T09:00:00Z",
+    "mentorReviewedAt": "2024-08-16T11:30:00Z",
+    "mentorComment": "Good selection of courses. The workload seems balanced. Ready for advisor approval."
+  },
+  {
+    "id": "review_req_007",
+    "planSemesterId": "semester_015",
+    "studentId": "user_011",
+    "mentorId": "user_007",
+    "advisorId": "user_004",
+    "status": "PENDING_ADVISOR",
+    "requestedAt": "2024-11-20T14:00:00Z",
+    "mentorReviewedAt": "2024-11-21T10:00:00Z",
+    "mentorComment": "Plan is well-structured. Student has completed all prerequisites for the selected courses."
+  },
+  {
+    "id": "review_req_008",
+    "planSemesterId": "semester_003",
+    "studentId": "user_008",
+    "mentorId": "user_006",
+    "advisorId": "user_004",
+    "status": "PENDING_MENTOR",
+    "requestedAt": "2024-12-03T15:00:00Z"
+  },
+  {
+    "id": "review_req_009",
+    "planSemesterId": "semester_017",
+    "studentId": "user_012",
+    "mentorId": "user_007",
+    "advisorId": "user_004",
+    "status": "PENDING_MENTOR",
+    "requestedAt": "2024-12-02T10:30:00Z"
+  },
+  {
+    "id": "review_req_010",
+    "planSemesterId": "semester_020",
+    "studentId": "user_013",
+    "mentorId": "user_007",
+    "advisorId": "user_005",
+    "status": "PENDING_MENTOR",
+    "requestedAt": "2024-12-01T16:00:00Z"
+  },
+  {
+    "id": "review_req_011",
+    "planSemesterId": "semester_006",
+    "studentId": "user_009",
+    "mentorId": "user_006",
+    "advisorId": "user_005",
+    "status": "REJECTED",
+    "requestedAt": "2024-01-05T10:00:00Z",
+    "mentorReviewedAt": "2024-01-06T11:00:00Z",
+    "rejectionReason": "Course load is too heavy with three math-intensive courses simultaneously. Recommend redistributing CSC3302 and MAT3305 to different semesters to ensure better academic performance."
+  },
+  {
+    "id": "review_req_012",
+    "planSemesterId": "semester_014",
+    "studentId": "user_011",
+    "mentorId": "user_007",
+    "advisorId": "user_004",
+    "status": "REJECTED",
+    "requestedAt": "2024-01-10T09:00:00Z",
+    "mentorReviewedAt": "2024-01-11T10:00:00Z",
+    "advisorReviewedAt": "2024-01-12T14:00:00Z",
+    "mentorComment": "Looks manageable but please check prerequisites.",
+    "advisorComment": "Cannot approve - student is missing CSC2301 which is a prerequisite for CSC4401.",
+    "rejectionReason": "Missing prerequisite CSC2301 for CSC4401. Please complete prerequisite course first or adjust your plan."
+  }
+]

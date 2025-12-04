@@ -4,6 +4,10 @@ import coursesRouter from "./courses.route";
 import degreePlanRouter from "./degreePlan.route";
 import planSemesterRouter from "./planSemester.route";
 import plannedCourseRouter from "./plannedCourse.route";
+import programRouter from "./program.route";
+import mentorAssignmentRouter from "./mentorAssignment.route";
+import advisorAssignmentRouter from "./advisorAssignment.route";
+import reviewRouter from "./planSemesterReview.route";
 
 const router: Router = Router();
 
@@ -17,6 +21,9 @@ router.use("/courses", coursesRouter);
 router.use("/degree-plans", degreePlanRouter);
 router.use("/plan-semesters", planSemesterRouter);
 router.use("/planned-courses", plannedCourseRouter);
-
+router.use("/programs", programRouter);
+router.use("/mentor-assignments", mentorAssignmentRouter);
+router.use("/advisor-assignments", advisorAssignmentRouter);
+router.use("/review-requests", reviewRouter);
 
 export default router;

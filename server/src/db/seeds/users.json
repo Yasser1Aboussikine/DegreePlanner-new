@@ -1,0 +1,139 @@
+[
+  {
+    "id": "user_001",
+    "email": "role@aui.ma",
+    "password": "role",
+    "name": "Role System Account",
+    "role": "ADMIN",
+    "isActive": true
+  },
+  {
+    "id": "user_002",
+    "email": "admin@aui.ma",
+    "password": "admin",
+    "name": "Ahmed El Mansouri",
+    "role": "ADMIN",
+    "isActive": true
+  },
+  {
+    "id": "user_003",
+    "email": "registrar@aui.ma",
+    "password": "registrar",
+    "name": "Fatima Zahra Bennani",
+    "role": "REGISTRAR",
+    "isActive": true
+  },
+  {
+    "id": "user_004",
+    "email": "advisor1@aui.ma",
+    "password": "advisor1",
+    "name": "Dr. Youssef Alami",
+    "role": "ADVISOR",
+    "isActive": true
+  },
+  {
+    "id": "user_005",
+    "email": "advisor2@aui.ma",
+    "password": "advisor2",
+    "name": "Dr. Sara Benkirane",
+    "role": "ADVISOR",
+    "isActive": true
+  },
+  {
+    "id": "user_006",
+    "email": "mentor1@aui.ma",
+    "password": "mentor1",
+    "name": "Karim Tahiri",
+    "role": "MENTOR",
+    "isActive": true
+  },
+  {
+    "id": "user_007",
+    "email": "mentor2@aui.ma",
+    "password": "mentor2",
+    "name": "Laila Chakir",
+    "role": "MENTOR",
+    "isActive": true
+  },
+  {
+    "id": "user_008",
+    "email": "student1@aui.ma",
+    "password": "student1",
+    "name": "Omar Benali",
+    "role": "STUDENT",
+    "isActive": true,
+    "major": "BSCSC",
+    "minor": "Business Administration",
+    "classification": "JUNIOR",
+    "isFYEStudent": false,
+    "joinDate": "2022-09-01T00:00:00Z",
+    "expectedGraduation": "2026-05-31T00:00:00Z"
+  },
+  {
+    "id": "user_009",
+    "email": "student2@aui.ma",
+    "password": "student2",
+    "name": "Nadia Amrani",
+    "role": "STUDENT",
+    "isActive": true,
+    "major": "BSCSC",
+    "minor": "Communication",
+    "classification": "SOPHOMORE",
+    "isFYEStudent": false,
+    "joinDate": "2023-09-01T00:00:00Z",
+    "expectedGraduation": "2027-05-31T00:00:00Z"
+  },
+  {
+    "id": "user_010",
+    "email": "student3@aui.ma",
+    "password": "student3",
+    "name": "Hamza Idrissi",
+    "role": "STUDENT",
+    "isActive": true,
+    "major": "BSCSC",
+    "classification": "SENIOR",
+    "isFYEStudent": false,
+    "joinDate": "2021-09-01T00:00:00Z",
+    "expectedGraduation": "2025-05-31T00:00:00Z"
+  },
+  {
+    "id": "user_011",
+    "email": "student4@aui.ma",
+    "password": "student4",
+    "name": "Salma Tazi",
+    "role": "STUDENT",
+    "isActive": true,
+    "major": "BSCSC",
+    "minor": "International Studies",
+    "classification": "JUNIOR",
+    "isFYEStudent": false,
+    "joinDate": "2022-09-01T00:00:00Z",
+    "expectedGraduation": "2026-05-31T00:00:00Z"
+  },
+  {
+    "id": "user_012",
+    "email": "student5@aui.ma",
+    "password": "student5",
+    "name": "Amine Bouazza",
+    "role": "STUDENT",
+    "isActive": true,
+    "major": "BSCSC",
+    "classification": "FRESHMAN",
+    "isFYEStudent": true,
+    "joinDate": "2024-09-01T00:00:00Z",
+    "expectedGraduation": "2028-05-31T00:00:00Z"
+  },
+  {
+    "id": "user_013",
+    "email": "student6@aui.ma",
+    "password": "student6",
+    "name": "Zineb El Ouardi",
+    "role": "STUDENT",
+    "isActive": false,
+    "major": "BSCSC",
+    "classification": "SOPHOMORE",
+    "isFYEStudent": false,
+    "joinDate": "2023-09-01T00:00:00Z",
+    "expectedGraduation": "2027-05-31T00:00:00Z"
+  }
+]

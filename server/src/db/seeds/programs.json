@@ -1,0 +1,10 @@
+[
+  {
+    "id": "program_001",
+    "code": "BSCSC",
+    "name": "Bachelor of Science in Computer Science",
+    "level": "BACHELOR",
+    "totalCredits": 136,
+    "isActive": true
+  }
+]
