@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client"
@@ -19,20 +15,6 @@ enum Role {
   ADVISOR
   MENTOR
   REGISTRAR
-}
-
-model User {
-  id         String      @id @default(cuid())
-  email      String      @unique
-  password   String
-  name       String?
-  role       Role        @default(STUDENT)
-  degreePlan DegreePlan?
-  isActive   Boolean     @default(true)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-
-  @@index([email])
 }
 
 enum Term {
@@ -58,14 +40,135 @@ enum PlannedCourseStatus {
   IN_PROGRESS
 }
 
+enum ReviewStatus {
+  PENDING_MENTOR
+  PENDING_ADVISOR
+  APPROVED
+  REJECTED
+}
+
+enum Classification {
+  FRESHMAN
+  SOPHOMORE
+  JUNIOR
+  SENIOR
+  OTHER
+}
+
+enum ChatThreadType {
+  MENTOR_GROUP
+  DIRECT
+}
+
+enum MentorReportStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum DegreeLevel {
+  BACHELOR
+  MASTER
+  DOCTORATE
+  OTHER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+
+  role      Role     @default(STUDENT)
+
+  major     String?
+  minor     String?
+
+  classification      Classification?
+  isFYEStudent        Boolean   @default(false)
+  joinDate            DateTime?
+  expectedGraduation  DateTime?
+  transcriptUrl       String?
+
+  isActive         Boolean   @default(true)
+  emailVerifiedAt  DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  degreePlan DegreePlan?
+
+  mentorAssignmentsAsMentor   MentorAssignment[]   @relation("MentorAssignments")
+  mentorAssignmentsAsStudent  MentorAssignment[]   @relation("MentorStudentAssignments")
+
+  advisorAssignmentsAsAdvisor AdvisorAssignment[]  @relation("AdvisorAssignments")
+  advisorAssignmentsAsStudent AdvisorAssignment[]  @relation("AdvisorStudentAssignments")
+
+  semesterReviewRequestsAsStudent PlanSemesterReviewRequest[] @relation("StudentReviewRequests")
+  semesterReviewRequestsAsMentor  PlanSemesterReviewRequest[] @relation("MentorReviewRequests")
+  semesterReviewRequestsAsAdvisor PlanSemesterReviewRequest[] @relation("AdvisorReviewRequests")
+
+  chatParticipants ChatParticipant[]
+  messages         Message[]        @relation("UserMessages")
+
+  mentorReportsAsMentor    MentorReport[] @relation("MentorReportsAsMentor")
+  mentorReportsAsStudent   MentorReport[] @relation("MentorReportsAsStudent")
+  mentorReportsReviewed    MentorReport[] @relation("MentorReportsReviewedByAdmin")
+
+  mentorChatThreads        ChatThread[]   @relation("MentorChatThreads")
+
+  passwordResetTokens PasswordResetToken[]
+
+  @@index([email])
+}
+
+model Program {
+  id           String            @id @default(cuid())
+  code         String            @unique  // e.g. "BSCSC"
+  name         String            // e.g. "Bachelor of Science in Computer Science"
+  level        DegreeLevel       @default(BACHELOR)
+  totalCredits Int               // e.g. 136 for BSCSC
+  isActive     Boolean           @default(true)
+
+  requirements ProgramRequirement[]
+  degreePlans  DegreePlan[]
+
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([code])
+}
+
+model ProgramRequirement {
+  id         String   @id @default(cuid())
+  programId  String
+  program    Program  @relation(fields: [programId], references: [id])
+
+  category   Category
+  credits    Int      // required SCH for this category in this program
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([programId, category])
+  @@index([programId])
+  @@index([category])
+}
+
 model DegreePlan {
   id        String         @id @default(cuid())
   userId    String         @unique
   user      User           @relation(fields: [userId], references: [id])
+
+  programId String?
+  program   Program?       @relation(fields: [programId], references: [id])
+
   semesters PlanSemester[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([programId])
 }
 
 model PlanSemester {
@@ -76,6 +179,8 @@ model PlanSemester {
   term           Term
   nth_semestre   Int
   plannedCourses PlannedCourse[]
+  reviewRequests PlanSemesterReviewRequest[]
+
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -95,7 +200,159 @@ model PlannedCourse {
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
 
-  @@unique([planSemesterId, courseCode]) // prevent duplicates in same semester
+  @@unique([planSemesterId, courseCode])
   @@index([planSemesterId])
   @@index([courseCode])
+}
+
+model MentorAssignment {
+  id        String @id @default(cuid())
+
+  mentorId  String
+  studentId String
+
+  mentor    User   @relation("MentorAssignments", fields: [mentorId], references: [id])
+  student   User   @relation("MentorStudentAssignments", fields: [studentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([mentorId, studentId])
+  @@index([mentorId])
+  @@index([studentId])
+}
+
+model AdvisorAssignment {
+  id        String @id @default(cuid())
+
+  advisorId String
+  studentId String
+
+  advisor   User   @relation("AdvisorAssignments", fields: [advisorId], references: [id])
+  student   User   @relation("AdvisorStudentAssignments", fields: [studentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([advisorId, studentId])
+  @@index([advisorId])
+  @@index([studentId])
+}
+
+model PlanSemesterReviewRequest {
+  id             String     @id @default(cuid())
+
+  planSemesterId String
+  planSemester   PlanSemester @relation(fields: [planSemesterId], references: [id])
+
+  studentId      String
+  student        User       @relation("StudentReviewRequests", fields: [studentId], references: [id])
+
+  mentorId       String?
+  mentor         User?      @relation("MentorReviewRequests", fields: [mentorId], references: [id])
+
+  advisorId      String?
+  advisor        User?      @relation("AdvisorReviewRequests", fields: [advisorId], references: [id])
+
+  status            ReviewStatus @default(PENDING_MENTOR)
+  requestedAt       DateTime     @default(now())
+  mentorReviewedAt  DateTime?
+  advisorReviewedAt DateTime?
+
+  mentorComment   String?
+  advisorComment  String?
+  rejectionReason String?
+
+  @@index([planSemesterId])
+  @@index([studentId])
+  @@index([mentorId])
+  @@index([advisorId])
+}
+
+model ChatThread {
+  id        String         @id @default(cuid())
+  type      ChatThreadType
+  title     String?
+
+  mentorId  String?
+  mentor    User?          @relation("MentorChatThreads", fields: [mentorId], references: [id])
+
+  participants ChatParticipant[]
+  messages     Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([mentorId])
+}
+
+model ChatParticipant {
+  id        String      @id @default(cuid())
+
+  threadId  String
+  userId    String
+
+  thread    ChatThread  @relation(fields: [threadId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
+
+  joinedAt   DateTime   @default(now())
+  lastReadAt DateTime?
+
+  @@unique([threadId, userId])
+  @@index([threadId])
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+
+  threadId  String
+  thread    ChatThread @relation(fields: [threadId], references: [id])
+
+  senderId  String
+  sender    User     @relation("UserMessages", fields: [senderId], references: [id])
+
+  content   String
+  sentAt    DateTime @default(now())
+  isRead    Boolean  @default(false)
+
+  @@index([threadId])
+  @@index([senderId])
+}
+
+model MentorReport {
+  id        String   @id @default(cuid())
+
+  mentorId  String
+  studentId String
+
+  mentor    User     @relation("MentorReportsAsMentor", fields: [mentorId], references: [id])
+  student   User     @relation("MentorReportsAsStudent", fields: [studentId], references: [id])
+
+  description String
+  status      MentorReportStatus @default(OPEN)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  reviewedByAdminId String?
+  reviewedByAdmin   User?    @relation("MentorReportsReviewedByAdmin", fields: [reviewedByAdminId], references: [id])
+
+  @@index([mentorId])
+  @@index([studentId])
+  @@index([status])
+  @@index([reviewedByAdminId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
