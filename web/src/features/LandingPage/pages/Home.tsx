@@ -1,17 +1,21 @@
+import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
-import GetStarted from "../components/GetStarted";
 import FeaturesSection from "../components/FeaturesSection";
 import TechStackSection from "../components/TechStackSection";
-import Header from "../components/Header";
+import Footer from "../components/Footer";
+import PremiumBackground from "../components/PremiumBackground";
+import CursorSpark from "../components/CursorSpark";
 
 export default function Home() {
-    return (
-        <div>
-            <Header />
-            <HeroSection />
-            <FeaturesSection />
-            <TechStackSection />
-            <GetStarted />
-        </div>
-    )
+  return (
+    <div className="relative min-h-screen w-full font-sans selection:bg-emerald-700 selection:text-white">
+      <PremiumBackground />
+      <CursorSpark />
+      <Header />
+      <HeroSection />
+      <FeaturesSection />
+      <TechStackSection />
+      <Footer />
+    </div>
+  );
 }

@@ -1,95 +1,62 @@
-import { 
-    GraduationCap, 
-    GripVertical, 
-    ShieldCheck, 
-    Bot, 
-    Network, 
-    Users
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Compass, Layers, GitMerge } from 'lucide-react';
+import BentoCard from './BentoCard';
 
 export default function FeaturesSection() {
-    const features = [
-        {
-            icon: GraduationCap,
-            title: 'Personalized Degree Planning',
-            description: 'Build your degree plan with drag-and-drop course management, automatic validation, and smart eligibility tracking.'
-        },
-        {
-            icon: Bot,
-            title: 'AI-Powered Advisor',
-            description: 'Get instant answers about course requirements, prerequisites, and graduation paths with ChatBase integration.'
-        },
-        {
-            icon: Network,
-            title: 'Visual Progress Tracking',
-            description: 'Interactive graphs showing course relationships, progress status, and prerequisite chains for students and admins.'
-        },
-        {
-            icon: Users,
-            title: 'Advisor & Admin Tools',
-            description: 'Comprehensive tools for advisors to review plans and admins to manage catalogs, prerequisites, and curriculum.'
-        }
-    ];
-
-    const highlights = [
-        { icon: GripVertical, title: 'Drag & Drop', description: 'Intuitive planning' },
-        { icon: ShieldCheck, title: 'Auto Validation', description: 'Real-time checking' },
-        { icon: Bot, title: 'AI Advisor', description: 'Smart guidance' },
-        { icon: Network, title: 'Visual Graphs', description: 'See progress' }
-    ];
-
     return (
-        <section id="features" className="relative py-20 px-4 bg-background">
-            <div className="max-w-6xl mx-auto">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <p className="text-xs tracking-widest text-muted-foreground mb-3 uppercase">
-                        Features
-                    </p>
-                    <h2 className="text-3xl lg:text-4xl font-bold mb-3">
-                        Everything You Need to <span className="text-emerald-600">Plan Your Degree</span>
-                    </h2>
-                </div>
+        <section id="features" className="relative z-10 mx-auto max-w-6xl px-6">
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="mt-32 grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4"
+            >
+                {/* Main Large Card */}
+                <BentoCard
+                    title="The Graph Engine"
+                    desc="Neo4j-powered logic visualizes prerequisites as a living network, not a list."
+                    className="md:col-span-2 min-h-[300px]"
+                >
+                    <div className="absolute right-[-20px] bottom-[-20px] opacity-10">
+                        <GitMerge size={200} strokeWidth={0.5} />
+                    </div>
+                </BentoCard>
 
-                {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-                    {features.map((feature, index) => {
-                        const Icon = feature.icon;
-                        return (
-                            <div
-                                key={index}
-                                className="bg-background border rounded-xl p-6 hover:shadow-md transition-all"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 flex-shrink-0">
-                                        <Icon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                                        <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                {/* Tall Card */}
+                <BentoCard
+                    title="AI Advisor"
+                    desc="Context-aware guidance for your specific major and minor requirements."
+                    className="md:row-span-2 bg-[#f4f3f1]"
+                >
+                    <div className="mt-8 flex justify-center">
+                        <div className="h-16 w-16 rounded-full bg-[#e7e5e4] flex items-center justify-center">
+                            <Compass className="text-emerald-700" />
+                        </div>
+                    </div>
+                </BentoCard>
 
-                {/* Highlights */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    {highlights.map((highlight, index) => {
-                        const Icon = highlight.icon;
-                        return (
-                            <div key={index} className="text-center">
-                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-600 text-white mb-3">
-                                    <Icon className="h-5 w-5" />
-                                </div>
-                                <h4 className="text-sm font-semibold mb-1">{highlight.title}</h4>
-                                <p className="text-xs text-muted-foreground">{highlight.description}</p>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+                {/* Standard Card */}
+                <BentoCard
+                    title="Drag & Drop"
+                    desc="Fluid interactions powered by dnd-kit."
+                    className=""
+                >
+                    <Layers className="absolute top-8 right-8 text-[#d6d3d1]" />
+                </BentoCard>
+
+                {/* Wide Bottom Card */}
+                <BentoCard
+                    title="Strict Validation"
+                    desc="Server-side enforcement of credit limits and co-requisites."
+                    className="md:col-span-2 lg:col-span-3"
+                >
+                    <div className="mt-4 flex gap-2">
+                        <div className="h-2 w-2 rounded-full bg-emerald-700" />
+                        <div className="h-2 w-2 rounded-full bg-emerald-700 opacity-50" />
+                        <div className="h-2 w-2 rounded-full bg-emerald-700 opacity-25" />
+                    </div>
+                </BentoCard>
+            </motion.div>
         </section>
     );
 }
