@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { MentorAssignment } from "@/generated/prisma/client";
+import * as chatService from "./chat.service";
 
 export async function getAllMentorAssignments(): Promise<MentorAssignment[]> {
   return await prisma.mentorAssignment.findMany({
@@ -114,46 +115,88 @@ interface CreateMentorAssignmentData {
 export async function createMentorAssignment(
   data: CreateMentorAssignmentData
 ): Promise<MentorAssignment> {
-  const existingAssignment = await prisma.mentorAssignment.findUnique({
-    where: {
-      mentorId_studentId: {
-        mentorId: data.mentorId,
-        studentId: data.studentId,
-      },
-    },
+  const student = await prisma.user.findUnique({
+    where: { id: data.studentId },
+    select: { classification: true, name: true },
   });
 
-  if (existingAssignment) {
-    throw new Error("Mentor assignment already exists for this student");
+  if (!student) {
+    throw new Error("Student not found");
   }
 
-  return await prisma.mentorAssignment.create({
-    data: {
-      mentorId: data.mentorId,
+  if (
+    student.classification !== "FRESHMAN" &&
+    student.classification !== "SOPHOMORE"
+  ) {
+    throw new Error(
+      "Only FRESHMAN and SOPHOMORE students can be assigned a mentor"
+    );
+  }
+
+  const existingAssignment = await prisma.mentorAssignment.findUnique({
+    where: {
       studentId: data.studentId,
     },
     include: {
       mentor: {
         select: {
           id: true,
-          email: true,
           name: true,
-          role: true,
-        },
-      },
-      student: {
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          major: true,
-          minor: true,
-          classification: true,
         },
       },
     },
   });
+
+  if (existingAssignment) {
+    throw new Error(
+      `This student is already assigned to ${
+        existingAssignment.mentor.name || "a mentor"
+      }. Please unassign them first before creating a new assignment.`
+    );
+  }
+
+  return await prisma.mentorAssignment
+    .create({
+      data: {
+        mentorId: data.mentorId,
+        studentId: data.studentId,
+      },
+      include: {
+        mentor: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+          },
+        },
+        student: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            major: true,
+            minor: true,
+            classification: true,
+          },
+        },
+      },
+    })
+    .then(async (assignment) => {
+      // Add student to mentor's group chat and create direct chat
+      try {
+        await chatService.addStudentToMentorGroup(
+          data.mentorId,
+          data.studentId
+        );
+        await chatService.getOrCreateDirectChat(data.mentorId, data.studentId);
+      } catch (error) {
+        // Log error but don't fail the assignment creation
+        console.error("Failed to create chat threads:", error);
+      }
+      return assignment;
+    });
 }
 
 export async function deleteMentorAssignment(
@@ -206,5 +249,31 @@ export async function getStudentsByMentorId(mentorId: string) {
     },
   });
 
-  return assignments.map((assignment) => assignment.student);
+  return assignments.map((assignment: any) => assignment.student);
+}
+
+export async function getUnassignedStudents() {
+  return await prisma.user.findMany({
+    where: {
+      role: "STUDENT",
+      mentorAssignmentAsStudent: null,
+      classification: {
+        in: ["FRESHMAN", "SOPHOMORE"],
+      },
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      major: true,
+      minor: true,
+      classification: true,
+      joinDate: true,
+      expectedGraduation: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 }
