@@ -9,7 +9,7 @@ export const createMentorAssignmentSchema = z.object({
 
 export const getMentorAssignmentsByMentorIdSchema = z.object({
   params: z.object({
-    mentorId: z.string(),
+    mentorId: z.string(), 
   }),
 });
 

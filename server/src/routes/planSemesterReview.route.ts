@@ -63,6 +63,37 @@ router.post(
 );
 
 router.post(
+  "/degree-plan",
+  authenticate,
+  authorize(["STUDENT"]),
+  validate(reviewSchema.createDegreePlanReviewSchema),
+  reviewController.createDegreePlanReview
+);
+
+// Bulk routes must come BEFORE parameterized routes to avoid matching issues
+router.post(
+  "/bulk/mentor-review",
+  authenticate,
+  authorize(["ADMIN", "MENTOR"]),
+  validate(reviewSchema.submitBulkMentorReviewSchema),
+  reviewController.submitBulkMentorReview
+);
+
+router.post(
+  "/bulk/advisor-review",
+  authenticate,
+  authorize(["ADMIN", "ADVISOR"]),
+  (req, res, next) => {
+    console.log("[ROUTE HIT] /bulk/advisor-review");
+    console.log("[ROUTE HIT] User:", (req as any).user);
+    console.log("[ROUTE HIT] Body:", req.body);
+    next();
+  },
+  validate(reviewSchema.submitBulkAdvisorReviewSchema),
+  reviewController.submitBulkAdvisorReview
+);
+
+router.post(
   "/:id/mentor-review",
   authenticate,
   authorize(["ADMIN", "MENTOR"]),
@@ -84,6 +115,14 @@ router.delete(
   authorize(["ADMIN", "STUDENT"]),
   validate(reviewSchema.deleteReviewRequestSchema),
   reviewController.deleteReviewRequest
+);
+
+// Temporary fix endpoint - remove after use
+router.post(
+  "/fix-junior-senior",
+  authenticate,
+  authorize(["ADMIN"]),
+  reviewController.fixJuniorSeniorReviews
 );
 
 export default router;

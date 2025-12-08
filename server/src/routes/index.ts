@@ -8,6 +8,10 @@ import programRouter from "./program.route";
 import mentorAssignmentRouter from "./mentorAssignment.route";
 import advisorAssignmentRouter from "./advisorAssignment.route";
 import reviewRouter from "./planSemesterReview.route";
+import eligibleCoursesRouter from "./eligibleCourses.route";
+import dashboardRouter from "./dashboard.route";
+import categoryRouter from "./category.route";
+import chatRouter from "./chat.route";
 
 const router: Router = Router();
 
@@ -25,5 +29,8 @@ router.use("/programs", programRouter);
 router.use("/mentor-assignments", mentorAssignmentRouter);
 router.use("/advisor-assignments", advisorAssignmentRouter);
 router.use("/review-requests", reviewRouter);
-
+router.use("/eligible-courses", eligibleCoursesRouter);
+router.use("/dashboard", dashboardRouter);
+router.use("/catalog", categoryRouter);
+router.use("/chat", chatRouter);
 export default router;
