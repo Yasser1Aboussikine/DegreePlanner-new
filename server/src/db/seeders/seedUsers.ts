@@ -46,24 +46,27 @@ export async function seedUsers() {
       const hashedPassword = await bcrypt.hash(user.password, 10);
 
       // Create or update user
+      const updateData: any = {
+        email: user.email,
+        password: hashedPassword,
+        name: user.name,
+        role: user.role,
+        isActive: user.isActive,
+        isFYEStudent: user.isFYEStudent,
+        joinDate: user.joinDate ? new Date(user.joinDate) : undefined,
+        expectedGraduation: user.expectedGraduation
+          ? new Date(user.expectedGraduation)
+          : undefined,
+      };
+
+      if (user.major !== undefined) updateData.major = user.major;
+      if (user.minor !== undefined) updateData.minor = user.minor;
+      if (user.classification !== undefined) updateData.classification = user.classification;
+      if (user.transcriptUrl !== undefined) updateData.transcriptUrl = user.transcriptUrl;
+
       await prisma.user.upsert({
         where: { id: user.id },
-        update: {
-          email: user.email,
-          password: hashedPassword,
-          name: user.name,
-          role: user.role,
-          isActive: user.isActive,
-          major: user.major,
-          minor: user.minor,
-          classification: user.classification,
-          isFYEStudent: user.isFYEStudent,
-          joinDate: user.joinDate ? new Date(user.joinDate) : undefined,
-          expectedGraduation: user.expectedGraduation
-            ? new Date(user.expectedGraduation)
-            : undefined,
-          transcriptUrl: user.transcriptUrl,
-        },
+        update: updateData,
         create: {
           id: user.id,
           email: user.email,

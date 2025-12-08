@@ -2,13 +2,12 @@ import fs from "fs";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 import logger from "@/config/logger";
-import { PlannedCourseStatus, Category } from "@/generated/prisma/client";
+import { Category } from "@/generated/prisma/client";
 
 interface PlannedCourseSeedData {
   id: string;
   planSemesterId: string;
   courseCode: string;
-  status: PlannedCourseStatus;
   courseTitle?: string;
   credits?: number;
   category?: Category;
@@ -41,7 +40,6 @@ export async function seedPlannedCourses() {
         update: {
           planSemesterId: course.planSemesterId,
           courseCode: course.courseCode,
-          status: course.status,
           courseTitle: course.courseTitle,
           credits: course.credits,
           category: course.category,
@@ -50,7 +48,6 @@ export async function seedPlannedCourses() {
           id: course.id,
           planSemesterId: course.planSemesterId,
           courseCode: course.courseCode,
-          status: course.status,
           courseTitle: course.courseTitle,
           credits: course.credits,
           category: course.category,
@@ -64,9 +61,7 @@ export async function seedPlannedCourses() {
       }
     }
 
-    console.log(
-      `✅ Planned course seeding complete (${courseCount} courses).`
-    );
+    console.log(`✅ Planned course seeding complete (${courseCount} courses).`);
     logger.info("✓ Planned course seeding completed!");
   } catch (error) {
     console.error("❌ Planned course seeding failed:", error);
