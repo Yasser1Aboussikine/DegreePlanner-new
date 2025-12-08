@@ -99,9 +99,7 @@ export async function createAdvisorAssignment(
     );
   } catch (error: any) {
     logger.error("Error creating advisor assignment:", error);
-    if (
-      error.message === "Advisor assignment already exists for this student"
-    ) {
+    if (error.message && error.message.includes("already assigned to")) {
       return errorResponse(res, error.message, 409);
     }
     if (error.code === "P2003") {
@@ -130,5 +128,46 @@ export async function deleteAdvisorAssignment(
       return errorResponse(res, "Advisor assignment not found", 404);
     }
     return errorResponse(res, "Failed to delete advisor assignment", 500);
+  }
+}
+
+export async function getUnassignedStudents(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const students = await advisorAssignmentService.getUnassignedStudents();
+    return successResponse(
+      res,
+      students,
+      "Unassigned students retrieved successfully"
+    );
+  } catch (error) {
+    logger.error("Error fetching unassigned students:", error);
+    return errorResponse(res, "Failed to fetch unassigned students", 500);
+  }
+}
+
+export async function getUnassignedStudentsAndMentors(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const students =
+      await advisorAssignmentService.getUnassignedStudentsAndMentors();
+    return successResponse(
+      res,
+      students,
+      "Unassigned students and mentors retrieved successfully"
+    );
+  } catch (error) {
+    logger.error("Error fetching unassigned students and mentors:", error);
+    return errorResponse(
+      res,
+      "Failed to fetch unassigned students and mentors",
+      500
+    );
   }
 }
