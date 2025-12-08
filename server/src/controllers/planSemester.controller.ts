@@ -19,7 +19,6 @@ export const createPlanSemester = async (
       return;
     }
 
-    // Check if degree plan exists
     const degreePlan = await degreePlanService.getDegreePlanById(degreePlanId);
     if (!degreePlan) {
       res.status(404).json({
@@ -29,13 +28,46 @@ export const createPlanSemester = async (
       return;
     }
 
-    // Students can only create semesters for their own plan
     if (req.user?.role === "STUDENT" && req.user.userId !== degreePlan.userId) {
       res.status(403).json({
         success: false,
         message: "You can only create semesters for your own degree plan",
       });
       return;
+    }
+
+    const allSemesters = await planSemesterService.getPlanSemestersByDegreePlanId(degreePlanId);
+
+    if (nth_semestre > 1) {
+      const previousSemester = allSemesters.find(
+        (s) => s.nth_semestre === nth_semestre - 1
+      );
+
+      if (!previousSemester) {
+        res.status(400).json({
+          success: false,
+          message: `Cannot create semester ${nth_semestre}. Previous semester does not exist.`,
+        });
+        return;
+      }
+
+      const previousSemesterCourses = (previousSemester as any).plannedCourses || [];
+      if (previousSemesterCourses.length === 0) {
+        res.status(400).json({
+          success: false,
+          message: "Cannot create a new semester. The previous semester is empty.",
+        });
+        return;
+      }
+
+      const validTermSequence = planSemesterService.getValidNextTerms(previousSemester.term);
+      if (!validTermSequence.includes(term)) {
+        res.status(400).json({
+          success: false,
+          message: `Invalid term sequence. After ${previousSemester.term}, you can only select: ${validTermSequence.join(" or ")}`,
+        });
+        return;
+      }
     }
 
     const planSemester = await planSemesterService.createPlanSemester({
