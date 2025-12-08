@@ -13,6 +13,7 @@ export interface User {
   name?: string | null;
   role: Role;
   isActive: boolean;
+  emailVerifiedAt?: Date | null;
   major?: string | null;
   minor?: string | null;
   classification?: Classification | null;
@@ -22,6 +23,8 @@ export interface User {
   transcriptUrl?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
+  mentorAssignmentCount?: number;
+  advisorAssignmentCount?: number;
 }
 
 export interface SignupInput {
@@ -99,6 +102,14 @@ export interface CourseRelationship {
   [key: string]: any;
 }
 
+export interface EligibleCourse extends Course {
+  isEligible: boolean;
+  reasonIneligible?: string;
+  missingPrerequisites?: string[];
+  prerequisiteCodes?: string[];
+  dependentCodes?: string[];
+}
+
 // Degree Plan Types
 export type DegreeLevel = "BACHELOR" | "MASTER" | "DOCTORATE" | "OTHER";
 
@@ -143,8 +154,21 @@ export interface DegreePlan {
   userId: string;
   programId?: string | null;
   program?: Program | null;
+  semesters?: PlanSemesterWithCourses[];
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface PlanSemesterWithCourses extends PlanSemester {
+  plannedCourses: PlannedCourse[];
+}
+
+export interface PlanSemesterWithRelations extends PlanSemester {
+  degreePlan?: {
+    id: string;
+    userId: string;
+  };
+  plannedCourses?: PlannedCourse[];
 }
 
 export interface CreateDegreePlanInput {
@@ -193,13 +217,10 @@ export type Category =
   | "ENGINEERING_SCIENCE_MATHS"
   | "FREE_ELECTIVES";
 
-export type PlannedCourseStatus = "PLANNED" | "COMPLETED" | "DROPPED";
-
 export interface PlannedCourse {
   id: string;
   planSemesterId: string;
   courseCode: string;
-  status: PlannedCourseStatus;
   courseTitle?: string | null;
   credits?: number | null;
   category?: Category | null;
@@ -210,7 +231,6 @@ export interface PlannedCourse {
 export interface CreatePlannedCourseInput {
   planSemesterId: string;
   courseCode: string;
-  status?: PlannedCourseStatus;
   courseTitle?: string;
   credits?: number;
   category?: Category;
@@ -219,7 +239,6 @@ export interface CreatePlannedCourseInput {
 export interface UpdatePlannedCourseInput {
   planSemesterId?: string;
   courseCode?: string;
-  status?: PlannedCourseStatus;
   courseTitle?: string | null;
   credits?: number | null;
   category?: Category | null;
@@ -233,9 +252,13 @@ export interface ApiError {
 
 export interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  page: number;
-  limit: number;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
 }
 
 // Assignment Types
@@ -287,7 +310,7 @@ export interface PlanSemesterReviewRequest {
   mentorComment?: string | null;
   advisorComment?: string | null;
   rejectionReason?: string | null;
-  planSemester?: PlanSemester;
+  planSemester?: PlanSemesterWithRelations;
   student?: Partial<User>;
   mentor?: Partial<User> | null;
   advisor?: Partial<User> | null;

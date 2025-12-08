@@ -43,6 +43,22 @@ export const advisorAssignmentApi = apiSlice.injectEndpoints({
       ],
     }),
 
+    getUnassignedStudentsForAdvisor: builder.query<
+      { data: Partial<User>[] },
+      void
+    >({
+      query: () => "/advisor-assignments/unassigned-students",
+      providesTags: ["AdvisorAssignment"],
+    }),
+
+    getUnassignedStudentsAndMentors: builder.query<
+      { data: Partial<User>[] },
+      void
+    >({
+      query: () => "/advisor-assignments/unassigned-students-and-mentors",
+      providesTags: ["AdvisorAssignment"],
+    }),
+
     createAdvisorAssignment: builder.mutation<
       { data: AdvisorAssignment },
       CreateAdvisorAssignmentInput
@@ -70,6 +86,8 @@ export const {
   useGetAdvisorAssignmentsByAdvisorIdQuery,
   useGetAdvisorAssignmentsByStudentIdQuery,
   useGetStudentsByAdvisorIdQuery,
+  useGetUnassignedStudentsForAdvisorQuery,
+  useGetUnassignedStudentsAndMentorsQuery,
   useCreateAdvisorAssignmentMutation,
   useDeleteAdvisorAssignmentMutation,
 } = advisorAssignmentApi;

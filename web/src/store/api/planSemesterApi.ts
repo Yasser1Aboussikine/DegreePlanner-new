@@ -3,9 +3,9 @@ import type { PlanSemester, CreatePlanSemesterInput, UpdatePlanSemesterInput } f
 
 export const planSemesterApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /api/plan-semester - Get all plan semesters (Admin/Advisor only)
+    // GET /api/plan-semesters - Get all plan semesters (Admin/Advisor only)
     getAllPlanSemesters: builder.query<PlanSemester[], void>({
-      query: () => '/plan-semester',
+      query: () => '/plan-semesters',
       providesTags: (result) =>
         result
           ? [
@@ -15,9 +15,9 @@ export const planSemesterApi = apiSlice.injectEndpoints({
           : [{ type: 'Semester', id: 'LIST' }],
     }),
 
-    // GET /api/plan-semester/degree-plan/:degreePlanId - Get plan semesters by degree plan
+    // GET /api/plan-semesters/degree-plan/:degreePlanId - Get plan semesters by degree plan
     getPlanSemestersByDegreePlanId: builder.query<PlanSemester[], string>({
-      query: (degreePlanId) => `/plan-semester/degree-plan/${degreePlanId}`,
+      query: (degreePlanId) => `/plan-semesters/degree-plan/${degreePlanId}`,
       providesTags: (result) =>
         result
           ? [
@@ -27,26 +27,26 @@ export const planSemesterApi = apiSlice.injectEndpoints({
           : [{ type: 'Semester', id: 'LIST' }],
     }),
 
-    // GET /api/plan-semester/:id - Get plan semester by ID
+    // GET /api/plan-semesters/:id - Get plan semester by ID
     getPlanSemesterById: builder.query<PlanSemester, string>({
-      query: (id) => `/plan-semester/${id}`,
+      query: (id) => `/plan-semesters/${id}`,
       providesTags: (_, __, id) => [{ type: 'Semester', id }],
     }),
 
-    // POST /api/plan-semester - Create plan semester
+    // POST /api/plan-semesters - Create plan semester
     createPlanSemester: builder.mutation<PlanSemester, CreatePlanSemesterInput>({
       query: (data) => ({
-        url: '/plan-semester',
+        url: '/plan-semesters',
         method: 'POST',
         body: data,
       }),
       invalidatesTags: [{ type: 'Semester', id: 'LIST' }],
     }),
 
-    // PUT /api/plan-semester/:id - Update plan semester
+    // PUT /api/plan-semesters/:id - Update plan semester
     updatePlanSemester: builder.mutation<PlanSemester, { id: string; data: UpdatePlanSemesterInput }>({
       query: ({ id, data }) => ({
-        url: `/plan-semester/${id}`,
+        url: `/plan-semesters/${id}`,
         method: 'PUT',
         body: data,
       }),
@@ -56,10 +56,10 @@ export const planSemesterApi = apiSlice.injectEndpoints({
       ],
     }),
 
-    // DELETE /api/plan-semester/:id - Delete plan semester
+    // DELETE /api/plan-semesters/:id - Delete plan semester
     deletePlanSemester: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/plan-semester/${id}`,
+        url: `/plan-semesters/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: (_, __, id) => [

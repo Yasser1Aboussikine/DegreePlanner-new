@@ -9,3 +9,5 @@ export * from "./programApi";
 export * from "./mentorAssignmentApi";
 export * from "./advisorAssignmentApi";
 export * from "./reviewRequestApi";
+export * from "./eligibleCoursesApi";
+export * from "./dashboardApi";

@@ -86,6 +86,18 @@ export const reviewRequestApi = apiSlice.injectEndpoints({
       invalidatesTags: ["ReviewRequest"],
     }),
 
+    createDegreePlanReview: builder.mutation<
+      { data: PlanSemesterReviewRequest[] },
+      { degreePlanId: string }
+    >({
+      query: (body) => ({
+        url: "/review-requests/degree-plan",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["ReviewRequest", "DegreePlan"],
+    }),
+
     submitMentorReview: builder.mutation<
       { data: PlanSemesterReviewRequest },
       { id: string; data: SubmitMentorReviewInput }
@@ -116,6 +128,40 @@ export const reviewRequestApi = apiSlice.injectEndpoints({
       ],
     }),
 
+    submitBulkMentorReview: builder.mutation<
+      { data: PlanSemesterReviewRequest[] },
+      {
+        degreePlanId: string;
+        approve: boolean;
+        semesterComments: Array<{ requestId: string; comment?: string }>;
+        generalRejectionReason?: string;
+      }
+    >({
+      query: (body) => ({
+        url: "/review-requests/bulk/mentor-review",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["ReviewRequest"],
+    }),
+
+    submitBulkAdvisorReview: builder.mutation<
+      { data: PlanSemesterReviewRequest[] },
+      {
+        degreePlanId: string;
+        approve: boolean;
+        semesterComments: Array<{ requestId: string; comment: string }>;
+        generalRejectionReason?: string;
+      }
+    >({
+      query: (body) => ({
+        url: "/review-requests/bulk/advisor-review",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["ReviewRequest"],
+    }),
+
     deleteReviewRequest: builder.mutation<{ data: null }, string>({
       query: (id) => ({
         url: `/review-requests/${id}`,
@@ -135,7 +181,10 @@ export const {
   useGetPendingMentorReviewsQuery,
   useGetPendingAdvisorReviewsQuery,
   useCreateReviewRequestMutation,
+  useCreateDegreePlanReviewMutation,
   useSubmitMentorReviewMutation,
   useSubmitAdvisorReviewMutation,
+  useSubmitBulkMentorReviewMutation,
+  useSubmitBulkAdvisorReviewMutation,
   useDeleteReviewRequestMutation,
 } = reviewRequestApi;

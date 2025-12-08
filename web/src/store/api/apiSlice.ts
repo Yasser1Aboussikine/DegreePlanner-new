@@ -6,7 +6,7 @@ import type {
 } from "@reduxjs/toolkit/query";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -48,6 +48,8 @@ export const apiSlice = createApi({
   tagTypes: [
     "User",
     "Course",
+    "CoursePrereqs",
+    "CourseDependents",
     "PlannedCourse",
     "Semester",
     "DegreePlan",
@@ -56,6 +58,12 @@ export const apiSlice = createApi({
     "MentorAssignment",
     "AdvisorAssignment",
     "ReviewRequest",
+    "Category",
+    "Subcategory",
+    "Area",
+    "ChatThread",
+    "Message",
+    "UnreadCount",
   ],
   endpoints: () => ({}),
 });

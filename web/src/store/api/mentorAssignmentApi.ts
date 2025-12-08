@@ -39,6 +39,11 @@ export const mentorAssignmentApi = apiSlice.injectEndpoints({
       ],
     }),
 
+    getUnassignedStudents: builder.query<{ data: Partial<User>[] }, void>({
+      query: () => "/mentor-assignments/unassigned-students",
+      providesTags: ["MentorAssignment"],
+    }),
+
     createMentorAssignment: builder.mutation<
       { data: MentorAssignment },
       CreateMentorAssignmentInput
@@ -58,6 +63,17 @@ export const mentorAssignmentApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["MentorAssignment"],
     }),
+
+    reportStudent: builder.mutation<
+      { data: null; message: string },
+      { studentId: string; reason: string }
+    >({
+      query: ({ studentId, reason }) => ({
+        url: `/mentor-assignments/report/${studentId}`,
+        method: "POST",
+        body: { reason },
+      }),
+    }),
   }),
 });
 
@@ -66,6 +82,8 @@ export const {
   useGetMentorAssignmentsByMentorIdQuery,
   useGetMentorAssignmentsByStudentIdQuery,
   useGetStudentsByMentorIdQuery,
+  useGetUnassignedStudentsQuery,
   useCreateMentorAssignmentMutation,
   useDeleteMentorAssignmentMutation,
+  useReportStudentMutation,
 } = mentorAssignmentApi;
