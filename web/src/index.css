@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 /* 
 ---break--- */
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
 /* 
 :root {
@@ -78,6 +78,10 @@ button:focus-visible {
 ---break--- */
 
 @theme inline {
+
+
+  --font-family-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
   --radius-sm: calc(var(--radius) - 4px);
 
   --radius-md: calc(var(--radius) - 2px);

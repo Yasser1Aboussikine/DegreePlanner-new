@@ -1,5 +1,7 @@
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "./Layouts";
+// import Home from './features/LandingPage/pages/Home'
 import { SignIn as SignInPage, SignUp as SignUpPage } from "./features/Auth";
 import { DegreePlanBuilder } from "./features/DegreePlan/pages/DegreePlanBuilder";
 import { StudentDashboard } from "./features/Dashboards/pages/StudentDashboard";
@@ -43,9 +45,12 @@ const DashboardPlaceholder = () => (
   </div>
 );
 
+
+
 function App() {
   return (
     <BrowserRouter>
+
       <Routes>
         {/* Public Routes */}
         <Route path="/signin" element={<SignInPage />} />
@@ -160,6 +165,7 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
+  
 }
 
 export default App;
