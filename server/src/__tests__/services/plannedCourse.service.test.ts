@@ -1,6 +1,6 @@
 import * as plannedCourseService from "../../services/plannedCourse.service";
 import prisma from "../../config/prisma";
-import { PlannedCourseStatus, Term } from "@/generated/prisma/client";
+import { Term, Category } from "@/generated/prisma/client";
 
 jest.mock("../../config/prisma", () => ({
   __esModule: true,
@@ -24,7 +24,9 @@ describe("PlannedCourse Service", () => {
     id: "1",
     planSemesterId: "semester-1",
     courseCode: "CS101",
-    status: PlannedCourseStatus.PLANNED,
+    courseTitle: "Introduction to Computer Science",
+    credits: 3,
+    category: Category.COMPUTER_SCIENCE,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -63,12 +65,13 @@ describe("PlannedCourse Service", () => {
       const result = await plannedCourseService.createPlannedCourse({
         planSemesterId: "semester-1",
         courseCode: "CS101",
-        status: PlannedCourseStatus.PLANNED,
+        courseTitle: "Introduction to Computer Science",
+        credits: 3,
+        category: Category.COMPUTER_SCIENCE,
       });
 
       expect(result).toBeDefined();
       expect(result.courseCode).toBe("CS101");
-      expect(result.status).toBe(PlannedCourseStatus.PLANNED);
       expect(prisma.plannedCourse.create).toHaveBeenCalled();
     });
   });
@@ -108,19 +111,18 @@ describe("PlannedCourse Service", () => {
     it("should return null if planned course not found", async () => {
       (prisma.plannedCourse.findUnique as jest.Mock).mockResolvedValue(null);
 
-      const result = await plannedCourseService.getPlannedCourseById(
-        "non-existent"
-      );
+      const result =
+        await plannedCourseService.getPlannedCourseById("non-existent");
 
       expect(result).toBeNull();
     });
   });
 
   describe("updatePlannedCourse", () => {
-    it("should update a planned course status", async () => {
+    it("should update a planned course", async () => {
       const updatedCourse = {
         ...mockPlannedCourseWithRelations,
-        status: PlannedCourseStatus.COMPLETED,
+        courseTitle: "Intro to CS",
       };
 
       (prisma.plannedCourse.findUnique as jest.Mock).mockResolvedValue(
@@ -131,11 +133,11 @@ describe("PlannedCourse Service", () => {
       );
 
       const result = await plannedCourseService.updatePlannedCourse("1", {
-        status: PlannedCourseStatus.COMPLETED,
+        courseTitle: "Intro to CS",
       });
 
       expect(result).toBeDefined();
-      expect(result?.status).toBe(PlannedCourseStatus.COMPLETED);
+      expect(result?.courseTitle).toBe("Intro to CS");
       expect(prisma.plannedCourse.update).toHaveBeenCalled();
     });
 
@@ -145,7 +147,7 @@ describe("PlannedCourse Service", () => {
       const result = await plannedCourseService.updatePlannedCourse(
         "non-existent",
         {
-          status: PlannedCourseStatus.COMPLETED,
+          courseTitle: "Updated Title",
         }
       );
 
@@ -173,9 +175,8 @@ describe("PlannedCourse Service", () => {
         new Error("Not found")
       );
 
-      const result = await plannedCourseService.deletePlannedCourse(
-        "non-existent"
-      );
+      const result =
+        await plannedCourseService.deletePlannedCourse("non-existent");
 
       expect(result).toBe(false);
     });
@@ -201,52 +202,6 @@ describe("PlannedCourse Service", () => {
           courseCode: "asc",
         },
       });
-    });
-  });
-
-  describe("status transitions", () => {
-    it("should allow updating from PLANNED to IN_PROGRESS", async () => {
-      const updatedCourse = {
-        ...mockPlannedCourseWithRelations,
-        status: PlannedCourseStatus.IN_PROGRESS,
-      };
-
-      (prisma.plannedCourse.findUnique as jest.Mock).mockResolvedValue(
-        mockPlannedCourseWithRelations
-      );
-      (prisma.plannedCourse.update as jest.Mock).mockResolvedValue(
-        updatedCourse
-      );
-
-      const result = await plannedCourseService.updatePlannedCourse("1", {
-        status: PlannedCourseStatus.IN_PROGRESS,
-      });
-
-      expect(result?.status).toBe(PlannedCourseStatus.IN_PROGRESS);
-    });
-
-    it("should allow updating from IN_PROGRESS to COMPLETED", async () => {
-      const inProgressCourse = {
-        ...mockPlannedCourseWithRelations,
-        status: PlannedCourseStatus.IN_PROGRESS,
-      };
-      const completedCourse = {
-        ...mockPlannedCourseWithRelations,
-        status: PlannedCourseStatus.COMPLETED,
-      };
-
-      (prisma.plannedCourse.findUnique as jest.Mock).mockResolvedValue(
-        inProgressCourse
-      );
-      (prisma.plannedCourse.update as jest.Mock).mockResolvedValue(
-        completedCourse
-      );
-
-      const result = await plannedCourseService.updatePlannedCourse("1", {
-        status: PlannedCourseStatus.COMPLETED,
-      });
-
-      expect(result?.status).toBe(PlannedCourseStatus.COMPLETED);
     });
   });
 });
