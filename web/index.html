@@ -6,19 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>web</title>
     <script>
-      (function() {
-        const storageKey = 'degree-planner-theme';
-        const theme = localStorage.getItem(storageKey) || 'light';
+      (function () {
+        const storageKey = "degree-planner-theme";
+        const theme = localStorage.getItem(storageKey) || "light";
+        const root = document.documentElement;
 
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else if (theme === 'light') {
-          document.documentElement.classList.remove('dark');
-        } else if (theme === 'system') {
-          const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          if (systemTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-          }
+        root.classList.remove("light", "dark");
+
+        if (theme === "dark") {
+          root.classList.add("dark");
+          root.style.colorScheme = "dark";
+        } else if (theme === "light") {
+          root.classList.add("light");
+          root.style.colorScheme = "light";
+        } else if (theme === "system") {
+          const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+            .matches
+            ? "dark"
+            : "light";
+          root.classList.add(systemTheme);
+          root.style.colorScheme = systemTheme;
         }
       })();
     </script>
