@@ -17,6 +17,7 @@ export async function getAllCourses(
   limit: number = 10,
   search?: string,
   discipline?: string,
+  category?: string,
   labels?: string[],
   isElective?: boolean
 ): Promise<{ courses: Course[]; total: number }> {
@@ -42,6 +43,11 @@ export async function getAllCourses(
       params.discipline = discipline;
     }
 
+    if (category) {
+      whereClauses.push("$category IN c.categories");
+      params.category = category;
+    }
+
     if (labels && labels.length > 0) {
       whereClauses.push("ANY(label IN labels(c) WHERE label IN $labels)");
       params.labels = labels;
@@ -55,6 +61,17 @@ export async function getAllCourses(
     const whereClause =
       whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
+    logger.info(`getAllCourses - Query params:`, {
+      skip,
+      limit,
+      search,
+      discipline,
+      category,
+      labels,
+      isElective,
+      whereClause,
+    });
+
     // Get total count
     const countResult = await session.run(
       `
@@ -66,6 +83,7 @@ export async function getAllCourses(
     );
 
     const total = countResult.records[0]?.get("total").toNumber() || 0;
+    logger.info(`getAllCourses - Total count from DB: ${total}`);
 
     // Get paginated courses
     const result = await session.run(
@@ -97,6 +115,10 @@ export async function getAllCourses(
         disciplines: node.properties.disciplines || [],
       };
     });
+
+    logger.info(
+      `getAllCourses - Returning ${courses.length} courses out of ${total} total`
+    );
 
     return { courses, total };
   } catch (error) {
@@ -598,6 +620,10 @@ export async function getCoursePrerequisites(id: string): Promise<Course[]> {
   const session = getSession();
 
   try {
+    logger.info(
+      `[getCoursePrerequisites] Fetching prerequisites for course ID: ${id}`
+    );
+
     const result = await session.run(
       `
       MATCH (c:Course {id: $id})-[:REQUIRES]->(prereq:Course)
@@ -605,6 +631,10 @@ export async function getCoursePrerequisites(id: string): Promise<Course[]> {
       ORDER BY prereq.course_code
       `,
       { id }
+    );
+
+    logger.info(
+      `[getCoursePrerequisites] Found ${result.records.length} prerequisites for course ID: ${id}`
     );
 
     return result.records.map((record) => {
@@ -639,6 +669,10 @@ export async function getCourseDependents(id: string): Promise<Course[]> {
   const session = getSession();
 
   try {
+    logger.info(
+      `[getCourseDependents] Fetching dependents for course ID: ${id}`
+    );
+
     const result = await session.run(
       `
       MATCH (dependent:Course)-[:REQUIRES]->(c:Course {id: $id})
@@ -646,6 +680,10 @@ export async function getCourseDependents(id: string): Promise<Course[]> {
       ORDER BY dependent.course_code
       `,
       { id }
+    );
+
+    logger.info(
+      `[getCourseDependents] Found ${result.records.length} dependents for course ID: ${id}`
     );
 
     return result.records.map((record) => {

@@ -53,11 +53,18 @@ export const getAllDegreePlans = async (): Promise<DegreePlan[]> => {
           email: true,
           name: true,
           role: true,
+          major: true,
+          minor: true,
+          classification: true,
         },
       },
+      program: true,
       semesters: {
         include: {
           plannedCourses: true,
+        },
+        orderBy: {
+          nth_semestre: "asc",
         },
       },
     },
@@ -81,8 +88,12 @@ export const getDegreePlanById = async (
           email: true,
           name: true,
           role: true,
+          major: true,
+          minor: true,
+          classification: true,
         },
       },
+      program: true,
       semesters: {
         include: {
           plannedCourses: true,
@@ -109,8 +120,12 @@ export const getDegreePlanByUserId = async (
           email: true,
           name: true,
           role: true,
+          major: true,
+          minor: true,
+          classification: true,
         },
       },
+      program: true,
       semesters: {
         include: {
           plannedCourses: true,
