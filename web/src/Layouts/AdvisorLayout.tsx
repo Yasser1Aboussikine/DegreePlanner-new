@@ -42,8 +42,8 @@ export const AdvisorLayout = () => {
       ),
     },
     {
-      label: "Approve",
-      href: "/advisor/approve",
+      label: "Review Requests",
+      href: "/advisor/review-requests",
       icon: (
         <CheckCircle className="text-sidebar-foreground group-hover/sidebar:text-sidebar-primary h-5 w-5 flex-shrink-0 transition-colors" />
       ),

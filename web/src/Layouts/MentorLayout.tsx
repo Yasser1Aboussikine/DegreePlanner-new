@@ -58,8 +58,8 @@ export const MentorLayout = () => {
       ),
     },
     {
-      label: "Approve",
-      href: "/mentor/approve",
+      label: "Review Requests",
+      href: "/mentor/review-requests",
       icon: (
         <CheckCircle className="text-sidebar-foreground group-hover/sidebar:text-sidebar-primary h-5 w-5 flex-shrink-0 transition-colors" />
       ),

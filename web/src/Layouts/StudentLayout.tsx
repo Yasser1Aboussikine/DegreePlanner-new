@@ -6,16 +6,22 @@ import {
   LayoutDashboard,
   BookOpen,
   GraduationCap,
+  MessageCircle,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useLogoutHandler } from "@/hooks/useLogoutHandler";
+import { useAppSelector } from "@/store/hooks";
 
 export const StudentLayout = () => {
   const [open, setOpen] = useState(false);
   const { handleLogout, isLoggingOut } = useLogoutHandler();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const showChat =
+    user?.classification === "FRESHMAN" || user?.classification === "SOPHOMORE";
 
   const links = [
     {
@@ -39,6 +45,17 @@ export const StudentLayout = () => {
         <GraduationCap className="text-sidebar-foreground group-hover/sidebar:text-sidebar-primary h-5 w-5 flex-shrink-0 transition-colors" />
       ),
     },
+    ...(showChat
+      ? [
+          {
+            label: "Chat",
+            href: "/student/chat",
+            icon: (
+              <MessageCircle className="text-sidebar-foreground group-hover/sidebar:text-sidebar-primary h-5 w-5 flex-shrink-0 transition-colors" />
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -76,9 +93,7 @@ export const StudentLayout = () => {
             >
               <LogOut className="h-5 w-5 flex-shrink-0" />
               {open && (
-                <span>
-                  {isLoggingOut ? "Logging out..." : "Logout"}
-                </span>
+                <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
               )}
             </Button>
           </div>
