@@ -29,11 +29,13 @@ export async function seedAdvisorAssignments() {
       assignmentCount++;
 
       await prisma.advisorAssignment.upsert({
-        where: { id: assignment.id },
-        update: {
-          advisorId: assignment.advisorId,
-          studentId: assignment.studentId,
+        where: {
+          advisorId_studentId: {
+            advisorId: assignment.advisorId,
+            studentId: assignment.studentId,
+          },
         },
+        update: {},
         create: {
           id: assignment.id,
           advisorId: assignment.advisorId,
