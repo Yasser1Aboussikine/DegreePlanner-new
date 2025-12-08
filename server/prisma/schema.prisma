@@ -9,7 +9,7 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role { 
+enum Role {
   STUDENT
   ADMIN
   ADVISOR
@@ -33,13 +33,6 @@ enum Category {
   FREE_ELECTIVES
 }
 
-enum PlannedCourseStatus {
-  PLANNED
-  COMPLETED
-  DROPPED
-  IN_PROGRESS
-}
-
 enum ReviewStatus {
   PENDING_MENTOR
   PENDING_ADVISOR
@@ -60,6 +53,12 @@ enum ChatThreadType {
   DIRECT
 }
 
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
 enum MentorReportStatus {
   OPEN
   UNDER_REVIEW
@@ -75,47 +74,47 @@ enum DegreeLevel {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String?
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String
+  name     String?
 
-  role      Role     @default(STUDENT)
+  role Role @default(STUDENT)
 
-  major     String?
-  minor     String?
+  major String?
+  minor String?
 
-  classification      Classification?
-  isFYEStudent        Boolean   @default(false)
-  joinDate            DateTime?
-  expectedGraduation  DateTime?
-  transcriptUrl       String?
+  classification     Classification?
+  isFYEStudent       Boolean         @default(false)
+  joinDate           DateTime?
+  expectedGraduation DateTime?
+  transcriptUrl      String?
 
-  isActive         Boolean   @default(true)
-  emailVerifiedAt  DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  isActive        Boolean   @default(true)
+  emailVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   degreePlan DegreePlan?
 
-  mentorAssignmentsAsMentor   MentorAssignment[]   @relation("MentorAssignments")
-  mentorAssignmentsAsStudent  MentorAssignment[]   @relation("MentorStudentAssignments")
+  mentorAssignmentsAsMentor MentorAssignment[] @relation("MentorAssignments")
+  mentorAssignmentAsStudent MentorAssignment?  @relation("MentorStudentAssignments")
 
-  advisorAssignmentsAsAdvisor AdvisorAssignment[]  @relation("AdvisorAssignments")
-  advisorAssignmentsAsStudent AdvisorAssignment[]  @relation("AdvisorStudentAssignments")
+  advisorAssignmentsAsAdvisor AdvisorAssignment[] @relation("AdvisorAssignments")
+  advisorAssignmentAsStudent  AdvisorAssignment?  @relation("AdvisorStudentAssignments")
 
   semesterReviewRequestsAsStudent PlanSemesterReviewRequest[] @relation("StudentReviewRequests")
   semesterReviewRequestsAsMentor  PlanSemesterReviewRequest[] @relation("MentorReviewRequests")
   semesterReviewRequestsAsAdvisor PlanSemesterReviewRequest[] @relation("AdvisorReviewRequests")
 
   chatParticipants ChatParticipant[]
-  messages         Message[]        @relation("UserMessages")
+  messages         Message[]         @relation("UserMessages")
 
-  mentorReportsAsMentor    MentorReport[] @relation("MentorReportsAsMentor")
-  mentorReportsAsStudent   MentorReport[] @relation("MentorReportsAsStudent")
-  mentorReportsReviewed    MentorReport[] @relation("MentorReportsReviewedByAdmin")
+  mentorReportsAsMentor  MentorReport[] @relation("MentorReportsAsMentor")
+  mentorReportsAsStudent MentorReport[] @relation("MentorReportsAsStudent")
+  mentorReportsReviewed  MentorReport[] @relation("MentorReportsReviewedByAdmin")
 
-  mentorChatThreads        ChatThread[]   @relation("MentorChatThreads")
+  mentorChatThreads ChatThread[] @relation("MentorChatThreads")
 
   passwordResetTokens PasswordResetToken[]
 
@@ -123,32 +122,32 @@ model User {
 }
 
 model Program {
-  id           String            @id @default(cuid())
-  code         String            @unique  // e.g. "BSCSC"
-  name         String            // e.g. "Bachelor of Science in Computer Science"
-  level        DegreeLevel       @default(BACHELOR)
-  totalCredits Int               // e.g. 136 for BSCSC
-  isActive     Boolean           @default(true)
+  id           String      @id @default(cuid())
+  code         String      @unique // e.g. "BSCSC"
+  name         String // e.g. "Bachelor of Science in Computer Science"
+  level        DegreeLevel @default(BACHELOR)
+  totalCredits Int // e.g. 136 for BSCSC
+  isActive     Boolean     @default(true)
 
   requirements ProgramRequirement[]
   degreePlans  DegreePlan[]
 
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([code])
 }
 
 model ProgramRequirement {
-  id         String   @id @default(cuid())
-  programId  String
-  program    Program  @relation(fields: [programId], references: [id])
+  id        String  @id @default(cuid())
+  programId String
+  program   Program @relation(fields: [programId], references: [id])
 
-  category   Category
-  credits    Int      // required SCH for this category in this program
+  category Category
+  credits  Int // required SCH for this category in this program
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([programId, category])
   @@index([programId])
@@ -156,12 +155,12 @@ model ProgramRequirement {
 }
 
 model DegreePlan {
-  id        String         @id @default(cuid())
-  userId    String         @unique
-  user      User           @relation(fields: [userId], references: [id])
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
 
   programId String?
-  program   Program?       @relation(fields: [programId], references: [id])
+  program   Program? @relation(fields: [programId], references: [id])
 
   semesters PlanSemester[]
 
@@ -172,33 +171,32 @@ model DegreePlan {
 }
 
 model PlanSemester {
-  id             String          @id @default(cuid())
+  id             String                      @id @default(cuid())
   degreePlanId   String
-  degreePlan     DegreePlan      @relation(fields: [degreePlanId], references: [id])
+  degreePlan     DegreePlan                  @relation(fields: [degreePlanId], references: [id])
   year           Int
   term           Term
   nth_semestre   Int
   plannedCourses PlannedCourse[]
   reviewRequests PlanSemesterReviewRequest[]
 
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([degreePlanId])
   @@index([degreePlanId, nth_semestre])
 }
 
 model PlannedCourse {
-  id             String              @id @default(cuid())
+  id             String       @id @default(cuid())
   planSemesterId String
-  planSemester   PlanSemester        @relation(fields: [planSemesterId], references: [id])
+  planSemester   PlanSemester @relation(fields: [planSemesterId], references: [id])
   courseCode     String
-  status         PlannedCourseStatus @default(PLANNED)
   courseTitle    String?
   credits        Int?
   category       Category?
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@unique([planSemesterId, courseCode])
   @@index([planSemesterId])
@@ -206,13 +204,13 @@ model PlannedCourse {
 }
 
 model MentorAssignment {
-  id        String @id @default(cuid())
+  id String @id @default(cuid())
 
   mentorId  String
-  studentId String
+  studentId String @unique
 
-  mentor    User   @relation("MentorAssignments", fields: [mentorId], references: [id])
-  student   User   @relation("MentorStudentAssignments", fields: [studentId], references: [id])
+  mentor  User @relation("MentorAssignments", fields: [mentorId], references: [id])
+  student User @relation("MentorStudentAssignments", fields: [studentId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -222,13 +220,13 @@ model MentorAssignment {
 }
 
 model AdvisorAssignment {
-  id        String @id @default(cuid())
+  id String @id @default(cuid())
 
   advisorId String
-  studentId String
+  studentId String @unique
 
-  advisor   User   @relation("AdvisorAssignments", fields: [advisorId], references: [id])
-  student   User   @relation("AdvisorStudentAssignments", fields: [studentId], references: [id])
+  advisor User @relation("AdvisorAssignments", fields: [advisorId], references: [id])
+  student User @relation("AdvisorStudentAssignments", fields: [studentId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -238,19 +236,19 @@ model AdvisorAssignment {
 }
 
 model PlanSemesterReviewRequest {
-  id             String     @id @default(cuid())
+  id String @id @default(cuid())
 
   planSemesterId String
   planSemester   PlanSemester @relation(fields: [planSemesterId], references: [id])
 
-  studentId      String
-  student        User       @relation("StudentReviewRequests", fields: [studentId], references: [id])
+  studentId String
+  student   User   @relation("StudentReviewRequests", fields: [studentId], references: [id])
 
-  mentorId       String?
-  mentor         User?      @relation("MentorReviewRequests", fields: [mentorId], references: [id])
+  mentorId String?
+  mentor   User?   @relation("MentorReviewRequests", fields: [mentorId], references: [id])
 
-  advisorId      String?
-  advisor        User?      @relation("AdvisorReviewRequests", fields: [advisorId], references: [id])
+  advisorId String?
+  advisor   User?   @relation("AdvisorReviewRequests", fields: [advisorId], references: [id])
 
   status            ReviewStatus @default(PENDING_MENTOR)
   requestedAt       DateTime     @default(now())
@@ -268,12 +266,12 @@ model PlanSemesterReviewRequest {
 }
 
 model ChatThread {
-  id        String         @id @default(cuid())
-  type      ChatThreadType
-  title     String?
+  id    String         @id @default(cuid())
+  type  ChatThreadType
+  title String?
 
-  mentorId  String?
-  mentor    User?          @relation("MentorChatThreads", fields: [mentorId], references: [id])
+  mentorId String?
+  mentor   User?   @relation("MentorChatThreads", fields: [mentorId], references: [id])
 
   participants ChatParticipant[]
   messages     Message[]
@@ -286,15 +284,15 @@ model ChatThread {
 }
 
 model ChatParticipant {
-  id        String      @id @default(cuid())
+  id String @id @default(cuid())
 
-  threadId  String
-  userId    String
+  threadId String
+  userId   String
 
-  thread    ChatThread  @relation(fields: [threadId], references: [id])
-  user      User        @relation(fields: [userId], references: [id])
+  thread ChatThread @relation(fields: [threadId], references: [id])
+  user   User       @relation(fields: [userId], references: [id])
 
-  joinedAt   DateTime   @default(now())
+  joinedAt   DateTime  @default(now())
   lastReadAt DateTime?
 
   @@unique([threadId, userId])
@@ -303,39 +301,39 @@ model ChatParticipant {
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  threadId  String
-  thread    ChatThread @relation(fields: [threadId], references: [id])
+  threadId String
+  thread   ChatThread @relation(fields: [threadId], references: [id])
 
-  senderId  String
-  sender    User     @relation("UserMessages", fields: [senderId], references: [id])
+  senderId String
+  sender   User   @relation("UserMessages", fields: [senderId], references: [id])
 
-  content   String
-  sentAt    DateTime @default(now())
-  isRead    Boolean  @default(false)
+  content String
+  status  MessageStatus @default(SENT)
+  sentAt  DateTime      @default(now())
 
   @@index([threadId])
   @@index([senderId])
 }
 
 model MentorReport {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
   mentorId  String
   studentId String
 
-  mentor    User     @relation("MentorReportsAsMentor", fields: [mentorId], references: [id])
-  student   User     @relation("MentorReportsAsStudent", fields: [studentId], references: [id])
+  mentor  User @relation("MentorReportsAsMentor", fields: [mentorId], references: [id])
+  student User @relation("MentorReportsAsStudent", fields: [studentId], references: [id])
 
   description String
   status      MentorReportStatus @default(OPEN)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   reviewedByAdminId String?
-  reviewedByAdmin   User?    @relation("MentorReportsReviewedByAdmin", fields: [reviewedByAdminId], references: [id])
+  reviewedByAdmin   User?   @relation("MentorReportsReviewedByAdmin", fields: [reviewedByAdminId], references: [id])
 
   @@index([mentorId])
   @@index([studentId])
@@ -344,11 +342,11 @@ model MentorReport {
 }
 
 model PasswordResetToken {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  token     String   @unique
+  token     String    @unique
   expiresAt DateTime
   usedAt    DateTime?
 
