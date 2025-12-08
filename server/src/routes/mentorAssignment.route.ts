@@ -37,6 +37,13 @@ router.get(
   mentorAssignmentController.getStudentsByMentorId
 );
 
+router.get(
+  "/unassigned-students",
+  authenticate,
+  authorize(["ADMIN", "REGISTRAR"]),
+  mentorAssignmentController.getUnassignedStudents
+);
+
 router.post(
   "/",
   authenticate,
@@ -51,6 +58,13 @@ router.delete(
   authorize(["ADMIN", "REGISTRAR"]),
   validate(assignmentSchema.deleteMentorAssignmentSchema),
   mentorAssignmentController.deleteMentorAssignment
+);
+
+router.post(
+  "/report/:studentId",
+  authenticate,
+  authorize(["MENTOR"]),
+  mentorAssignmentController.reportStudent
 );
 
 export default router;
