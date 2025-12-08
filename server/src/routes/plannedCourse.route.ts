@@ -1,9 +1,7 @@
 import { Router } from "express";
 import * as plannedCourseController from "../controllers/plannedCourse.controller";
 import { authenticate } from "../middlewares/auth.middleware";
-import {
-  requireAdminOrAdvisor,
-} from "../middlewares/authorize.middleware";
+import { requireAdminOrAdvisor } from "../middlewares/authorize.middleware";
 
 const plannedCourseRouter: Router = Router();
 
@@ -19,14 +17,6 @@ plannedCourseRouter.get(
   plannedCourseController.getAllPlannedCourses
 );
 
-// Get planned courses by status - Admin/Advisor only
-plannedCourseRouter.get(
-  "/status/:status",
-  authenticate,
-  requireAdminOrAdvisor,
-  plannedCourseController.getPlannedCoursesByStatus
-);
-
 // Get planned courses by plan semester ID - Students can only get their own
 plannedCourseRouter.get(
   "/semester/:planSemesterId",
@@ -39,6 +29,22 @@ plannedCourseRouter.post(
   "/",
   authenticate,
   plannedCourseController.createPlannedCourse
+);
+
+// Get dependent courses for a planned course - Students can only get their own
+// MUST come before /:id route
+plannedCourseRouter.get(
+  "/:id/dependents",
+  authenticate,
+  plannedCourseController.getPlannedCourseDependents
+);
+
+// Delete planned course with all dependents - Students can only delete their own
+// MUST come before /:id route
+plannedCourseRouter.delete(
+  "/:id/with-dependents",
+  authenticate,
+  plannedCourseController.deletePlannedCourseWithDependents
 );
 
 // Get planned course by ID - Students can only get their own

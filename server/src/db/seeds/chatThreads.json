@@ -1,0 +1,30 @@
+[
+  {
+    "id": "thread_001",
+    "type": "MENTOR_GROUP",
+    "title": "Karim's Mentoring Group - Fall 2024",
+    "mentorId": "user_006",
+    "createdAt": "2024-08-20T09:00:00Z"
+  },
+  {
+    "id": "thread_002",
+    "type": "MENTOR_GROUP",
+    "title": "Laila's Mentoring Group - Fall 2024",
+    "mentorId": "user_007",
+    "createdAt": "2024-08-20T10:00:00Z"
+  },
+  {
+    "id": "thread_003",
+    "type": "DIRECT",
+    "title": null,
+    "mentorId": null,
+    "createdAt": "2024-09-05T14:30:00Z"
+  },
+  {
+    "id": "thread_004",
+    "type": "DIRECT",
+    "title": null,
+    "mentorId": null,
+    "createdAt": "2024-10-12T11:00:00Z"
+  }
+]

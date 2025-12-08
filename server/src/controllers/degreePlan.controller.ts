@@ -83,10 +83,7 @@ export const getDegreePlanById = async (
     }
 
     // Students can only view their own plan
-    if (
-      req.user?.role === "STUDENT" &&
-      req.user.userId !== degreePlan.userId
-    ) {
+    if (req.user?.role === "STUDENT" && req.user.userId !== degreePlan.userId) {
       res.status(403).json({
         success: false,
         message: "You can only view your own degree plan",
@@ -121,16 +118,16 @@ export const getMyDegreePlan = async (
       return;
     }
 
-    const degreePlan = await degreePlanService.getDegreePlanByUserId(
+    let degreePlan = await degreePlanService.getDegreePlanByUserId(
       req.user.userId
     );
 
+    // Auto-create degree plan if it doesn't exist
     if (!degreePlan) {
-      res.status(404).json({
-        success: false,
-        message: "Degree plan not found",
+      logger.info(`Auto-creating degree plan for user ${req.user.userId}`);
+      degreePlan = await degreePlanService.createDegreePlan({
+        userId: req.user.userId,
       });
-      return;
     }
 
     res.status(200).json({

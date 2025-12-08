@@ -16,8 +16,12 @@ export const getAllCourses = async (
     // Parse filter parameters
     const search = req.query.search as string | undefined;
     const discipline = req.query.discipline as string | undefined;
+    const category = req.query.category as string | undefined;
     const labels = req.query.labels as string | undefined;
-    const isElective = req.query.isElective === "true";
+    const isElective =
+      req.query.isElective !== undefined
+        ? req.query.isElective === "true"
+        : undefined;
 
     // Get paginated courses and total count
     const { courses, total } = await courseService.getAllCourses(
@@ -25,6 +29,7 @@ export const getAllCourses = async (
       limit,
       search,
       discipline,
+      category,
       labels ? labels.split(",") : undefined,
       isElective
     );
@@ -200,8 +205,8 @@ export const createCourse = async (
       !courseData.course_code ||
       !courseData.course_title ||
       !courseData.description ||
-      typeof courseData.sch_credits !== 'number' ||
-      typeof courseData.n_credits !== 'number'
+      typeof courseData.sch_credits !== "number" ||
+      typeof courseData.n_credits !== "number"
     ) {
       res.status(400).json({
         success: false,
@@ -337,6 +342,12 @@ export const getCoursePrerequisites = async (
     );
     const prerequisites = await courseService.getCoursePrerequisites(id);
 
+    logger.info(
+      `[${new Date().toISOString()}] Found ${
+        prerequisites.length
+      } prerequisites for course: ${id}`
+    );
+
     res.status(200).json({
       success: true,
       count: prerequisites.length,
@@ -358,7 +369,16 @@ export const getCourseDependents = async (
 ): Promise<void> => {
   try {
     const id: string = req.params.id as string;
+    logger.info(
+      `[${new Date().toISOString()}] Fetching dependents for course: ${id}`
+    );
     const dependents = await courseService.getCourseDependents(id);
+
+    logger.info(
+      `[${new Date().toISOString()}] Found ${
+        dependents.length
+      } dependents for course: ${id}`
+    );
 
     res.status(200).json({
       success: true,

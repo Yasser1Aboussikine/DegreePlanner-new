@@ -1,0 +1,45 @@
+[
+  {
+    "id": "report_001",
+    "mentorId": "user_006",
+    "studentId": "user_009",
+    "description": "Student has been consistently absent from our scheduled mentoring sessions over the past three weeks. I have attempted to reach out via email (sent 3 emails on 11/10, 11/17, and 11/24) and through our group chat, but have received no response. This is concerning as we need to review her Spring 2025 degree plan before the registration deadline.",
+    "status": "UNDER_REVIEW",
+    "createdAt": "2024-11-25T10:00:00Z",
+    "reviewedByAdminId": "user_002"
+  },
+  {
+    "id": "report_002",
+    "mentorId": "user_007",
+    "studentId": "user_013",
+    "description": "Student has shown a significant decline in academic engagement this semester. Multiple course instructors have reported missed assignments and poor attendance. During our last mentoring session on 10/15, the student mentioned struggling with time management and feeling overwhelmed. I recommended connecting with the counseling center, but I'm not sure if the student followed through.",
+    "status": "UNDER_REVIEW",
+    "createdAt": "2024-10-20T14:30:00Z",
+    "reviewedByAdminId": "user_002"
+  },
+  {
+    "id": "report_003",
+    "mentorId": "user_006",
+    "studentId": "user_010",
+    "description": "Student repeatedly misses degree plan submission deadlines. This is the third semester in a row where the plan was submitted after the deadline, causing registration issues. Despite multiple reminders and setting up a calendar system together, the pattern continues. The student is otherwise performing well academically, but this organizational issue is causing unnecessary stress and complications.",
+    "status": "RESOLVED",
+    "createdAt": "2024-09-05T11:00:00Z",
+    "reviewedByAdminId": "user_001"
+  },
+  {
+    "id": "report_004",
+    "mentorId": "user_007",
+    "studentId": "user_012",
+    "description": "Student is struggling academically in MAT2301 and CSC1301 (current grades are D+ and C-). As a FYE student, these foundation courses are critical. I've recommended tutoring services and study groups, but the student seems hesitant to seek additional help. Parents have been notified, and we're working on an academic support plan.",
+    "status": "OPEN",
+    "createdAt": "2024-11-15T09:00:00Z"
+  },
+  {
+    "id": "report_005",
+    "mentorId": "user_006",
+    "studentId": "user_008",
+    "description": "Student has been disruptive during group mentoring sessions, frequently interrupting others and dominating discussions. While enthusiasm is appreciated, other mentees have expressed difficulty participating. I've had a private conversation with the student about this on 10/25, and behavior has improved since then. Documenting for record-keeping purposes.",
+    "status": "OPEN",
+    "createdAt": "2024-10-28T16:00:00Z"
+  }
+]

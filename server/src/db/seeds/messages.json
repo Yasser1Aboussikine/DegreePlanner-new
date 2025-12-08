@@ -1,0 +1,242 @@
+[
+  {
+    "id": "message_001",
+    "threadId": "thread_001",
+    "senderId": "user_006",
+    "content": "Welcome to our mentoring group! I'm excited to be your mentor this semester. Feel free to ask any questions about courses, degree planning, or university life in general.",
+    "sentAt": "2024-08-20T09:05:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_002",
+    "threadId": "thread_001",
+    "senderId": "user_008",
+    "content": "Thank you, Karim! I have a question about CSC3309. Is it recommended to take it in my junior year or should I wait until senior year?",
+    "sentAt": "2024-08-20T14:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_003",
+    "threadId": "thread_001",
+    "senderId": "user_006",
+    "content": "Great question! CSC3309 is typically taken in junior year. It builds on CSC2301 and CSC2302, so make sure you've completed those first. The workload is manageable if you balance it with other courses.",
+    "sentAt": "2024-08-20T15:45:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_004",
+    "threadId": "thread_001",
+    "senderId": "user_009",
+    "content": "Hi everyone! Quick question - has anyone taken MAT2302 with Dr. Hassan? How's the difficulty level?",
+    "sentAt": "2024-08-21T10:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_005",
+    "threadId": "thread_001",
+    "senderId": "user_010",
+    "content": "I took it last semester with Dr. Hassan. The course is challenging but very well-structured. Attend all lectures and do the practice problems - that's key to doing well.",
+    "sentAt": "2024-08-21T11:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_006",
+    "threadId": "thread_001",
+    "senderId": "user_006",
+    "content": "Don't forget that registration for Spring 2025 opens next week. Make sure you've met with me to review your degree plan before registering.",
+    "sentAt": "2024-11-25T09:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_007",
+    "threadId": "thread_001",
+    "senderId": "user_008",
+    "content": "I just submitted my Spring 2025 plan for review. Looking forward to your feedback!",
+    "sentAt": "2024-12-01T11:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_008",
+    "threadId": "thread_001",
+    "senderId": "user_006",
+    "content": "Got it, Omar! I'll review it today and get back to you by tomorrow. Thanks for submitting it early.",
+    "sentAt": "2024-12-01T14:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_009",
+    "threadId": "thread_001",
+    "senderId": "user_009",
+    "content": "Are there any internship opportunities you'd recommend for CS students?",
+    "sentAt": "2024-12-03T10:00:00Z",
+    "isRead": false
+  },
+  {
+    "id": "message_010",
+    "threadId": "thread_002",
+    "senderId": "user_007",
+    "content": "Hello everyone! Welcome to our mentoring group. I'm here to support you throughout your academic journey. Let's make this a great semester!",
+    "sentAt": "2024-08-20T10:05:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_011",
+    "threadId": "thread_002",
+    "senderId": "user_011",
+    "content": "Hi Laila! Thanks for setting this up. I'm looking forward to working with everyone.",
+    "sentAt": "2024-08-20T16:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_012",
+    "threadId": "thread_002",
+    "senderId": "user_012",
+    "content": "Quick question - I'm a FYE student. When should I start thinking about declaring my major officially?",
+    "sentAt": "2024-09-15T13:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_013",
+    "threadId": "thread_002",
+    "senderId": "user_007",
+    "content": "Good question, Amine! FYE students typically declare their major at the end of their first year. We'll have a meeting in February to discuss the process and requirements. Focus on your foundation courses for now.",
+    "sentAt": "2024-09-15T14:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_014",
+    "threadId": "thread_002",
+    "senderId": "user_013",
+    "content": "I'm struggling with my current course load. Can we schedule a one-on-one meeting to discuss adjustments?",
+    "sentAt": "2024-10-10T09:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_015",
+    "threadId": "thread_002",
+    "senderId": "user_007",
+    "content": "Absolutely, Zineb. Let's meet this Thursday at 2pm in my office. Bring your current schedule and we'll work through it together.",
+    "sentAt": "2024-10-10T10:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_016",
+    "threadId": "thread_002",
+    "senderId": "user_011",
+    "content": "Has anyone started thinking about graduate school? I'm considering applying for a Master's program after graduation.",
+    "sentAt": "2024-11-20T15:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_017",
+    "threadId": "thread_002",
+    "senderId": "user_007",
+    "content": "That's great, Salma! We should definitely discuss this. Graduate school requires early preparation - GRE, research experience, letters of recommendation. Let's set up a meeting to plan your path.",
+    "sentAt": "2024-11-20T16:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_018",
+    "threadId": "thread_002",
+    "senderId": "user_012",
+    "content": "Just wanted to share - I got accepted into the AUI Programming Club! Thanks for encouraging me to join, Laila.",
+    "sentAt": "2024-12-02T14:00:00Z",
+    "isRead": false
+  },
+  {
+    "id": "message_019",
+    "threadId": "thread_003",
+    "senderId": "user_008",
+    "content": "Hi Karim, I need some clarification on the prerequisites for CSC4401. The catalog says CSC3301 OR CSC3302, but I've only completed CSC3301. Is that sufficient?",
+    "sentAt": "2024-09-05T14:35:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_020",
+    "threadId": "thread_003",
+    "senderId": "user_006",
+    "content": "Yes, that's correct! The OR means you only need one of them. CSC3301 is sufficient for CSC4401. You're good to register for it next semester.",
+    "sentAt": "2024-09-05T15:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_021",
+    "threadId": "thread_003",
+    "senderId": "user_008",
+    "content": "Perfect! One more thing - would you recommend taking CSC4401 and CSC4402 in the same semester, or should I spread them out?",
+    "sentAt": "2024-09-05T15:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_022",
+    "threadId": "thread_003",
+    "senderId": "user_006",
+    "content": "Both are project-heavy courses. I'd recommend spreading them out unless you're comfortable with a heavy workload. Maybe take CSC4401 in Fall and CSC4402 in Spring?",
+    "sentAt": "2024-09-05T16:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_023",
+    "threadId": "thread_003",
+    "senderId": "user_008",
+    "content": "That makes sense. I'll plan it that way. Thanks for the advice!",
+    "sentAt": "2024-09-06T09:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_024",
+    "threadId": "thread_003",
+    "senderId": "user_006",
+    "content": "Anytime! Feel free to reach out if you have more questions.",
+    "sentAt": "2024-09-06T09:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_025",
+    "threadId": "thread_004",
+    "senderId": "user_011",
+    "content": "Hello Dr. Alami, I'd like to request a review of my degree plan for Spring 2025. I've made some changes based on my career goals.",
+    "sentAt": "2024-10-12T11:05:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_026",
+    "threadId": "thread_004",
+    "senderId": "user_004",
+    "content": "Of course, Salma. Could you share what specific changes you've made and what career direction you're pursuing? This will help me provide better guidance.",
+    "sentAt": "2024-10-12T14:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_027",
+    "threadId": "thread_004",
+    "senderId": "user_011",
+    "content": "I'm interested in data science and machine learning. I've added CSC4305 (Machine Learning) and CSC4306 (Data Mining) to my plan, and adjusted my minor to include more statistics courses.",
+    "sentAt": "2024-10-12T15:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_028",
+    "threadId": "thread_004",
+    "senderId": "user_004",
+    "content": "Excellent choices! Those courses align well with data science. Have you considered MAT3305 (Probability and Statistics)? It's highly recommended for ML work.",
+    "sentAt": "2024-10-13T09:00:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_029",
+    "threadId": "thread_004",
+    "senderId": "user_011",
+    "content": "I haven't, but I'll definitely add it. When would be the best time to take it?",
+    "sentAt": "2024-10-13T10:30:00Z",
+    "isRead": true
+  },
+  {
+    "id": "message_030",
+    "threadId": "thread_004",
+    "senderId": "user_004",
+    "content": "Take it before or alongside CSC4305. The statistical foundations will make machine learning concepts much clearer. Submit your updated plan and I'll approve it.",
+    "sentAt": "2024-10-13T15:00:00Z",
+    "isRead": true
+  }
+]

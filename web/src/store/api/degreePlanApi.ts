@@ -1,72 +1,93 @@
-import { apiSlice } from './apiSlice';
-import type { DegreePlan, CreateDegreePlanInput, UpdateDegreePlanInput } from '../types';
+import { apiSlice } from "./apiSlice";
+import type {
+  DegreePlan,
+  CreateDegreePlanInput,
+  UpdateDegreePlanInput,
+} from "../types";
 
 export const degreePlanApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /api/degree-plan - Get all degree plans (Admin/Advisor only)
+    // GET /api/degree-plans - Get all degree plans (Admin/Advisor only)
     getAllDegreePlans: builder.query<DegreePlan[], void>({
-      query: () => '/degree-plan',
+      query: () => "/degree-plans",
+      transformResponse: (response: { success: boolean; data: DegreePlan[] }) =>
+        response.data,
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: 'DegreePlan' as const, id })),
-              { type: 'DegreePlan', id: 'LIST' },
+              ...result.map(({ id }) => ({ type: "DegreePlan" as const, id })),
+              { type: "DegreePlan", id: "LIST" },
             ]
-          : [{ type: 'DegreePlan', id: 'LIST' }],
+          : [{ type: "DegreePlan", id: "LIST" }],
     }),
 
-    // GET /api/degree-plan/me - Get my degree plan
+    // GET /api/degree-plans/me - Get my degree plan
     getMyDegreePlan: builder.query<DegreePlan, void>({
-      query: () => '/degree-plan/me',
+      query: () => "/degree-plans/me",
+      transformResponse: (response: { success: boolean; data: DegreePlan }) =>
+        response.data,
       providesTags: (result) =>
-        result ? [{ type: 'DegreePlan', id: result.id }] : [],
+        result
+          ? [
+              { type: "DegreePlan", id: result.id },
+              { type: "Semester", id: "LIST" },
+              { type: "PlannedCourse", id: "LIST" },
+            ]
+          : [],
     }),
 
-    // GET /api/degree-plan/user/:userId - Get degree plan by user ID
+    // GET /api/degree-plans/user/:userId - Get degree plan by user ID
     getDegreePlanByUserId: builder.query<DegreePlan, string>({
-      query: (userId) => `/degree-plan/user/${userId}`,
+      query: (userId) => `/degree-plans/user/${userId}`,
+      transformResponse: (response: { success: boolean; data: DegreePlan }) =>
+        response.data,
       providesTags: (result) =>
-        result ? [{ type: 'DegreePlan', id: result.id }] : [],
+        result ? [{ type: "DegreePlan", id: result.id }] : [],
     }),
 
-    // GET /api/degree-plan/:id - Get degree plan by ID
+    // GET /api/degree-plans/:id - Get degree plan by ID
     getDegreePlanById: builder.query<DegreePlan, string>({
-      query: (id) => `/degree-plan/${id}`,
-      providesTags: (_, __, id) => [{ type: 'DegreePlan', id }],
+      query: (id) => `/degree-plans/${id}`,
+      transformResponse: (response: { success: boolean; data: DegreePlan }) =>
+        response.data,
+      providesTags: (_, __, id) => [{ type: "DegreePlan", id }],
     }),
 
-    // POST /api/degree-plan - Create degree plan
+    // POST /api/degree-plans - Create degree plan
     createDegreePlan: builder.mutation<DegreePlan, CreateDegreePlanInput>({
       query: (data) => ({
-        url: '/degree-plan',
-        method: 'POST',
+        url: "/degree-plans",
+        method: "POST",
         body: data,
       }),
-      invalidatesTags: [{ type: 'DegreePlan', id: 'LIST' }],
+      invalidatesTags: [{ type: "DegreePlan", id: "LIST" }],
     }),
 
-    // PUT /api/degree-plan/:id - Update degree plan
-    updateDegreePlan: builder.mutation<DegreePlan, { id: string; data: UpdateDegreePlanInput }>({
+    // PUT /api/degree-plans/:id - Update degree plan
+    updateDegreePlan: builder.mutation<
+      DegreePlan,
+      { id: string; data: UpdateDegreePlanInput }
+    >({
       query: ({ id, data }) => ({
-        url: `/degree-plan/${id}`,
-        method: 'PUT',
+        url: `/degree-plans/${id}`,
+        method: "PUT",
         body: data,
       }),
       invalidatesTags: (_, __, { id }) => [
-        { type: 'DegreePlan', id },
-        { type: 'DegreePlan', id: 'LIST' },
+        { type: "DegreePlan", id },
+        { type: "DegreePlan", id: "LIST" },
       ],
     }),
 
-    // DELETE /api/degree-plan/:id - Delete degree plan
+    // DELETE /api/degree-plans/:id - Delete degree plan
     deleteDegreePlan: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/degree-plan/${id}`,
-        method: 'DELETE',
+        url: `/degree-plans/${id}`,
+        method: "DELETE",
       }),
       invalidatesTags: (_, __, id) => [
-        { type: 'DegreePlan', id },
-        { type: 'DegreePlan', id: 'LIST' },
+        { type: "DegreePlan", id },
+        { type: "DegreePlan", id: "LIST" },
       ],
     }),
   }),

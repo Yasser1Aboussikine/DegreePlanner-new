@@ -1,0 +1,605 @@
+[
+  {
+    "id": "course_001",
+    "planSemesterId": "semester_001",
+    "courseCode": "CSC1000",
+    "status": "COMPLETED",
+    "courseTitle": "Introduction to Computer Science",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_002",
+    "planSemesterId": "semester_001",
+    "courseCode": "MTH1200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_003",
+    "planSemesterId": "semester_001",
+    "courseCode": "ENG1010",
+    "status": "COMPLETED",
+    "courseTitle": "Academic Writing",
+    "credits": 3,
+    "category": "GENERAL_EDUCATION"
+  },
+  {
+    "id": "course_004",
+    "planSemesterId": "semester_001",
+    "courseCode": "PHY1100",
+    "status": "COMPLETED",
+    "courseTitle": "Physics I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_005",
+    "planSemesterId": "semester_002",
+    "courseCode": "CSC2100",
+    "status": "COMPLETED",
+    "courseTitle": "Data Structures",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_006",
+    "planSemesterId": "semester_002",
+    "courseCode": "MTH2200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus II",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_007",
+    "planSemesterId": "semester_002",
+    "courseCode": "CSC2050",
+    "status": "COMPLETED",
+    "courseTitle": "Discrete Mathematics",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_008",
+    "planSemesterId": "semester_002",
+    "courseCode": "HUM2010",
+    "status": "COMPLETED",
+    "courseTitle": "World Civilizations",
+    "credits": 3,
+    "category": "GENERAL_EDUCATION"
+  },
+  {
+    "id": "course_009",
+    "planSemesterId": "semester_003",
+    "courseCode": "CSC3200",
+    "status": "PLANNED",
+    "courseTitle": "Algorithms",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_010",
+    "planSemesterId": "semester_003",
+    "courseCode": "CSC3300",
+    "status": "PLANNED",
+    "courseTitle": "Operating Systems",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_011",
+    "planSemesterId": "semester_003",
+    "courseCode": "CSC3400",
+    "status": "PLANNED",
+    "courseTitle": "Database Systems",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_012",
+    "planSemesterId": "semester_003",
+    "courseCode": "MTH3100",
+    "status": "PLANNED",
+    "courseTitle": "Linear Algebra",
+    "credits": 3,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_013",
+    "planSemesterId": "semester_004",
+    "courseCode": "CSC4100",
+    "status": "PLANNED",
+    "courseTitle": "Software Engineering",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_014",
+    "planSemesterId": "semester_004",
+    "courseCode": "CSC4200",
+    "status": "PLANNED",
+    "courseTitle": "Computer Networks",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_015",
+    "planSemesterId": "semester_004",
+    "courseCode": "CSC4500",
+    "status": "PLANNED",
+    "courseTitle": "Machine Learning",
+    "credits": 3,
+    "category": "SPECIALIZATION"
+  },
+  {
+    "id": "course_016",
+    "planSemesterId": "semester_004",
+    "courseCode": "FRE3010",
+    "status": "PLANNED",
+    "courseTitle": "Advanced French",
+    "credits": 3,
+    "category": "MINOR"
+  },
+  {
+    "id": "course_017",
+    "planSemesterId": "semester_005",
+    "courseCode": "CSC1000",
+    "status": "COMPLETED",
+    "courseTitle": "Introduction to Computer Science",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_018",
+    "planSemesterId": "semester_005",
+    "courseCode": "MTH1200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_019",
+    "planSemesterId": "semester_005",
+    "courseCode": "ENG1010",
+    "status": "COMPLETED",
+    "courseTitle": "Academic Writing",
+    "credits": 3,
+    "category": "GENERAL_EDUCATION"
+  },
+  {
+    "id": "course_020",
+    "planSemesterId": "semester_006",
+    "courseCode": "CSC2100",
+    "status": "COMPLETED",
+    "courseTitle": "Data Structures",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_021",
+    "planSemesterId": "semester_006",
+    "courseCode": "CSC2050",
+    "status": "COMPLETED",
+    "courseTitle": "Discrete Mathematics",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_022",
+    "planSemesterId": "semester_006",
+    "courseCode": "MTH2200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus II",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_023",
+    "planSemesterId": "semester_007",
+    "courseCode": "CSC3200",
+    "status": "COMPLETED",
+    "courseTitle": "Algorithms",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_024",
+    "planSemesterId": "semester_007",
+    "courseCode": "CSC3300",
+    "status": "COMPLETED",
+    "courseTitle": "Operating Systems",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_025",
+    "planSemesterId": "semester_007",
+    "courseCode": "MTH3100",
+    "status": "COMPLETED",
+    "courseTitle": "Linear Algebra",
+    "credits": 3,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_026",
+    "planSemesterId": "semester_008",
+    "courseCode": "CSC4100",
+    "status": "COMPLETED",
+    "courseTitle": "Software Engineering",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_027",
+    "planSemesterId": "semester_008",
+    "courseCode": "CSC4200",
+    "status": "COMPLETED",
+    "courseTitle": "Computer Networks",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_028",
+    "planSemesterId": "semester_008",
+    "courseCode": "CSC3400",
+    "status": "COMPLETED",
+    "courseTitle": "Database Systems",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_029",
+    "planSemesterId": "semester_009",
+    "courseCode": "CSC4500",
+    "status": "PLANNED",
+    "courseTitle": "Machine Learning",
+    "credits": 3,
+    "category": "SPECIALIZATION"
+  },
+  {
+    "id": "course_030",
+    "planSemesterId": "semester_009",
+    "courseCode": "CSC4600",
+    "status": "PLANNED",
+    "courseTitle": "Artificial Intelligence",
+    "credits": 3,
+    "category": "SPECIALIZATION"
+  },
+  {
+    "id": "course_031",
+    "planSemesterId": "semester_009",
+    "courseCode": "CSC4900",
+    "status": "PLANNED",
+    "courseTitle": "Senior Project",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_032",
+    "planSemesterId": "semester_010",
+    "courseCode": "CSC1000",
+    "status": "COMPLETED",
+    "courseTitle": "Introduction to Computer Science",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_033",
+    "planSemesterId": "semester_010",
+    "courseCode": "MTH1200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_034",
+    "planSemesterId": "semester_010",
+    "courseCode": "ENG1010",
+    "status": "COMPLETED",
+    "courseTitle": "Academic Writing",
+    "credits": 3,
+    "category": "GENERAL_EDUCATION"
+  },
+  {
+    "id": "course_035",
+    "planSemesterId": "semester_010",
+    "courseCode": "PHY1100",
+    "status": "COMPLETED",
+    "courseTitle": "Physics I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_036",
+    "planSemesterId": "semester_011",
+    "courseCode": "CSC2100",
+    "status": "COMPLETED",
+    "courseTitle": "Data Structures",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_037",
+    "planSemesterId": "semester_011",
+    "courseCode": "CSC2050",
+    "status": "COMPLETED",
+    "courseTitle": "Discrete Mathematics",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_038",
+    "planSemesterId": "semester_011",
+    "courseCode": "MTH2200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus II",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_039",
+    "planSemesterId": "semester_012",
+    "courseCode": "CSC3200",
+    "status": "PLANNED",
+    "courseTitle": "Algorithms",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_040",
+    "planSemesterId": "semester_012",
+    "courseCode": "CSC3300",
+    "status": "PLANNED",
+    "courseTitle": "Operating Systems",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_041",
+    "planSemesterId": "semester_012",
+    "courseCode": "MTH3100",
+    "status": "PLANNED",
+    "courseTitle": "Linear Algebra",
+    "credits": 3,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_042",
+    "planSemesterId": "semester_013",
+    "courseCode": "CSC1000",
+    "status": "COMPLETED",
+    "courseTitle": "Introduction to Computer Science",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_043",
+    "planSemesterId": "semester_013",
+    "courseCode": "MTH1200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_044",
+    "planSemesterId": "semester_013",
+    "courseCode": "ENG1010",
+    "status": "COMPLETED",
+    "courseTitle": "Academic Writing",
+    "credits": 3,
+    "category": "GENERAL_EDUCATION"
+  },
+  {
+    "id": "course_045",
+    "planSemesterId": "semester_014",
+    "courseCode": "CSC2100",
+    "status": "COMPLETED",
+    "courseTitle": "Data Structures",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_046",
+    "planSemesterId": "semester_014",
+    "courseCode": "CSC2050",
+    "status": "COMPLETED",
+    "courseTitle": "Discrete Mathematics",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_047",
+    "planSemesterId": "semester_014",
+    "courseCode": "MTH2200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus II",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_048",
+    "planSemesterId": "semester_015",
+    "courseCode": "CSC3200",
+    "status": "COMPLETED",
+    "courseTitle": "Algorithms",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_049",
+    "planSemesterId": "semester_015",
+    "courseCode": "CSC3300",
+    "status": "COMPLETED",
+    "courseTitle": "Operating Systems",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_050",
+    "planSemesterId": "semester_015",
+    "courseCode": "CSC3400",
+    "status": "COMPLETED",
+    "courseTitle": "Database Systems",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_051",
+    "planSemesterId": "semester_016",
+    "courseCode": "CSC4100",
+    "status": "COMPLETED",
+    "courseTitle": "Software Engineering",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_052",
+    "planSemesterId": "semester_016",
+    "courseCode": "CSC4200",
+    "status": "COMPLETED",
+    "courseTitle": "Computer Networks",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_053",
+    "planSemesterId": "semester_016",
+    "courseCode": "MTH3100",
+    "status": "COMPLETED",
+    "courseTitle": "Linear Algebra",
+    "credits": 3,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_054",
+    "planSemesterId": "semester_016",
+    "courseCode": "BUS3010",
+    "status": "DROPPED",
+    "courseTitle": "Business Management",
+    "credits": 3,
+    "category": "MINOR"
+  },
+  {
+    "id": "course_055",
+    "planSemesterId": "semester_017",
+    "courseCode": "CSC1000",
+    "status": "COMPLETED",
+    "courseTitle": "Introduction to Computer Science",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_056",
+    "planSemesterId": "semester_017",
+    "courseCode": "MTH1200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_057",
+    "planSemesterId": "semester_017",
+    "courseCode": "ENG1010",
+    "status": "COMPLETED",
+    "courseTitle": "Academic Writing",
+    "credits": 3,
+    "category": "GENERAL_EDUCATION"
+  },
+  {
+    "id": "course_058",
+    "planSemesterId": "semester_018",
+    "courseCode": "CSC2100",
+    "status": "PLANNED",
+    "courseTitle": "Data Structures",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_059",
+    "planSemesterId": "semester_018",
+    "courseCode": "CSC2050",
+    "status": "PLANNED",
+    "courseTitle": "Discrete Mathematics",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_060",
+    "planSemesterId": "semester_018",
+    "courseCode": "MTH2200",
+    "status": "PLANNED",
+    "courseTitle": "Calculus II",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_061",
+    "planSemesterId": "semester_019",
+    "courseCode": "CSC1000",
+    "status": "COMPLETED",
+    "courseTitle": "Introduction to Computer Science",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_062",
+    "planSemesterId": "semester_019",
+    "courseCode": "MTH1200",
+    "status": "COMPLETED",
+    "courseTitle": "Calculus I",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_063",
+    "planSemesterId": "semester_019",
+    "courseCode": "ENG1010",
+    "status": "COMPLETED",
+    "courseTitle": "Academic Writing",
+    "credits": 3,
+    "category": "GENERAL_EDUCATION"
+  },
+  {
+    "id": "course_064",
+    "planSemesterId": "semester_020",
+    "courseCode": "CSC2100",
+    "status": "PLANNED",
+    "courseTitle": "Data Structures",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_065",
+    "planSemesterId": "semester_020",
+    "courseCode": "CSC2050",
+    "status": "PLANNED",
+    "courseTitle": "Discrete Mathematics",
+    "credits": 3,
+    "category": "COMPUTER_SCIENCE"
+  },
+  {
+    "id": "course_066",
+    "planSemesterId": "semester_020",
+    "courseCode": "MTH2200",
+    "status": "PLANNED",
+    "courseTitle": "Calculus II",
+    "credits": 4,
+    "category": "ENGINEERING_SCIENCE_MATHS"
+  },
+  {
+    "id": "course_067",
+    "planSemesterId": "semester_020",
+    "courseCode": "ART2010",
+    "status": "PLANNED",
+    "courseTitle": "Digital Art",
+    "credits": 3,
+    "category": "FREE_ELECTIVES"
+  }
+]

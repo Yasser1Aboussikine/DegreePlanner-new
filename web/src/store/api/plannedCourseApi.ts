@@ -1,87 +1,133 @@
-import { apiSlice } from './apiSlice';
+import { apiSlice } from "./apiSlice";
 import type {
   PlannedCourse,
-  PlannedCourseStatus,
   CreatePlannedCourseInput,
   UpdatePlannedCourseInput,
-} from '../types';
+} from "../types";
 
 export const plannedCourseApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /api/planned-course - Get all planned courses (Admin/Advisor only)
+    // GET /api/planned-courses - Get all planned courses (Admin/Advisor only)
     getAllPlannedCourses: builder.query<PlannedCourse[], void>({
-      query: () => '/planned-course',
+      query: () => "/planned-courses",
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: 'PlannedCourse' as const, id })),
-              { type: 'PlannedCourse', id: 'LIST' },
+              ...result.map(({ id }) => ({
+                type: "PlannedCourse" as const,
+                id,
+              })),
+              { type: "PlannedCourse", id: "LIST" },
             ]
-          : [{ type: 'PlannedCourse', id: 'LIST' }],
+          : [{ type: "PlannedCourse", id: "LIST" }],
     }),
 
-    // GET /api/planned-course/status/:status - Get planned courses by status (Admin/Advisor only)
-    getPlannedCoursesByStatus: builder.query<PlannedCourse[], PlannedCourseStatus>({
-      query: (status) => `/planned-course/status/${status}`,
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: 'PlannedCourse' as const, id })),
-              { type: 'PlannedCourse', id: 'LIST' },
-            ]
-          : [{ type: 'PlannedCourse', id: 'LIST' }],
-    }),
-
-    // GET /api/planned-course/semester/:planSemesterId - Get planned courses by semester
+    // GET /api/planned-courses/semester/:planSemesterId - Get planned courses by semester
     getPlannedCoursesByPlanSemesterId: builder.query<PlannedCourse[], string>({
-      query: (planSemesterId) => `/planned-course/semester/${planSemesterId}`,
+      query: (planSemesterId) => `/planned-courses/semester/${planSemesterId}`,
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: 'PlannedCourse' as const, id })),
-              { type: 'PlannedCourse', id: 'LIST' },
+              ...result.map(({ id }) => ({
+                type: "PlannedCourse" as const,
+                id,
+              })),
+              { type: "PlannedCourse", id: "LIST" },
             ]
-          : [{ type: 'PlannedCourse', id: 'LIST' }],
+          : [{ type: "PlannedCourse", id: "LIST" }],
     }),
 
-    // GET /api/planned-course/:id - Get planned course by ID
+    // GET /api/planned-courses/:id - Get planned course by ID
     getPlannedCourseById: builder.query<PlannedCourse, string>({
-      query: (id) => `/planned-course/${id}`,
-      providesTags: (_, __, id) => [{ type: 'PlannedCourse', id }],
+      query: (id) => `/planned-courses/${id}`,
+      providesTags: (_, __, id) => [{ type: "PlannedCourse", id }],
     }),
 
-    // POST /api/planned-course - Create planned course
-    createPlannedCourse: builder.mutation<PlannedCourse, CreatePlannedCourseInput>({
+    // POST /api/planned-courses - Create planned course
+    createPlannedCourse: builder.mutation<
+      PlannedCourse,
+      CreatePlannedCourseInput
+    >({
       query: (data) => ({
-        url: '/planned-course',
-        method: 'POST',
+        url: "/planned-courses",
+        method: "POST",
         body: data,
       }),
-      invalidatesTags: [{ type: 'PlannedCourse', id: 'LIST' }],
-    }),
-
-    // PUT /api/planned-course/:id - Update planned course
-    updatePlannedCourse: builder.mutation<PlannedCourse, { id: string; data: UpdatePlannedCourseInput }>({
-      query: ({ id, data }) => ({
-        url: `/planned-course/${id}`,
-        method: 'PUT',
-        body: data,
-      }),
-      invalidatesTags: (_, __, { id }) => [
-        { type: 'PlannedCourse', id },
-        { type: 'PlannedCourse', id: 'LIST' },
+      transformResponse: (
+        response: {
+          success?: boolean;
+          data?: PlannedCourse;
+          message?: string;
+        } & PlannedCourse
+      ) => {
+        return response.data || response;
+      },
+      invalidatesTags: [
+        { type: "PlannedCourse", id: "LIST" },
+        { type: "DegreePlan", id: "LIST" },
+        { type: "Course", id: "ELIGIBLE" },
       ],
     }),
 
-    // DELETE /api/planned-course/:id - Delete planned course
+    // PUT /api/planned-courses/:id - Update planned course
+    updatePlannedCourse: builder.mutation<
+      PlannedCourse,
+      { id: string; data: UpdatePlannedCourseInput }
+    >({
+      query: ({ id, data }) => ({
+        url: `/planned-courses/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (_, __, { id }) => [
+        { type: "PlannedCourse", id },
+        { type: "PlannedCourse", id: "LIST" },
+      ],
+    }),
+
+    // DELETE /api/planned-courses/:id - Delete planned course
     deletePlannedCourse: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/planned-course/${id}`,
-        method: 'DELETE',
+        url: `/planned-courses/${id}`,
+        method: "DELETE",
       }),
       invalidatesTags: (_, __, id) => [
-        { type: 'PlannedCourse', id },
-        { type: 'PlannedCourse', id: 'LIST' },
+        { type: "PlannedCourse", id },
+        { type: "PlannedCourse", id: "LIST" },
+      ],
+    }),
+
+    // DELETE /api/planned-courses/:id/with-dependents - Delete planned course with all dependents
+    deletePlannedCourseWithDependents: builder.mutation<
+      { deletedCount: number; deletedCourses: string[] },
+      string
+    >({
+      query: (id) => ({
+        url: `/planned-courses/${id}/with-dependents`,
+        method: "DELETE",
+      }),
+      transformResponse: (response: {
+        success: boolean;
+        message: string;
+        data: { deletedCount: number; deletedCourses: string[] };
+      }) => response.data,
+      invalidatesTags: [
+        { type: "PlannedCourse", id: "LIST" },
+        { type: "DegreePlan", id: "LIST" },
+        { type: "Course", id: "ELIGIBLE" },
+      ],
+    }),
+
+    // GET /api/planned-courses/:id/dependents - Get dependents for a planned course
+    getPlannedCourseDependents: builder.query<PlannedCourse[], string>({
+      query: (id) => `/planned-courses/${id}/dependents`,
+      transformResponse: (response: {
+        success: boolean;
+        count: number;
+        data: PlannedCourse[];
+      }) => response.data,
+      providesTags: (_, __, id) => [
+        { type: "PlannedCourse", id: `DEPENDENTS-${id}` },
       ],
     }),
   }),
@@ -90,8 +136,6 @@ export const plannedCourseApi = apiSlice.injectEndpoints({
 export const {
   useGetAllPlannedCoursesQuery,
   useLazyGetAllPlannedCoursesQuery,
-  useGetPlannedCoursesByStatusQuery,
-  useLazyGetPlannedCoursesByStatusQuery,
   useGetPlannedCoursesByPlanSemesterIdQuery,
   useLazyGetPlannedCoursesByPlanSemesterIdQuery,
   useGetPlannedCourseByIdQuery,
@@ -99,4 +143,7 @@ export const {
   useCreatePlannedCourseMutation,
   useUpdatePlannedCourseMutation,
   useDeletePlannedCourseMutation,
+  useDeletePlannedCourseWithDependentsMutation,
+  useGetPlannedCourseDependentsQuery,
+  useLazyGetPlannedCourseDependentsQuery,
 } = plannedCourseApi;

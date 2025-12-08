@@ -1,0 +1,32 @@
+[
+  {
+    "id": "req_001",
+    "programId": "program_001",
+    "category": "GENERAL_EDUCATION",
+    "credits": 30
+  },
+  {
+    "id": "req_002",
+    "programId": "program_001",
+    "category": "ENGINEERING_SCIENCE_MATHS",
+    "credits": 30
+  },
+  {
+    "id": "req_003",
+    "programId": "program_001",
+    "category": "COMPUTER_SCIENCE",
+    "credits": 55
+  },
+  {
+    "id": "req_004",
+    "programId": "program_001",
+    "category": "MINOR",
+    "credits": 15
+  },
+  {
+    "id": "req_005",
+    "programId": "program_001",
+    "category": "FREE_ELECTIVES",
+    "credits": 6
+  }
+]

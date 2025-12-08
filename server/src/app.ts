@@ -8,7 +8,16 @@ import logger from "./config/logger";
 
 const app: Express = express();
 
-app.use(cors());
+// CORS configuration
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
@@ -24,18 +33,20 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api", apiRouter);
-
-app.use((req, res) => {
-  logger.error(`404 Not Found: ${req.method} ${req.url}`);
-  res.status(404).json({ error: "Route not found", path: req.url });
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
+// app.use((req, res) => {
+//   logger.error(`404 Not Found: ${req.method} ${req.url}`);
+//   res.status(404).json({ error: "Route not found", path: req.url });
+// });
 
 neo4jConnection
   .verifyConnectivity()
   .then(() => logger.info("Neo4j connected"))
   .catch((err) => logger.error("Neo4j connection failed:", err));
 
-connectPrisma().catch((err : any) => {
+connectPrisma().catch((err: any) => {
   logger.error("Failed to connect Prisma:", err);
 });
 

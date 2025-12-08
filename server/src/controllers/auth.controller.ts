@@ -10,7 +10,7 @@ export const signup = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, password, name, role=Role.STUDENT } = req.body;
+    const { email, password, name, role = Role.STUDENT } = req.body;
 
     const result = await authService.signup({ email, password, name, role });
 
@@ -76,5 +76,108 @@ export const me = async (req: AuthRequest, res: Response): Promise<void> => {
     const message =
       error instanceof Error ? error.message : "Failed to get user";
     sendError(res, 404, message);
+  }
+};
+
+export const getUsersByRole = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { role } = req.params;
+
+    const users = await authService.getUsersByRole(role);
+
+    sendSuccess(
+      res,
+      200,
+      `Users with role ${role} retrieved successfully`,
+      users
+    );
+  } catch (error) {
+    logger.error("Get users by role error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to get users";
+    sendError(res, 500, message);
+  }
+};
+
+export const getUserById = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+
+    const user = await authService.getUserById(userId);
+
+    sendSuccess(res, 200, "User retrieved successfully", user);
+  } catch (error) {
+    logger.error("Get user by ID error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to get user";
+    sendError(res, 404, message);
+  }
+};
+
+export const getAllUsers = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { role, search, page, limit } = req.query;
+
+    const result = await authService.getAllUsers({
+      role: role as string | undefined,
+      search: search as string | undefined,
+      page: page ? parseInt(page as string, 10) : undefined,
+      limit: limit ? parseInt(limit as string, 10) : undefined,
+    });
+
+    sendSuccess(res, 200, "Users retrieved successfully", result);
+  } catch (error) {
+    logger.error("Get all users error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to get users";
+    sendError(res, 500, message);
+  }
+};
+
+export const updateUserRole = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { role } = req.body;
+    const currentUserId = req.user?.userId;
+
+    const user = await authService.updateUserRole(userId, role, currentUserId);
+
+    sendSuccess(res, 200, "User role updated successfully", user);
+  } catch (error) {
+    logger.error("Update user role error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to update user role";
+    sendError(res, 400, message);
+  }
+};
+
+export const toggleUserStatus = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const currentUserId = req.user?.userId;
+
+    const user = await authService.toggleUserStatus(userId, currentUserId);
+
+    sendSuccess(res, 200, "User status updated successfully", user);
+  } catch (error) {
+    logger.error("Toggle user status error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to update user status";
+    sendError(res, 400, message);
   }
 };

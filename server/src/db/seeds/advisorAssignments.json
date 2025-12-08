@@ -1,0 +1,32 @@
+[
+  {
+    "id": "advisor_assignment_001",
+    "advisorId": "user_004",
+    "studentId": "user_008"
+  },
+  {
+    "id": "advisor_assignment_002",
+    "advisorId": "user_004",
+    "studentId": "user_011"
+  },
+  {
+    "id": "advisor_assignment_003",
+    "advisorId": "user_004",
+    "studentId": "user_012"
+  },
+  {
+    "id": "advisor_assignment_004",
+    "advisorId": "user_005",
+    "studentId": "user_009"
+  },
+  {
+    "id": "advisor_assignment_005",
+    "advisorId": "user_005",
+    "studentId": "user_010"
+  },
+  {
+    "id": "advisor_assignment_006",
+    "advisorId": "user_005",
+    "studentId": "user_013"
+  }
+]
