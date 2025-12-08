@@ -36,10 +36,10 @@ app.use("/api", apiRouter);
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
-app.use((req, res) => {
-  logger.error(`404 Not Found: ${req.method} ${req.url}`);
-  res.status(404).json({ error: "Route not found", path: req.url });
-});
+// app.use((req, res) => {
+//   logger.error(`404 Not Found: ${req.method} ${req.url}`);
+//   res.status(404).json({ error: "Route not found", path: req.url });
+// });
 
 neo4jConnection
   .verifyConnectivity()

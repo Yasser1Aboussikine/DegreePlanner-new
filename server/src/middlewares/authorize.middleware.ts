@@ -43,5 +43,10 @@ export const authorize = (allowedRoles: string[]) => {
 export const requireAdmin = authorize(["ADMIN"]);
 export const requireAdminOrAdvisor = authorize(["ADMIN", "ADVISOR"]);
 export const requireAdminOrRegistrar = authorize(["ADMIN", "REGISTRAR"]);
+export const requireAdminOrAdvisorOrMentor = authorize([
+  "ADMIN",
+  "ADVISOR",
+  "MENTOR",
+]);
 export const requireStudent = authorize(["STUDENT"]);
 export const requireMentor = authorize(["MENTOR"]);
