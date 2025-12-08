@@ -173,3 +173,18 @@ export const deletePlanSemester = async (id: string): Promise<boolean> => {
     return false;
   }
 };
+
+export const getValidNextTerms = (currentTerm: Term): Term[] => {
+  switch (currentTerm) {
+    case "FALL":
+      return ["WINTER", "SPRING"];
+    case "SPRING":
+      return ["SUMMER", "FALL"];
+    case "WINTER":
+      return ["SPRING"];
+    case "SUMMER":
+      return ["FALL"];
+    default:
+      return [];
+  }
+};

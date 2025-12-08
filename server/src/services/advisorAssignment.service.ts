@@ -116,15 +116,22 @@ export async function createAdvisorAssignment(
 ): Promise<AdvisorAssignment> {
   const existingAssignment = await prisma.advisorAssignment.findUnique({
     where: {
-      advisorId_studentId: {
-        advisorId: data.advisorId,
-        studentId: data.studentId,
+      studentId: data.studentId,
+    },
+    include: {
+      advisor: {
+        select: {
+          id: true,
+          name: true,
+        },
       },
     },
   });
 
   if (existingAssignment) {
-    throw new Error("Advisor assignment already exists for this student");
+    throw new Error(
+      `This student is already assigned to ${existingAssignment.advisor.name || "an advisor"}. Please unassign them first before creating a new assignment.`
+    );
   }
 
   return await prisma.advisorAssignment.create({
@@ -187,6 +194,7 @@ export async function getStudentsByAdvisorId(advisorId: string) {
           id: true,
           email: true,
           name: true,
+          role: true, // Include role to differentiate STUDENT vs MENTOR
           major: true,
           minor: true,
           classification: true,
@@ -207,4 +215,52 @@ export async function getStudentsByAdvisorId(advisorId: string) {
   });
 
   return assignments.map((assignment) => assignment.student);
+}
+
+export async function getUnassignedStudents() {
+  return await prisma.user.findMany({
+    where: {
+      role: "STUDENT",
+      advisorAssignmentAsStudent: null,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      major: true,
+      minor: true,
+      classification: true,
+      joinDate: true,
+      expectedGraduation: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
+
+export async function getUnassignedStudentsAndMentors() {
+  return await prisma.user.findMany({
+    where: {
+      role: {
+        in: ["STUDENT", "MENTOR"], // Include both STUDENT and MENTOR roles
+      },
+      advisorAssignmentAsStudent: null,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      major: true,
+      minor: true,
+      classification: true,
+      joinDate: true,
+      expectedGraduation: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 }
