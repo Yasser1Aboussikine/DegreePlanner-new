@@ -1,22 +1,45 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "./Layouts";
-import HeroSection from "./features/Courses/Test";
-import SignInPage from "./features/Login/pages/SignIn";
-import SignUpPage from "./features/SignUp/pages/SignUp";
+import { SignIn as SignInPage, SignUp as SignUpPage } from "./features/Auth";
+import { DegreePlanBuilder } from "./features/DegreePlan/pages/DegreePlanBuilder";
+import { StudentDashboard } from "./features/Dashboards/pages/StudentDashboard";
+import AdminCourses from "./features/Courses/pages/AdminCourses";
+import ViewOnlyCourses from "./features/Courses/pages/ViewOnlyCourses";
+import { CourseDetailPage } from "./features/Courses/pages/CourseDetailPage";
+import AdminCourseDetail from "./features/Courses/pages/AdminCourseDetail";
+import AdminCreateCourse from "./features/Courses/pages/AdminCreateCourse";
+import RegistrarCreateCourse from "./features/Courses/pages/RegistrarCreateCourse";
+import RegistrarCourseDetail from "./features/Courses/pages/RegistrarCourseDetail";
+import {
+  AssignmentPage,
+  AssignedStudentsPage,
+  UsersPage,
+  DegreePlansPage,
+  UserProfilePage,
+  AdvisorStudentsPage,
+  MentorStudentsPage,
+} from "./features/Users";
+import { StudentChatPage, MentorGroupChatPage } from "./features/Chat/pages";
+import {
+  StudentProfilePage,
+  MentorProfilePage,
+  AdvisorProfilePage,
+  AdminProfilePage,
+  RegistrarProfilePage,
+} from "./features/Profile/pages";
+import {
+  MentorReviewRequestsPage,
+  AdvisorReviewRequestsPage,
+  MentorStudentDegreePlanPage,
+  AdvisorStudentDegreePlanPage,
+} from "./features/Assignments";
+import { ClassificationProtectedRoute } from "./components/ClassificationProtectedRoute";
 
 // Placeholder Dashboard component
 const DashboardPlaceholder = () => (
   <div>
     <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-    <p className="text-gray-600">Dashboard content coming soon...</p>
-  </div>
-);
-
-// Placeholder Profile component
-const ProfilePlaceholder = () => (
-  <div>
-    <h1 className="text-3xl font-bold mb-4">Profile</h1>
-    <p className="text-gray-600">Profile content coming soon...</p>
+    <p className="text-muted-foreground">Dashboard content coming soon...</p>
   </div>
 );
 
@@ -27,7 +50,6 @@ function App() {
         {/* Public Routes */}
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/landing" element={<HeroSection />} />
 
         {/* Protected Routes - Role-based Layout will handle routing */}
         <Route path="/" element={<RoleBasedLayout />}>
@@ -35,17 +57,24 @@ function App() {
 
           {/* Common routes for all roles */}
           <Route path="dashboard" element={<DashboardPlaceholder />} />
-          <Route path="profile" element={<ProfilePlaceholder />} />
 
           {/* Student routes */}
           <Route path="student">
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPlaceholder />} />
-            <Route path="profile" element={<ProfilePlaceholder />} />
-            <Route path="courses" element={<div>Student Courses</div>} />
+            <Route path="dashboard" element={<StudentDashboard />} />
+            <Route path="profile" element={<StudentProfilePage />} />
+            <Route path="courses" element={<ViewOnlyCourses />} />
+            <Route path="courses/:id" element={<CourseDetailPage />} />
+            <Route path="degree-plan" element={<DegreePlanBuilder />} />
             <Route
-              path="degree-plan"
-              element={<div>Student Degree Plan</div>}
+              path="chat"
+              element={
+                <ClassificationProtectedRoute
+                  allowedClassifications={["FRESHMAN", "SOPHOMORE"]}
+                >
+                  <StudentChatPage />
+                </ClassificationProtectedRoute>
+              }
             />
           </Route>
 
@@ -53,32 +82,51 @@ function App() {
           <Route path="admin">
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPlaceholder />} />
-            <Route path="profile" element={<ProfilePlaceholder />} />
-            <Route path="courses" element={<div>Admin Courses</div>} />
+            <Route path="profile" element={<AdminProfilePage />} />
+            <Route path="courses" element={<AdminCourses />} />
+            <Route path="courses/create" element={<AdminCreateCourse />} />
+            <Route path="courses/:id" element={<AdminCourseDetail />} />
+            <Route path="degree-plans" element={<DegreePlansPage />} />
+            <Route path="users" element={<UsersPage />} />
+            <Route path="users/:userId/profile" element={<UserProfilePage />} />
+            <Route path="assign" element={<AssignmentPage />} />
             <Route
-              path="degree-plans"
-              element={<div>Admin Degree Plans</div>}
+              path="assign/:type/:id/students"
+              element={<AssignedStudentsPage />}
             />
-            <Route path="users" element={<div>Admin Users</div>} />
-            <Route path="assign" element={<div>Admin Assign</div>} />
           </Route>
 
           {/* Advisor routes */}
           <Route path="advisor">
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPlaceholder />} />
-            <Route path="profile" element={<ProfilePlaceholder />} />
-            <Route path="students" element={<div>Advisor Students</div>} />
+            <Route path="profile" element={<AdvisorProfilePage />} />
+            <Route path="students" element={<AdvisorStudentsPage />} />
+            <Route
+              path="students/:userId/profile"
+              element={<UserProfilePage />}
+            />
+            <Route
+              path="students/:studentId/degree-plan"
+              element={<AdvisorStudentDegreePlanPage />}
+            />
+            <Route path="courses" element={<ViewOnlyCourses />} />
+            <Route path="courses/:id" element={<CourseDetailPage />} />
             <Route path="chat" element={<div>Advisor Chat</div>} />
-            <Route path="approve" element={<div>Advisor Approve</div>} />
+            <Route
+              path="review-requests"
+              element={<AdvisorReviewRequestsPage />}
+            />
           </Route>
 
           {/* Registrar routes */}
           <Route path="registrar">
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPlaceholder />} />
-            <Route path="profile" element={<ProfilePlaceholder />} />
-            <Route path="courses" element={<div>Registrar Courses</div>} />
+            <Route path="profile" element={<RegistrarProfilePage />} />
+            <Route path="courses" element={<AdminCourses />} />
+            <Route path="courses/create" element={<RegistrarCreateCourse />} />
+            <Route path="courses/:id" element={<RegistrarCourseDetail />} />
             <Route path="assign" element={<div>Registrar Assign</div>} />
           </Route>
 
@@ -86,12 +134,24 @@ function App() {
           <Route path="mentor">
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPlaceholder />} />
-            <Route path="profile" element={<ProfilePlaceholder />} />
-            <Route path="courses" element={<div>Mentor Courses</div>} />
-            <Route path="degree-plan" element={<div>Mentor Degree Plan</div>} />
-            <Route path="students" element={<div>Mentor Students</div>} />
-            <Route path="chat" element={<div>Mentor Chat</div>} />
-            <Route path="approve" element={<div>Mentor Approve</div>} />
+            <Route path="profile" element={<MentorProfilePage />} />
+            <Route path="courses" element={<ViewOnlyCourses />} />
+            <Route path="courses/:id" element={<CourseDetailPage />} />
+            <Route path="degree-plan" element={<DegreePlanBuilder />} />
+            <Route path="students" element={<MentorStudentsPage />} />
+            <Route
+              path="students/:userId/profile"
+              element={<UserProfilePage />}
+            />
+            <Route
+              path="students/:studentId/degree-plan"
+              element={<MentorStudentDegreePlanPage />}
+            />
+            <Route path="chat" element={<MentorGroupChatPage />} />
+            <Route
+              path="review-requests"
+              element={<MentorReviewRequestsPage />}
+            />
           </Route>
         </Route>
 
