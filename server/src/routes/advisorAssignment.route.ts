@@ -37,6 +37,20 @@ router.get(
   advisorAssignmentController.getStudentsByAdvisorId
 );
 
+router.get(
+  "/unassigned-students",
+  authenticate,
+  authorize(["ADMIN", "REGISTRAR"]),
+  advisorAssignmentController.getUnassignedStudents
+);
+
+router.get(
+  "/unassigned-students-and-mentors",
+  authenticate,
+  authorize(["ADMIN", "REGISTRAR"]),
+  advisorAssignmentController.getUnassignedStudentsAndMentors
+);
+
 router.post(
   "/",
   authenticate,

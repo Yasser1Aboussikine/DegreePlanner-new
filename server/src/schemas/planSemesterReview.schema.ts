@@ -74,3 +74,48 @@ export type SubmitAdvisorReviewInput = z.infer<
 export type DeleteReviewRequestInput = z.infer<
   typeof deleteReviewRequestSchema
 >;
+
+export const createDegreePlanReviewSchema = z.object({
+  body: z.object({
+    degreePlanId: z.string(),
+  }),
+});
+
+export type CreateDegreePlanReviewInput = z.infer<
+  typeof createDegreePlanReviewSchema
+>;
+
+export const submitBulkMentorReviewSchema = z.object({
+  body: z.object({
+    degreePlanId: z.string(),
+    approve: z.boolean(),
+    semesterComments: z.array(
+      z.object({
+        requestId: z.string(),
+        comment: z.string().optional(),
+      })
+    ),
+    generalRejectionReason: z.string().optional(),
+  }),
+});
+
+export const submitBulkAdvisorReviewSchema = z.object({
+  body: z.object({
+    degreePlanId: z.string(),
+    approve: z.boolean(),
+    semesterComments: z.array(
+      z.object({
+        requestId: z.string(),
+        comment: z.string().optional(),
+      })
+    ),
+    generalRejectionReason: z.string().optional(),
+  }),
+});
+
+export type SubmitBulkMentorReviewInput = z.infer<
+  typeof submitBulkMentorReviewSchema
+>;
+export type SubmitBulkAdvisorReviewInput = z.infer<
+  typeof submitBulkAdvisorReviewSchema
+>;
