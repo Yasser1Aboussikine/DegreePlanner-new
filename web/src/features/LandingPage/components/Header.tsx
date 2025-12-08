@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -24,94 +23,79 @@ export default function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto px-4">
-                <div className="flex h-16 items-center justify-between">
-                    {/* Logo */}
-                    <div 
-                        className="flex items-center cursor-pointer"
-                        onClick={() => navigate('/')}
-                    >
-                        <h1 className="text-2xl font-bold text-emerald-600">
-                            DegreePlanner
-                        </h1>
-                    </div>
+        <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 backdrop-blur-md">
+            {/* Logo */}
+            <div
+                className="text-xl font-serif font-bold tracking-tight text-[#1c1917] cursor-pointer"
+                onClick={() => navigate('/')}
+            >
+                DegreePlanner<span className="text-emerald-700">.</span>
+            </div>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center gap-6">
-                        <button
-                            onClick={scrollToFeatures}
-                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            Features
-                        </button>
-                        <button
-                            onClick={scrollToTechStack}
-                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            Tech Stack
-                        </button>
-                        <Button
-                            onClick={() => navigate('/sign-up')}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white"
-                        >
-                            Sign Up
-                        </Button>
-                    </nav>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex gap-8 text-sm font-medium text-[#57534e]">
+                <button
+                    onClick={scrollToFeatures}
+                    className="hover:text-[#1c1917] transition-colors"
+                >
+                    Features
+                </button>
+                <button
+                    onClick={scrollToTechStack}
+                    className="hover:text-[#1c1917] transition-colors"
+                >
+                    Tech Stack
+                </button>
+            </div>
 
-                    {/* Mobile Menu Button */}
+            {/* Sign In Button */}
+            <button
+                onClick={() => navigate('/sign-up')}
+                className="hidden md:block text-sm font-medium text-[#1c1917] underline decoration-emerald-700 decoration-2 underline-offset-4 hover:text-emerald-700"
+            >
+                Sign In
+            </button>
+
+            {/* Mobile Menu Button */}
+            <button
+                className="md:hidden p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
+            >
+                {isMenuOpen ? (
+                    <X className="h-6 w-6" />
+                ) : (
+                    <Menu className="h-6 w-6" />
+                )}
+            </button>
+
+            {/* Mobile Navigation */}
+            {isMenuOpen && (
+                <div className="absolute top-full left-0 right-0 md:hidden border-t bg-white/95 backdrop-blur-md py-4 space-y-4">
                     <button
-                        className="md:hidden p-2"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        aria-label="Toggle menu"
+                        onClick={scrollToFeatures}
+                        className="block w-full text-left px-8 py-2 text-sm font-medium text-[#57534e] hover:text-[#1c1917] transition-colors"
                     >
-                        {isMenuOpen ? (
-                            <X className="h-6 w-6" />
-                        ) : (
-                            <Menu className="h-6 w-6" />
-                        )}
+                        Features
+                    </button>
+                    <button
+                        onClick={scrollToTechStack}
+                        className="block w-full text-left px-8 py-2 text-sm font-medium text-[#57534e] hover:text-[#1c1917] transition-colors"
+                    >
+                        Tech Stack
+                    </button>
+                    <button
+                        onClick={() => {
+                            navigate('/sign-up');
+                            setIsMenuOpen(false);
+                        }}
+                        className="block w-full text-left px-8 py-2 text-sm font-medium text-[#1c1917] underline decoration-emerald-700 decoration-2 underline-offset-4"
+                    >
+                        Sign In
                     </button>
                 </div>
-
-                {/* Mobile Navigation */}
-                {isMenuOpen && (
-                    <div className="md:hidden border-t py-4 space-y-4">
-                        <button
-                            onClick={scrollToFeatures}
-                            className="block w-full text-left px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            Features
-                        </button>
-                        <button
-                            onClick={scrollToTechStack}
-                            className="block w-full text-left px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            Tech Stack
-                        </button>
-                        <button
-                            onClick={() => {
-                                navigate('/sign-in');
-                                setIsMenuOpen(false);
-                            }}
-                            className="block w-full text-left px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                            Sign In
-                        </button>
-                        <div className="px-4">
-                            <Button
-                                onClick={() => {
-                                    navigate('/sign-up');
-                                    setIsMenuOpen(false);
-                                }}
-                                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white"
-                            >
-                                Sign Up
-                            </Button>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </header>
+            )}
+        </nav>
     );
 }
 
