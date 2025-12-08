@@ -3,6 +3,8 @@ import {
   PlanSemesterReviewRequest,
   ReviewStatus,
 } from "@/generated/prisma/client";
+import { sendReviewNotificationEmail } from "@/services/email.service";
+import logger from "@/config/logger";
 
 export async function getAllReviewRequests(): Promise<
   PlanSemesterReviewRequest[]
@@ -183,6 +185,12 @@ export async function getPendingMentorReviews(
       planSemester: {
         include: {
           plannedCourses: true,
+          degreePlan: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
         },
       },
       student: {
@@ -192,6 +200,7 @@ export async function getPendingMentorReviews(
           name: true,
           major: true,
           minor: true,
+          classification: true,
         },
       },
     },
@@ -204,15 +213,43 @@ export async function getPendingMentorReviews(
 export async function getPendingAdvisorReviews(
   advisorId: string
 ): Promise<PlanSemesterReviewRequest[]> {
-  return await prisma.planSemesterReviewRequest.findMany({
+  console.log(
+    "[DEBUG] getPendingAdvisorReviews called with advisorId:",
+    advisorId
+  );
+
+  // First check all requests to see what we have
+  const allRequests = await prisma.planSemesterReviewRequest.findMany({
+    select: {
+      id: true,
+      status: true,
+      advisorId: true,
+      studentId: true,
+      planSemesterId: true,
+    },
+  });
+  console.log("[DEBUG] All review requests in DB:", allRequests);
+
+  const results = await prisma.planSemesterReviewRequest.findMany({
     where: {
       advisorId,
       status: "PENDING_ADVISOR",
     },
     include: {
       planSemester: {
-        include: {
+        select: {
+          id: true,
+          degreePlanId: true,
+          year: true,
+          term: true,
+          nth_semestre: true,
           plannedCourses: true,
+          degreePlan: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
         },
       },
       student: {
@@ -222,6 +259,7 @@ export async function getPendingAdvisorReviews(
           name: true,
           major: true,
           minor: true,
+          classification: true,
         },
       },
       mentor: {
@@ -236,6 +274,13 @@ export async function getPendingAdvisorReviews(
       requestedAt: "asc",
     },
   });
+
+  console.log("[DEBUG] Filtered results:", {
+    count: results.length,
+    advisorIdUsed: advisorId,
+  });
+
+  return results;
 }
 
 interface CreateReviewRequestData {
@@ -248,6 +293,27 @@ interface CreateReviewRequestData {
 export async function createReviewRequest(
   data: CreateReviewRequestData
 ): Promise<PlanSemesterReviewRequest> {
+  // First, validate that the semester has courses
+  const planSemester = await prisma.planSemester.findUnique({
+    where: { id: data.planSemesterId },
+    include: {
+      plannedCourses: true,
+    },
+  });
+
+  if (!planSemester) {
+    throw new Error("Plan semester not found");
+  }
+
+  if (
+    !planSemester.plannedCourses ||
+    planSemester.plannedCourses.length === 0
+  ) {
+    throw new Error(
+      "Cannot submit a review request for a semester with no courses"
+    );
+  }
+
   return await prisma.planSemesterReviewRequest.create({
     data: {
       planSemesterId: data.planSemesterId,
@@ -363,4 +429,419 @@ export async function deleteReviewRequest(
   return await prisma.planSemesterReviewRequest.delete({
     where: { id },
   });
+}
+
+interface BulkMentorReviewData {
+  approve: boolean;
+  semesterComments: Array<{
+    requestId: string;
+    comment?: string;
+  }>;
+  generalRejectionReason?: string;
+}
+
+export async function submitBulkMentorReview(
+  degreePlanId: string,
+  mentorId: string,
+  data: BulkMentorReviewData
+): Promise<PlanSemesterReviewRequest[]> {
+  const requests = await prisma.planSemesterReviewRequest.findMany({
+    where: {
+      planSemester: {
+        degreePlanId,
+      },
+      mentorId,
+      status: "PENDING_MENTOR",
+    },
+  });
+
+  if (requests.length === 0) {
+    throw new Error("No pending mentor reviews found for this degree plan");
+  }
+
+  const commentMap = new Map(
+    data.semesterComments.map((sc) => [sc.requestId, sc.comment])
+  );
+
+  const updatedRequests = await Promise.all(
+    requests.map((request) =>
+      prisma.planSemesterReviewRequest.update({
+        where: { id: request.id },
+        data: {
+          status: data.approve ? "PENDING_ADVISOR" : "REJECTED",
+          mentorComment: commentMap.get(request.id) || undefined,
+          rejectionReason: data.approve
+            ? undefined
+            : data.generalRejectionReason || "Rejected by mentor",
+          mentorReviewedAt: new Date(),
+        },
+        include: {
+          planSemester: {
+            include: {
+              plannedCourses: true,
+            },
+          },
+          student: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          mentor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          advisor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      })
+    )
+  );
+
+  if (updatedRequests.length > 0) {
+    const firstRequest = updatedRequests[0];
+    const comments = data.semesterComments
+      .map((sc) => sc.comment)
+      .filter((c): c is string => !!c);
+
+    try {
+      await sendReviewNotificationEmail({
+        studentEmail: firstRequest.student.email,
+        studentName: firstRequest.student.name || "Student",
+        reviewerName: firstRequest.mentor?.name || "Your Mentor",
+        reviewerRole: "Mentor",
+        approved: data.approve,
+        rejectionReason: data.generalRejectionReason,
+        comments: comments.length > 0 ? comments : undefined,
+      });
+    } catch (emailError: any) {
+      logger.warn("Failed to send mentor review email notification:", {
+        error: emailError.message || emailError,
+        studentEmail: firstRequest.student.email,
+      });
+    }
+  }
+
+  return updatedRequests;
+}
+
+interface BulkAdvisorReviewData {
+  approve: boolean;
+  semesterComments: Array<{
+    requestId: string;
+    comment: string;
+  }>;
+  generalRejectionReason?: string;
+}
+
+export async function submitBulkAdvisorReview(
+  degreePlanId: string,
+  advisorId: string,
+  data: BulkAdvisorReviewData
+): Promise<PlanSemesterReviewRequest[]> {
+  console.log("[DEBUG] submitBulkAdvisorReview called with:", {
+    degreePlanId,
+    advisorId,
+    approve: data.approve,
+    semesterCommentsCount: data.semesterComments?.length,
+  });
+
+  const requests = await prisma.planSemesterReviewRequest.findMany({
+    where: {
+      planSemester: {
+        degreePlanId,
+      },
+      advisorId,
+      status: "PENDING_ADVISOR",
+    },
+  });
+
+  console.log("[DEBUG] Found requests:", {
+    count: requests.length,
+    requestIds: requests.map((r) => r.id),
+    statuses: requests.map((r) => r.status),
+  });
+
+  if (requests.length === 0) {
+    // Check if there are any requests for this degree plan at all
+    const allRequests = await prisma.planSemesterReviewRequest.findMany({
+      where: {
+        planSemester: {
+          degreePlanId,
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        advisorId: true,
+        mentorId: true,
+      },
+    });
+    console.log("[DEBUG] All requests for this degree plan:", allRequests);
+    console.log("[DEBUG] Looking for advisorId:", advisorId);
+
+    // Check if requests are still pending mentor review
+    const pendingMentorRequests = allRequests.filter(
+      (r) => r.status === "PENDING_MENTOR"
+    );
+    if (pendingMentorRequests.length > 0) {
+      throw new Error(
+        "These semesters are still pending mentor review. The mentor must approve first before you can review."
+      );
+    }
+
+    // Check if requests are already approved or rejected
+    const processedRequests = allRequests.filter(
+      (r) => r.status === "APPROVED" || r.status === "REJECTED"
+    );
+    if (processedRequests.length > 0) {
+      throw new Error(
+        "These semesters have already been reviewed and processed."
+      );
+    }
+
+    throw new Error("No pending advisor reviews found for this degree plan");
+  }
+
+  const commentMap = new Map(
+    data.semesterComments.map((sc) => [sc.requestId, sc.comment])
+  );
+
+  const updatedRequests = await Promise.all(
+    requests.map((request) =>
+      prisma.planSemesterReviewRequest.update({
+        where: { id: request.id },
+        data: {
+          status: data.approve ? "APPROVED" : "REJECTED",
+          advisorComment: commentMap.get(request.id) || undefined,
+          rejectionReason: data.approve
+            ? undefined
+            : data.generalRejectionReason || "Rejected by advisor",
+          advisorReviewedAt: new Date(),
+        },
+        include: {
+          planSemester: {
+            include: {
+              plannedCourses: true,
+            },
+          },
+          student: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          mentor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          advisor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      })
+    )
+  );
+
+  if (updatedRequests.length > 0) {
+    const firstRequest = updatedRequests[0];
+    const comments = data.semesterComments
+      .map((sc) => sc.comment)
+      .filter((c): c is string => !!c);
+
+    try {
+      await sendReviewNotificationEmail({
+        studentEmail: firstRequest.student.email,
+        studentName: firstRequest.student.name || "Student",
+        reviewerName: firstRequest.advisor?.name || "Your Advisor",
+        reviewerRole: "Advisor",
+        approved: data.approve,
+        rejectionReason: data.generalRejectionReason,
+        comments: comments.length > 0 ? comments : undefined,
+      });
+    } catch (emailError: any) {
+      logger.warn("Failed to send advisor review email notification:", {
+        error: emailError.message || emailError,
+        studentEmail: firstRequest.student.email,
+      });
+    }
+  }
+
+  return updatedRequests;
+}
+
+export async function createDegreePlanReview(
+  degreePlanId: string,
+  studentId: string
+): Promise<PlanSemesterReviewRequest[]> {
+  const degreePlan = await prisma.degreePlan.findUnique({
+    where: { id: degreePlanId },
+    include: {
+      semesters: true,
+      user: {
+        include: {
+          mentorAssignmentAsStudent: true,
+          advisorAssignmentAsStudent: true,
+        },
+      },
+    },
+  });
+
+  if (!degreePlan) {
+    throw new Error("Degree plan not found");
+  }
+
+  if (degreePlan.userId !== studentId) {
+    throw new Error("You can only request review for your own degree plan");
+  }
+
+  if (degreePlan.semesters.length === 0) {
+    throw new Error("Cannot request review for an empty degree plan");
+  }
+
+  const mentorAssignment = degreePlan.user.mentorAssignmentAsStudent;
+  const advisorAssignment = degreePlan.user.advisorAssignmentAsStudent;
+  const studentClassification = degreePlan.user.classification;
+
+  if (!advisorAssignment) {
+    throw new Error("You must have an assigned advisor to request a review");
+  }
+
+  // Only FRESHMAN and SOPHOMORE require mentor review
+  const requiresMentorReview =
+    (studentClassification === "FRESHMAN" ||
+      studentClassification === "SOPHOMORE") &&
+    mentorAssignment;
+
+  const existingRequests = await prisma.planSemesterReviewRequest.findMany({
+    where: {
+      planSemester: {
+        degreePlanId,
+      },
+      status: {
+        in: ["PENDING_MENTOR", "PENDING_ADVISOR"],
+      },
+    },
+  });
+
+  if (existingRequests.length > 0) {
+    throw new Error(
+      "You already have pending review requests for this degree plan"
+    );
+  }
+
+  const reviewRequests = await Promise.all(
+    degreePlan.semesters.map((semester) =>
+      prisma.planSemesterReviewRequest.create({
+        data: {
+          planSemesterId: semester.id,
+          studentId,
+          mentorId: requiresMentorReview ? mentorAssignment?.mentorId : null,
+          advisorId: advisorAssignment.advisorId,
+          status: requiresMentorReview ? "PENDING_MENTOR" : "PENDING_ADVISOR",
+        },
+        include: {
+          planSemester: {
+            include: {
+              plannedCourses: true,
+            },
+          },
+          student: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          mentor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          advisor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      })
+    )
+  );
+
+  return reviewRequests;
+}
+
+export async function fixJuniorSeniorReviews(): Promise<any[]> {
+  // Find all PENDING_MENTOR requests for JUNIOR and SENIOR students
+  const pendingMentorRequests = await prisma.planSemesterReviewRequest.findMany(
+    {
+      where: {
+        status: "PENDING_MENTOR",
+      },
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            classification: true,
+          },
+        },
+      },
+    }
+  );
+
+  // Filter for JUNIOR and SENIOR
+  const toUpdate = pendingMentorRequests.filter(
+    (req) =>
+      req.student.classification === "JUNIOR" ||
+      req.student.classification === "SENIOR"
+  );
+
+  if (toUpdate.length === 0) {
+    return [];
+  }
+
+  // Update them to PENDING_ADVISOR and remove mentorId
+  const updatedRequests = await prisma.$transaction(
+    toUpdate.map((req) =>
+      prisma.planSemesterReviewRequest.update({
+        where: { id: req.id },
+        data: {
+          status: "PENDING_ADVISOR",
+          mentorId: null,
+        },
+        include: {
+          student: {
+            select: {
+              name: true,
+              classification: true,
+            },
+          },
+        },
+      })
+    )
+  );
+
+  return updatedRequests;
 }
