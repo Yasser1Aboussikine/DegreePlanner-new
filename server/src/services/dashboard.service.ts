@@ -11,7 +11,6 @@ export const getStudentDashboard = async (userId: string) => {
           semesters: {
             include: {
               plannedCourses: true,
-              reviewRequests: true,
             },
             orderBy: { nth_semestre: "asc" },
           },
@@ -22,41 +21,28 @@ export const getStudentDashboard = async (userId: string) => {
 
   if (!user || !user.degreePlan) {
     return {
-      degreeProgress: [],
-      courseStatus: [],
-      creditsByCategory: [],
-      timelineProgress: [],
-      approvalStatus: [],
+      totalCourses: 0,
+      completedCourses: 0,
+      totalCredits: 0,
+      earnedCredits: 0,
+      completionPercentage: 0,
+      categoryDistribution: [],
+      categoryProgress: [],
     };
   }
 
   const allCourses = user.degreePlan.semesters.flatMap((s) => s.plannedCourses);
-  const totalCredits = user.degreePlan.program?.totalCredits || 120;
+  const totalRequiredCredits = user.degreePlan.program?.totalCredits || 120;
 
-  const completedCredits = allCourses
-    .filter((c) => c.category)
-    .reduce((sum, c) => sum + (c.credits || 0), 0);
+  const totalCourses = allCourses.length;
+  const completedCourses = 0;
 
-  const inProgressCredits = 15;
-  const remainingCredits = Math.max(0, totalCredits - completedCredits - inProgressCredits);
+  const totalCreditsPlanned = allCourses.reduce((sum, c) => sum + (c.credits || 0), 0);
+  const earnedCredits = 0;
 
-  const degreeProgress = [
-    { name: "Completed", value: completedCredits },
-    { name: "In Progress", value: inProgressCredits },
-    { name: "Remaining", value: remainingCredits },
-  ];
-
-  const completedCount = Math.floor(allCourses.length * 0.5);
-  const inProgressCount = Math.floor(allCourses.length * 0.15);
-  const plannedCount = Math.floor(allCourses.length * 0.3);
-  const droppedCount = allCourses.length - completedCount - inProgressCount - plannedCount;
-
-  const courseStatus = [
-    { name: "Completed", value: completedCount },
-    { name: "In Progress", value: inProgressCount },
-    { name: "Planned", value: plannedCount },
-    { name: "Dropped", value: droppedCount },
-  ];
+  const completionPercentage = totalRequiredCredits > 0
+    ? Math.round((totalCreditsPlanned / totalRequiredCredits) * 100)
+    : 0;
 
   const creditsByCategory: Record<string, number> = {};
   allCourses.forEach((course) => {
@@ -65,39 +51,45 @@ export const getStudentDashboard = async (userId: string) => {
     }
   });
 
-  const creditsByCategoryData = Object.entries(creditsByCategory).map(([name, value]) => ({
-    name: name.replace(/_/g, " "),
-    value,
+  const categoryDistribution = Object.entries(creditsByCategory).map(([name, value]) => ({
+    category: name.replace(/_/g, " "),
+    credits: value,
+    percentage: totalCreditsPlanned > 0 ? Math.round((value / totalCreditsPlanned) * 100) : 0,
   }));
 
-  const expectedCredits = user.classification === Classification.FRESHMAN ? 30 :
-                          user.classification === Classification.SOPHOMORE ? 60 :
-                          user.classification === Classification.JUNIOR ? 90 : 120;
+  const categoryRequirements: Record<string, number> = {
+    GEN_ED: 30,
+    MAJOR_REQUIRED: 45,
+    MAJOR_ELECTIVE: 15,
+    MINOR_REQUIRED: 18,
+    MINOR_ELECTIVE: 6,
+    FREE_ELECTIVE: 6,
+  };
 
-  const aheadBehind = completedCredits - expectedCredits;
+  const categoryProgress = Object.entries(categoryRequirements).map(([category, required]) => {
+    const earned = creditsByCategory[category] || 0;
+    const percentage = required > 0 ? Math.round((earned / required) * 100) : 0;
 
-  const timelineProgress = [
-    { name: "Completed", value: completedCredits },
-    { name: "Expected by Now", value: expectedCredits },
-    { name: aheadBehind >= 0 ? "Ahead of Schedule" : "Behind Schedule", value: Math.abs(aheadBehind) },
-  ];
-
-  const latestReviewRequest = user.degreePlan.semesters
-    .flatMap((s) => s.reviewRequests)
-    .sort((a, b) => b.requestedAt.getTime() - a.requestedAt.getTime())[0];
-
-  const approvalStatus = [
-    { name: "Approved", value: latestReviewRequest?.status === ReviewStatus.APPROVED ? 85 : 0 },
-    { name: "Pending", value: latestReviewRequest?.status === ReviewStatus.PENDING_MENTOR || latestReviewRequest?.status === ReviewStatus.PENDING_ADVISOR ? 10 : 0 },
-    { name: "Needs Revision", value: latestReviewRequest?.status === ReviewStatus.REJECTED ? 5 : 100 },
-  ];
+    return {
+      category: category.replace(/_/g, " "),
+      earned,
+      required,
+      remaining: Math.max(0, required - earned),
+      percentage: Math.min(100, percentage),
+    };
+  });
 
   return {
-    degreeProgress,
-    courseStatus,
-    creditsByCategory: creditsByCategoryData,
-    timelineProgress,
-    approvalStatus,
+    totalCourses,
+    completedCourses,
+    remainingCourses: totalCourses - completedCourses,
+    totalCredits: totalRequiredCredits,
+    earnedCredits,
+    plannedCredits: totalCreditsPlanned,
+    remainingCredits: Math.max(0, totalRequiredCredits - totalCreditsPlanned),
+    completionPercentage,
+    categoryDistribution,
+    categoryProgress,
   };
 };
 

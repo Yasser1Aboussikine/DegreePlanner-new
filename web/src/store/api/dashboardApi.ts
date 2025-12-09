@@ -5,12 +5,31 @@ export interface ChartDataPoint {
   value: number;
 }
 
+export interface CategoryProgress {
+  category: string;
+  earned: number;
+  required: number;
+  remaining: number;
+  percentage: number;
+}
+
+export interface CategoryDistribution {
+  category: string;
+  credits: number;
+  percentage: number;
+}
+
 export interface StudentDashboardData {
-  degreeProgress: ChartDataPoint[];
-  courseStatus: ChartDataPoint[];
-  creditsByCategory: ChartDataPoint[];
-  timelineProgress: ChartDataPoint[];
-  approvalStatus: ChartDataPoint[];
+  totalCourses: number;
+  completedCourses: number;
+  remainingCourses: number;
+  totalCredits: number;
+  earnedCredits: number;
+  plannedCredits: number;
+  remainingCredits: number;
+  completionPercentage: number;
+  categoryDistribution: CategoryDistribution[];
+  categoryProgress: CategoryProgress[];
 }
 
 export interface MentorDashboardData {
