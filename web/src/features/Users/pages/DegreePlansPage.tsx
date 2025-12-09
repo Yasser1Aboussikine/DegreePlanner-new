@@ -120,10 +120,6 @@ export const DegreePlansPage = () => {
     setCurrentSemesterIndex(0);
   };
 
-  const handleViewFullPlan = (userId: string) => {
-    navigate(`/admin/students/${userId}/plan`);
-  };
-
   const handlePreviousSemester = () => {
     if (currentSemesterIndex > 0) {
       setCurrentSemesterIndex(currentSemesterIndex - 1);
