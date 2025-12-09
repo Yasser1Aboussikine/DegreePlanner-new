@@ -1,7 +1,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { Card } from "@/components/ui/card";
-import { GripVertical, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import type { DraggableCourse } from "../types/dndTypes";
 import { getCategoryBorderClass } from "@/utils/categoryColors";
 import { memo } from "react";
@@ -51,12 +51,6 @@ export const CourseCard = memo(function CourseCard({
         }`}
       >
         <div className="flex items-start gap-2">
-          {isDraggable && course.isEligible && (
-            <div className="text-muted-foreground mt-1">
-              <GripVertical className="h-5 w-5" />
-            </div>
-          )}
-
           {!course.isEligible && (
             <div className="text-muted-foreground mt-1">
               <Lock className="h-5 w-5" />

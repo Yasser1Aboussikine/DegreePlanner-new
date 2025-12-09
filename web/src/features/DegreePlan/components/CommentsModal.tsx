@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import { User2, MessageSquare } from "lucide-react";
+import { User2, MessageSquare, AlertCircle } from "lucide-react";
 
 interface CommentsModalProps {
   open: boolean;
@@ -14,6 +14,8 @@ interface CommentsModalProps {
   semesterName: string;
   mentorComment?: string | null;
   advisorComment?: string | null;
+  reviewStatus?: string | null;
+  rejectionReason?: string | null;
 }
 
 export function CommentsModal({
@@ -22,9 +24,12 @@ export function CommentsModal({
   semesterName,
   mentorComment,
   advisorComment,
+  reviewStatus,
+  rejectionReason,
 }: CommentsModalProps) {
   const hasMentorComment = !!mentorComment;
   const hasAdvisorComment = !!advisorComment;
+  const isRejected = reviewStatus === "REJECTED";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -32,6 +37,23 @@ export function CommentsModal({
         <DialogHeader>
           <DialogTitle>Feedback for {semesterName}</DialogTitle>
         </DialogHeader>
+
+        {/* Show rejection reason at the top if degree plan is rejected */}
+        {isRejected && rejectionReason && (
+          <Card className="p-4 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 mb-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-red-700 dark:text-red-300 mb-2">
+                  Reason for Rejection
+                </p>
+                <p className="text-sm text-red-900 dark:text-red-100 whitespace-pre-wrap">
+                  {rejectionReason}
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         <Tabs
           defaultValue={hasMentorComment ? "mentor" : "advisor"}

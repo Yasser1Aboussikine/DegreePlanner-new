@@ -18,12 +18,8 @@ export function EligibleCoursesPanel({
 }: EligibleCoursesPanelProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set(Object.keys(coursesByCategory))
+    new Set()
   );
-
-  useEffect(() => {
-    setExpandedCategories(new Set(Object.keys(coursesByCategory)));
-  }, [coursesByCategory]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -113,7 +109,7 @@ export function EligibleCoursesPanel({
             <Card key={category} className="bg-card">
               <button
                 onClick={() => toggleCategory(category)}
-                className="w-full p-4 flex items-center justify-between hover:bg-accent transition-colors rounded-t-lg"
+                className="w-full p-2 flex items-center justify-between rounded-t-lg"
               >
                 <div className="flex items-center gap-2">
                   {expandedCategories.has(category) ? (
@@ -131,7 +127,7 @@ export function EligibleCoursesPanel({
               </button>
 
               {expandedCategories.has(category) && (
-                <div className="p-4 pt-0 space-y-2">
+                <div className="p-2 pt-0 space-y-2">
                   {courses.map((course) => (
                     <CourseCard
                       key={course.id}

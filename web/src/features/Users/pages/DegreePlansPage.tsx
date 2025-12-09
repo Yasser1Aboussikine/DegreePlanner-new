@@ -4,6 +4,7 @@ import { useGetAllDegreePlansQuery } from "@/store/api/degreePlanApi";
 import CardLayout from "@/shared/CardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
   Search,
@@ -22,8 +30,11 @@ import {
   User,
   GraduationCap,
   FileText,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import type { DegreePlan } from "@/store/types";
+import { getCategoryColor } from "@/utils/categoryColors";
+import type { DegreePlan, Category } from "@/store/types";
 
 interface DegreePlanWithUser extends DegreePlan {
   user?: {
@@ -50,6 +61,7 @@ export const DegreePlansPage = () => {
   const [selectedPlan, setSelectedPlan] = useState<DegreePlanWithUser | null>(
     null
   );
+  const [currentSemesterIndex, setCurrentSemesterIndex] = useState(0);
 
   const {
     data: degreePlansData,
@@ -105,10 +117,30 @@ export const DegreePlansPage = () => {
 
   const handleCardClick = (plan: DegreePlanWithUser) => {
     setSelectedPlan(plan);
+    setCurrentSemesterIndex(0);
   };
 
   const handleViewFullPlan = (userId: string) => {
     navigate(`/admin/students/${userId}/plan`);
+  };
+
+  const handlePreviousSemester = () => {
+    if (currentSemesterIndex > 0) {
+      setCurrentSemesterIndex(currentSemesterIndex - 1);
+    }
+  };
+
+  const handleNextSemester = () => {
+    if (selectedPlan && currentSemesterIndex < (selectedPlan.semesters?.length || 0) - 1) {
+      setCurrentSemesterIndex(currentSemesterIndex + 1);
+    }
+  };
+
+  const getTotalCredits = (semester: any) => {
+    return semester.plannedCourses?.reduce(
+      (sum: number, course: any) => sum + (course.credits || 0),
+      0
+    ) || 0;
   };
 
   if (error) {
@@ -353,164 +385,147 @@ export const DegreePlansPage = () => {
 
       {/* Detail Modal */}
       <Dialog open={!!selectedPlan} onOpenChange={() => setSelectedPlan(null)}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <GraduationCap className="h-6 w-6" />
               {selectedPlan?.user?.name || "Student"}'s Degree Plan
             </DialogTitle>
             <DialogDescription>
-              View detailed information about this student's academic plan
+              {selectedPlan?.semesters?.length || 0} semesters •{" "}
+              {selectedPlan?.semesters?.reduce(
+                (sum, sem) => sum + (sem.plannedCourses?.length || 0),
+                0
+              ) || 0}{" "}
+              courses •{" "}
+              {selectedPlan?.semesters?.reduce(
+                (sum, sem) => sum + getTotalCredits(sem),
+                0
+              ) || 0}{" "}
+              credits planned
             </DialogDescription>
           </DialogHeader>
 
-          {selectedPlan && (
-            <div className="space-y-6">
-              {/* Student Information */}
-              <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  Student Information
-                </h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Name</p>
-                    <p className="font-medium text-foreground">
-                      {selectedPlan.user?.name || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Email</p>
-                    <p className="font-medium text-foreground">
-                      {selectedPlan.user?.email}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Major</p>
-                    <p className="font-medium text-foreground">
-                      {selectedPlan.user?.major || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Classification</p>
-                    <p className="font-medium text-foreground">
-                      {selectedPlan.user?.classification || "N/A"}
-                    </p>
-                  </div>
-                </div>
-              </div>
+          {selectedPlan && selectedPlan.semesters && selectedPlan.semesters.length > 0 ? (
+            <div className="flex-1 overflow-y-auto space-y-4">
+              {/* Semester Navigation */}
+              <Card className="p-4">
+                <div className="flex items-center gap-3">
+                  <Button
+                    onClick={handlePreviousSemester}
+                    disabled={currentSemesterIndex === 0}
+                    variant="outline"
+                    size="icon"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
 
-              {/* Program Information */}
-              {selectedPlan.program && (
-                <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-                  <h3 className="font-semibold text-foreground flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4" />
-                    Program Details
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Program Name</p>
-                      <p className="font-medium text-foreground">
-                        {selectedPlan.program.name}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Program Code</p>
-                      <p className="font-medium text-foreground">
-                        {selectedPlan.program.code}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Level</p>
-                      <p className="font-medium text-foreground">
-                        {selectedPlan.program.level}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Total Credits</p>
-                      <p className="font-medium text-foreground">
-                        {selectedPlan.program.totalCredits}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+                  <Select
+                    value={currentSemesterIndex.toString()}
+                    onValueChange={(value) =>
+                      setCurrentSemesterIndex(parseInt(value))
+                    }
+                  >
+                    <SelectTrigger className="w-[300px]">
+                      <SelectValue placeholder="Select semester" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {selectedPlan.semesters.map((semester: any, index: number) => (
+                        <SelectItem key={semester.id} value={index.toString()}>
+                          {semester.term} {semester.year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-              {/* Semesters Overview */}
-              <div className="space-y-3">
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Semesters ({selectedPlan.semesters?.length || 0})
-                </h3>
-                {selectedPlan.semesters && selectedPlan.semesters.length > 0 ? (
-                  <div className="space-y-3">
-                    {selectedPlan.semesters.map((semester) => (
-                      <div
-                        key={semester.id}
-                        className="bg-muted/30 rounded-lg p-3 border border-border"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <p className="font-medium text-foreground">
-                              {semester.term} {semester.year}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Semester {semester.nth_semestre}
+                  <Button
+                    onClick={handleNextSemester}
+                    disabled={currentSemesterIndex === selectedPlan.semesters.length - 1}
+                    variant="outline"
+                    size="icon"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </Card>
+
+              {/* Current Semester Details */}
+              {selectedPlan.semesters[currentSemesterIndex] && (
+                <Card className="p-6">
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold text-card-foreground mb-2">
+                      {selectedPlan.semesters[currentSemesterIndex].term}{" "}
+                      {selectedPlan.semesters[currentSemesterIndex].year}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedPlan.semesters[currentSemesterIndex].plannedCourses?.length || 0} courses •{" "}
+                      {getTotalCredits(selectedPlan.semesters[currentSemesterIndex])} credits
+                    </p>
+                  </div>
+
+                  {selectedPlan.semesters[currentSemesterIndex].plannedCourses &&
+                  selectedPlan.semesters[currentSemesterIndex].plannedCourses!.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedPlan.semesters[currentSemesterIndex].plannedCourses!.map((course: any) => (
+                        <Card
+                          key={course.id}
+                          className="p-4 border-l-4"
+                          style={{
+                            borderLeftColor: getCategoryColor(
+                              course.category as Category
+                            ),
+                          }}
+                        >
+                          <div className="mb-2">
+                            <h3 className="font-semibold text-card-foreground">
+                              {course.courseCode}
+                            </h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {course.courseTitle || "Untitled"}
                             </p>
                           </div>
-                          <Badge variant="outline">
-                            {semester.plannedCourses?.length || 0} courses
-                          </Badge>
-                        </div>
-                        {semester.plannedCourses &&
-                          semester.plannedCourses.length > 0 && (
-                            <div className="mt-2 space-y-1">
-                              {semester.plannedCourses
-                                .slice(0, 3)
-                                .map((course) => (
-                                  <p
-                                    key={course.id}
-                                    className="text-xs text-muted-foreground"
-                                  >
-                                    • {course.courseCode} -{" "}
-                                    {course.courseTitle || "Untitled"}
-                                  </p>
-                                ))}
-                              {semester.plannedCourses.length > 3 && (
-                                <p className="text-xs text-muted-foreground italic">
-                                  + {semester.plannedCourses.length - 3} more
-                                  courses
-                                </p>
-                              )}
-                            </div>
-                          )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    No semesters planned yet
-                  </p>
-                )}
-              </div>
-
-              {/* Actions */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-border">
-                <Button variant="outline" onClick={() => setSelectedPlan(null)}>
-                  Close
-                </Button>
-                <Button
-                  onClick={() => {
-                    if (selectedPlan.user?.id) {
-                      handleViewFullPlan(selectedPlan.user.id);
-                    }
-                  }}
-                >
-                  View Full Plan
-                </Button>
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <Badge variant="secondary" className="text-xs">
+                              {course.category?.replace(/_/g, " ")}
+                            </Badge>
+                            <span className="text-sm font-medium text-card-foreground whitespace-nowrap">
+                              {course.credits || 0} credits
+                            </span>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                      <p className="text-muted-foreground">
+                        No courses planned for this semester
+                      </p>
+                    </div>
+                  )}
+                </Card>
+              )}
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center py-12">
+                <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h2 className="text-xl font-bold text-card-foreground mb-2">
+                  No Semesters Planned
+                </h2>
+                <p className="text-muted-foreground">
+                  This student hasn't added any semesters to their degree plan yet.
+                </p>
               </div>
             </div>
           )}
+
+          {/* Footer Actions */}
+          <div className="flex justify-end gap-3 pt-4 border-t border-border">
+            <Button variant="outline" onClick={() => setSelectedPlan(null)}>
+              Close
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
