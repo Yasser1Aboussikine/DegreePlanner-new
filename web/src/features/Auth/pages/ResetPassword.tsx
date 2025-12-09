@@ -38,7 +38,7 @@ export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
-  const [verifyResetToken, { isLoading: isVerifying }] = useVerifyResetTokenMutation();
+  const [verifyResetToken] = useVerifyResetTokenMutation();
   const [resetPassword, { isLoading: isResetting }] = useResetPasswordMutation();
 
   const [tokenStatus, setTokenStatus] = useState<"verifying" | "valid" | "invalid">("verifying");
