@@ -41,3 +41,11 @@ export function formatLabel(label: string): string {
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
+
+export const formatCourseCode = (courseCode: string): string => {
+  if (!courseCode) return "";
+
+  return courseCode
+    .replace(/\s+/g, "")
+    .toLowerCase();
+};

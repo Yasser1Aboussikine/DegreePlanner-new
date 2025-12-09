@@ -1,15 +1,11 @@
+import { formatCourseCode } from "./formatters";
+
 export const normalizeSearchQuery = (query: string): string => {
-  return query
-    .replace(/\s+/g, '')
-    .toUpperCase()
-    .trim();
+  return formatCourseCode(query);
 };
 
 export const normalizeCourseCodes = (courseCode: string): string => {
-  return courseCode
-    .replace(/\s+/g, '')
-    .toUpperCase()
-    .trim();
+  return formatCourseCode(courseCode);
 };
 
 export const matchesCourseSearch = (courseCode: string, searchQuery: string): boolean => {
@@ -27,9 +23,9 @@ export const matchesCourseOrTitle = (
   if (!searchQuery.trim()) return true;
 
   const normalizedQuery = searchQuery.toLowerCase().trim();
-  const normalizedCourseCode = normalizeCourseCodes(courseCode).toLowerCase();
+  const normalizedCourseCode = formatCourseCode(courseCode);
   const normalizedTitle = courseTitle.toLowerCase().trim();
 
-  return normalizedCourseCode.includes(normalizedQuery.replace(/\s+/g, '')) ||
+  return normalizedCourseCode.includes(formatCourseCode(normalizedQuery)) ||
          normalizedTitle.includes(normalizedQuery);
 };

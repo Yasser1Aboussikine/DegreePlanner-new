@@ -34,6 +34,11 @@ export const signup = async (data: SignupInput): Promise<AuthResult> => {
 
   const hashedPassword = await hashPassword(data.password);
 
+  // Get the Computer Science program
+  const csProgram = await prisma.program.findUnique({
+    where: { code: "BSCSC" },
+  });
+
   const user = await prisma.user.create({
     data: {
       email: data.email,
@@ -48,6 +53,15 @@ export const signup = async (data: SignupInput): Promise<AuthResult> => {
       expectedGraduation: data.expectedGraduation
         ? new Date(data.expectedGraduation)
         : undefined,
+      // Create degree plan with program for students
+      degreePlan:
+        data.role === "STUDENT" && csProgram
+          ? {
+              create: {
+                programId: csProgram.id,
+              },
+            }
+          : undefined,
     },
   });
 

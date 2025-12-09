@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import CardLayout from "@/shared/CardLayout";
+import { formatCourseCode } from "@/utils/formatters";
 import type { Course } from "@/store/types";
 
 const MentorCourses = () => {

@@ -10,6 +10,7 @@ interface MessageSeedData {
   content: string;
   sentAt: string;
   isRead: boolean;
+  status?: "SENT" | "DELIVERED" | "READ";
 }
 
 export async function seedMessages() {
@@ -38,7 +39,7 @@ export async function seedMessages() {
           senderId: message.senderId,
           content: message.content,
           sentAt: new Date(message.sentAt),
-          isRead: message.isRead,
+          status: message.status || (message.isRead ? "READ" : "SENT"),
         },
         create: {
           id: message.id,
@@ -46,7 +47,7 @@ export async function seedMessages() {
           senderId: message.senderId,
           content: message.content,
           sentAt: new Date(message.sentAt),
-          isRead: message.isRead,
+          status: message.status || (message.isRead ? "READ" : "SENT"),
         },
       });
 

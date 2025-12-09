@@ -2,6 +2,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "./Layouts";
 import { SignIn as SignInPage, SignUp as SignUpPage } from "./features/Auth";
+import ForgotPasswordPage from "./features/Auth/pages/ForgotPassword";
+import ResetPasswordPage from "./features/Auth/pages/ResetPassword";
 import { DegreePlanBuilder } from "./features/DegreePlan/pages/DegreePlanBuilder";
 import {
   StudentDashboard,
@@ -52,6 +54,8 @@ function App() {
         {/* Public Routes */}
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/home" element={<Home />} />
 
         {/* Protected Routes - Role-based Layout will handle routing */}

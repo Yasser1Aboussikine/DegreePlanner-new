@@ -6,6 +6,7 @@ import CardLayout from "@/shared/CardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { normalizeSearchQuery } from "@/utils/searchHelpers";
+import { formatCourseCode } from "@/utils/formatters";
 import {
   Select,
   SelectContent,

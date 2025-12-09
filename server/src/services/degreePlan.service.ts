@@ -20,9 +20,15 @@ export const createDegreePlan = async (
     throw new Error("Degree plan already exists for this user");
   }
 
+  // Get the Computer Science program (default for all students)
+  const csProgram = await prisma.program.findUnique({
+    where: { code: "BSCSC" },
+  });
+
   const degreePlan = await prisma.degreePlan.create({
     data: {
       userId: data.userId,
+      programId: csProgram?.id, // Assign Computer Science program
     },
     include: {
       user: {
@@ -33,6 +39,7 @@ export const createDegreePlan = async (
           role: true,
         },
       },
+      program: true,
       semesters: {
         include: {
           plannedCourses: true,

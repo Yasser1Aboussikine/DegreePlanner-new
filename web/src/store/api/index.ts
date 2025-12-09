@@ -11,3 +11,4 @@ export * from "./advisorAssignmentApi";
 export * from "./reviewRequestApi";
 export * from "./eligibleCoursesApi";
 export * from "./dashboardApi";
+export * from "./minorApi";

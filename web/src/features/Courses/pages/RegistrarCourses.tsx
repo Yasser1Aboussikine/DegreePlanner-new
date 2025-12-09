@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import CardLayout from "@/shared/CardLayout";
 import { matchesCourseOrTitle } from "@/utils/searchHelpers";
+import { formatCourseCode } from "@/utils/formatters";
 import type { Course } from "@/store/types";
 
 const RegistrarCourses = () => {

@@ -288,7 +288,9 @@ const CourseDetailView = ({
       setIsAddingDependent(false);
     } catch (error: any) {
       const errorMessage =
-        error?.data?.message || error?.message || "Failed to add dependent course";
+        error?.data?.message ||
+        error?.message ||
+        "Failed to add dependent course";
       toast.error(errorMessage, { id: toastId });
     }
   };
@@ -752,7 +754,7 @@ const CourseDetailView = ({
                 <div className="space-y-3">
                   {prerequisites.map((prereq: Course) => (
                     <div key={prereq.id} className="block cursor-pointer">
-                      <Card className="hover:bg-accent transition-colors">
+                      <Card className="hover:bg-secondary transition-colors">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between">
                             <div
@@ -951,12 +953,14 @@ const CourseDetailView = ({
                 <div className="space-y-3">
                   {dependents.map((dependent: Course) => (
                     <div key={dependent.id} className="block cursor-pointer">
-                      <Card className="hover:bg-accent transition-colors">
+                      <Card className="hover:bg-secondary transition-colors">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between">
                             <div
                               className="flex-1"
-                              onClick={() => handleNavigateToCourse(dependent.id)}
+                              onClick={() =>
+                                handleNavigateToCourse(dependent.id)
+                              }
                             >
                               <div className="font-semibold text-base">
                                 {dependent.course_code}

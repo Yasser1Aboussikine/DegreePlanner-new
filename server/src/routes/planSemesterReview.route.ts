@@ -65,7 +65,7 @@ router.post(
 router.post(
   "/degree-plan",
   authenticate,
-  authorize(["STUDENT"]),
+  authorize(["STUDENT", "MENTOR"]),
   validate(reviewSchema.createDegreePlanReviewSchema),
   reviewController.createDegreePlanReview
 );

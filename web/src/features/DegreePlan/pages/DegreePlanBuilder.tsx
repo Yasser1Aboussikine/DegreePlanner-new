@@ -717,7 +717,10 @@ export function DegreePlanBuilder() {
       return;
     }
 
-    if (semesters.length === 0) {
+    if (
+      semesters.length === 0 ||
+      (semesters.length === 1 && semesters[0].courses.length === 0)
+    ) {
       toast.error("Cannot export an empty degree plan");
       return;
     }
@@ -771,7 +774,11 @@ export function DegreePlanBuilder() {
             <Button
               onClick={handleExportPlan}
               variant="outline"
-              disabled={isExporting || semesters.length === 0}
+              disabled={
+                isExporting ||
+                semesters.length === 0 ||
+                (semesters.length === 1 && semesters[0].courses.length === 0)
+              }
               className="flex items-center gap-2"
             >
               {isExporting ? (

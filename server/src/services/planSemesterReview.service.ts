@@ -709,7 +709,7 @@ export async function createDegreePlanReview(
   }
 
   if (degreePlan.userId !== studentId) {
-    throw new Error("You can only request review for your own degree plan");
+    throw new Error("This degree plan does not belong to the specified student");
   }
 
   if (degreePlan.semesters.length === 0) {
@@ -719,13 +719,18 @@ export async function createDegreePlanReview(
   const mentorAssignment = degreePlan.user.mentorAssignmentAsStudent;
   const advisorAssignment = degreePlan.user.advisorAssignmentAsStudent;
   const studentClassification = degreePlan.user.classification;
+  const studentRole = degreePlan.user.role;
 
   if (!advisorAssignment) {
-    throw new Error("You must have an assigned advisor to request a review");
+    throw new Error("Student must have an assigned advisor to request a review");
   }
 
-  // Only FRESHMAN and SOPHOMORE require mentor review
+  // Determine if mentor review is required
+  // If the student is a MENTOR themselves, skip mentor review and go directly to advisor
+  // Otherwise, FRESHMAN and SOPHOMORE students require mentor review
+  const isStudentAMentor = studentRole === "MENTOR";
   const requiresMentorReview =
+    !isStudentAMentor &&
     (studentClassification === "FRESHMAN" ||
       studentClassification === "SOPHOMORE") &&
     mentorAssignment;

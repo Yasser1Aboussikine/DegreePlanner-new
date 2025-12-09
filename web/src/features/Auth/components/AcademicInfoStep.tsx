@@ -1,7 +1,15 @@
 import type { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { SignUpFormData } from "@/schemas/auth.schema";
+import { useGetAllMinorsQuery } from "@/store";
 
 interface AcademicInfoStepProps {
   form: UseFormReturn<SignUpFormData>;
@@ -11,7 +19,14 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
   const {
     register,
     formState: { errors },
+    setValue,
+    watch,
   } = form;
+
+  const { data: minorsData, isLoading: minorsLoading } = useGetAllMinorsQuery();
+  const minors = minorsData?.data || [];
+  const selectedMinor = watch("minor");
+  const selectedClassification = watch("classification");
 
   return (
     <div className="space-y-4">
@@ -19,23 +34,39 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
         <Label htmlFor="major">Major *</Label>
         <Input
           id="major"
-          placeholder="Computer Science"
-          {...register("major")}
-          className="bg-background border-border"
+          value="Computer Science"
+          disabled
+          className="bg-muted border-border"
         />
-        {errors.major && (
-          <p className="text-sm text-destructive">{errors.major.message}</p>
-        )}
+        <p className="text-xs text-muted-foreground">
+          Currently only Computer Science is available
+        </p>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="minor">Minor (Optional)</Label>
-        <Input
-          id="minor"
-          placeholder="Mathematics"
-          {...register("minor")}
-          className="bg-background border-border"
-        />
+        <Select
+          value={selectedMinor || "none"}
+          onValueChange={(value) =>
+            setValue("minor", value === "none" ? undefined : value)
+          }
+        >
+          <SelectTrigger className="bg-background border-border">
+            <SelectValue
+              placeholder={
+                minorsLoading ? "Loading minors..." : "Select a minor"
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">None</SelectItem>
+            {minors.map((minor) => (
+              <SelectItem key={minor.code} value={minor.name}>
+                {minor.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors.minor && (
           <p className="text-sm text-destructive">{errors.minor.message}</p>
         )}
@@ -43,18 +74,21 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="classification">Classification *</Label>
-        <select
-          id="classification"
-          {...register("classification")}
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        <Select
+          value={selectedClassification || ""}
+          onValueChange={(value) => setValue("classification", value as any)}
         >
-          <option value="">Select classification</option>
-          <option value="FRESHMAN">Freshman</option>
-          <option value="SOPHOMORE">Sophomore</option>
-          <option value="JUNIOR">Junior</option>
-          <option value="SENIOR">Senior</option>
-          <option value="OTHER">Other</option>
-        </select>
+          <SelectTrigger className="bg-background border-border">
+            <SelectValue placeholder="Select classification" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="FRESHMAN">Freshman</SelectItem>
+            <SelectItem value="SOPHOMORE">Sophomore</SelectItem>
+            <SelectItem value="JUNIOR">Junior</SelectItem>
+            <SelectItem value="SENIOR">Senior</SelectItem>
+            <SelectItem value="OTHER">Other</SelectItem>
+          </SelectContent>
+        </Select>
         {errors.classification && (
           <p className="text-sm text-destructive">
             {errors.classification.message}
@@ -62,17 +96,19 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
         )}
       </div>
 
-      <div className="flex items-center space-x-2">
-        <input
-          id="isFYEStudent"
-          type="checkbox"
-          {...register("isFYEStudent")}
-          className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-        />
-        <Label htmlFor="isFYEStudent" className="cursor-pointer">
-          I am a First Year Experience (FYE) student
-        </Label>
-      </div>
+      {selectedClassification === "FRESHMAN" && (
+        <div className="flex items-center space-x-2">
+          <input
+            id="isFYEStudent"
+            type="checkbox"
+            {...register("isFYEStudent")}
+            className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+          />
+          <Label htmlFor="isFYEStudent" className="cursor-pointer">
+            I am a First Year Experience (FYE) student
+          </Label>
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="joinDate">Join Date *</Label>

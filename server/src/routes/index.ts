@@ -12,6 +12,8 @@ import eligibleCoursesRouter from "./eligibleCourses.route";
 import dashboardRouter from "./dashboard.route";
 import categoryRouter from "./category.route";
 import chatRouter from "./chat.route";
+import passwordResetRouter from "./passwordReset.route";
+import minorRouter from "./minor.route";
 
 const router: Router = Router();
 
@@ -33,4 +35,6 @@ router.use("/eligible-courses", eligibleCoursesRouter);
 router.use("/dashboard", dashboardRouter);
 router.use("/catalog", categoryRouter);
 router.use("/chat", chatRouter);
+router.use("/password-reset", passwordResetRouter);
+router.use("/minors", minorRouter);
 export default router;

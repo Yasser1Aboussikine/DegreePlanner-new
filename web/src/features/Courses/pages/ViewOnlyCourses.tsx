@@ -4,6 +4,7 @@ import { Search, Filter, X } from "lucide-react";
 import { useGetAllCoursesQuery } from "@/store/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { formatCourseCode } from "@/utils/formatters";
 import {
   Select,
   SelectContent,
@@ -63,7 +64,7 @@ const ViewOnlyCourses = () => {
     return courses.data.filter((course: Course) => {
       const matchesSearch =
         searchTerm === "" ||
-        course.course_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        formatCourseCode(course.course_code).includes(formatCourseCode(searchTerm)) ||
         course.course_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.description?.toLowerCase().includes(searchTerm.toLowerCase());
 

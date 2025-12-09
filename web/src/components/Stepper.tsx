@@ -77,15 +77,12 @@ export default function Stepper({
 
   return (
     <div
-      className="flex min-h-full flex-1 flex-col items-center justify-center p-4 sm:aspect-[4/3] md:aspect-[2/1]"
+      className="flex flex-col w-full"
       {...rest}
     >
-      <div
-        className={`mx-auto w-full max-w-md rounded-4xl shadow-xl ${stepCircleContainerClassName}`}
-        style={{ border: "1px solid #222" }}
-      >
+      <div className="w-full">
         <div
-          className={`${stepContainerClassName} flex w-full items-center p-8`}
+          className={`${stepContainerClassName} flex w-full items-center justify-center mb-8`}
         >
           {stepsArray.map((_, index) => {
             const stepNumber = index + 1;
@@ -124,15 +121,15 @@ export default function Stepper({
           isCompleted={isCompleted}
           currentStep={currentStep}
           direction={direction}
-          className={`space-y-2 px-8 ${contentClassName}`}
+          className={`space-y-2 ${contentClassName}`}
         >
           {stepsArray[currentStep - 1]}
         </StepContentWrapper>
 
         {!isCompleted && (
-          <div className={`px-8 pb-8 ${footerClassName}`}>
+          <div className={`${footerClassName}`}>
             <div
-              className={`mt-10 flex ${
+              className={`mt-8 flex ${
                 currentStep !== 1 ? "justify-between" : "justify-end"
               }`}
             >
@@ -141,8 +138,8 @@ export default function Stepper({
                   onClick={handleBack}
                   className={`duration-350 rounded px-2 py-1 transition ${
                     currentStep === 1
-                      ? "pointer-events-none opacity-50 text-neutral-400"
-                      : "text-neutral-400 hover:text-neutral-700"
+                      ? "pointer-events-none opacity-50 text-muted-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                   {...backButtonProps}
                 >
@@ -151,7 +148,7 @@ export default function Stepper({
               )}
               <button
                 onClick={isLastStep ? handleComplete : handleNext}
-                className="duration-350 flex items-center justify-center rounded-full bg-green-500 py-1.5 px-3.5 font-medium tracking-tight text-white transition hover:bg-green-600 active:bg-green-700"
+                className="duration-350 flex items-center justify-center rounded-full bg-primary py-1.5 px-3.5 font-medium tracking-tight text-primary-foreground transition hover:bg-primary/90 active:bg-primary/80"
                 {...nextButtonProps}
               >
                 {isLastStep ? "Complete" : nextButtonText}
@@ -258,7 +255,7 @@ interface StepProps {
 }
 
 export function Step({ children }: StepProps) {
-  return <div className="px-8">{children}</div>;
+  return <>{children}</>;
 }
 
 interface StepIndicatorProps {
@@ -296,17 +293,23 @@ function StepIndicator({
     >
       <motion.div
         variants={{
-          inactive: { scale: 1, backgroundColor: "#222", color: "#a3a3a3" },
-          active: { scale: 1, backgroundColor: "#5227FF", color: "#5227FF" },
-          complete: { scale: 1, backgroundColor: "#5227FF", color: "#3b82f6" },
+          inactive: { scale: 1 },
+          active: { scale: 1 },
+          complete: { scale: 1 },
         }}
         transition={{ duration: 0.3 }}
-        className="flex h-8 w-8 items-center justify-center rounded-full font-semibold"
+        className={`flex h-8 w-8 items-center justify-center rounded-full font-semibold transition-colors ${
+          status === "complete"
+            ? "bg-primary text-primary-foreground"
+            : status === "active"
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted text-muted-foreground"
+        }`}
       >
         {status === "complete" ? (
-          <CheckIcon className="h-4 w-4 text-black" />
+          <CheckIcon className="h-4 w-4" />
         ) : status === "active" ? (
-          <div className="h-3 w-3 rounded-full bg-[#060010]" />
+          <div className="h-3 w-3 rounded-full bg-primary-foreground" />
         ) : (
           <span className="text-sm">{step}</span>
         )}
@@ -321,14 +324,14 @@ interface StepConnectorProps {
 
 function StepConnector({ isComplete }: StepConnectorProps) {
   const lineVariants = {
-    incomplete: { width: 0, backgroundColor: "transparent" },
-    complete: { width: "100%", backgroundColor: "#5227FF" },
+    incomplete: { width: 0 },
+    complete: { width: "100%" },
   };
 
   return (
-    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-neutral-600">
+    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-muted">
       <motion.div
-        className="absolute left-0 top-0 h-full"
+        className="absolute left-0 top-0 h-full bg-primary"
         variants={lineVariants}
         initial={false}
         animate={isComplete ? "complete" : "incomplete"}

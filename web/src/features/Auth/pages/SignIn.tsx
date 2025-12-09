@@ -135,7 +135,7 @@ export default function SignInPage() {
                 <button
                   type="button"
                   onClick={() => navigate("/forgot-password")}
-                  className="text-sm text-primary hover:text-primary/80 hover:underline cursor-pointer transition-colors"
+                  className="text-sm text-primary hover:text-primary-hover hover:underline cursor-pointer transition-colors"
                 >
                   Forgot password?
                 </button>
@@ -154,7 +154,7 @@ export default function SignInPage() {
 
             <Button
               type="submit"
-              className="w-full font-medium cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="w-full font-medium cursor-pointer bg-primary text-primary-foreground hover:bg-primary-hover transition-colors"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
