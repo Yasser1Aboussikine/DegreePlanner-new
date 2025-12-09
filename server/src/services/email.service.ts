@@ -53,7 +53,9 @@ export const sendReviewNotificationEmail = async (
 
           <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 32px 0;">
             Your ${reviewerRole}, <strong>${reviewerName}</strong>, has
-            ${approved ? "approved" : "rejected"} your degree plan review request.
+            ${
+              approved ? "approved" : "rejected"
+            } your degree plan review request.
           </p>
       `;
 
@@ -71,7 +73,11 @@ export const sendReviewNotificationEmail = async (
           <div style="margin: 24px 0;">
             <h3 style="color: #333333; font-size: 16px; font-weight: 600; margin: 0 0 12px 0;">Comments:</h3>
             <ul style="padding-left: 20px; margin: 0; color: #333333; font-size: 14px; line-height: 1.8;">
-              ${comments.map((comment) => `<li style="margin-bottom: 8px;">${comment}</li>`).join("")}
+              ${comments
+                .map(
+                  (comment) => `<li style="margin-bottom: 8px;">${comment}</li>`
+                )
+                .join("")}
             </ul>
           </div>
         `;
@@ -238,7 +244,13 @@ export const sendPasswordResetEmail = async (
   try {
     const { email, name, resetToken } = data;
 
-    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${resetToken}`;
+    const FRONTEND_URL =
+      process.env.FRONTEND_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "https://your-frontend-domain.com"
+        : "http://localhost:3000");
+
+    const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
 
     const subject = "Password Reset Request - Degree Planner";
 

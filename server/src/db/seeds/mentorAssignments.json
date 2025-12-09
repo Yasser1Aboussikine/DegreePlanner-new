@@ -2,30 +2,15 @@
   {
     "id": "mentor_assignment_001",
     "mentorId": "user_006",
-    "studentId": "user_008"
+    "studentId": "user_009"
   },
   {
     "id": "mentor_assignment_002",
     "mentorId": "user_006",
-    "studentId": "user_009"
-  },
-  {
-    "id": "mentor_assignment_003",
-    "mentorId": "user_006",
-    "studentId": "user_010"
-  },
-  {
-    "id": "mentor_assignment_004",
-    "mentorId": "user_007",
-    "studentId": "user_011"
-  },
-  {
-    "id": "mentor_assignment_005",
-    "mentorId": "user_007",
     "studentId": "user_012"
   },
   {
-    "id": "mentor_assignment_006",
+    "id": "mentor_assignment_003",
     "mentorId": "user_007",
     "studentId": "user_013"
   }

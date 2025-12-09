@@ -6,6 +6,7 @@ interface CardLayoutProps {
   titleClassName?: string;
   className?: string;
   onClick?: () => void;
+  action?: React.ReactNode;
 }
 
 const CardLayout = ({
@@ -14,6 +15,7 @@ const CardLayout = ({
   titleClassName,
   className,
   onClick,
+  action,
 }: CardLayoutProps) => {
   return (
     <div
@@ -34,14 +36,17 @@ const CardLayout = ({
           : undefined
       }
     >
-      <h2
-        className={
-          titleClassName ||
-          "flex items-center gap-2 text-lg sm:text-xl font-semibold text-card-foreground leading-snug mb-4"
-        }
-      >
-        {title}
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2
+          className={
+            titleClassName ||
+            "flex items-center gap-2 text-lg sm:text-xl font-semibold text-card-foreground leading-snug"
+          }
+        >
+          {title}
+        </h2>
+        {action && <div>{action}</div>}
+      </div>
       {children}
     </div>
   );

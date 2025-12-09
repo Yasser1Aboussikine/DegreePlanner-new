@@ -102,8 +102,7 @@ export async function createMentorAssignment(
     if (
       error.message &&
       (error.message.includes("already assigned to") ||
-        error.message.includes("FRESHMAN") ||
-        error.message.includes("SOPHOMORE"))
+        error.message.includes("FRESHMAN"))
     ) {
       return errorResponse(res, error.message, 409);
     }

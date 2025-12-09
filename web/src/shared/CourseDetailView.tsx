@@ -78,6 +78,16 @@ const CourseDetailView = ({
     subtitle: string;
   } | null>(null);
 
+  // State for alert dialogs
+  const [prereqToRemove, setPrereqToRemove] = useState<{
+    id: string;
+    code: string;
+  } | null>(null);
+  const [dependentToRemove, setDependentToRemove] = useState<{
+    id: string;
+    code: string;
+  } | null>(null);
+
   const {
     data: courseData,
     isLoading,
@@ -266,6 +276,8 @@ const CourseDetailView = ({
         error?.message ||
         "Failed to remove prerequisite";
       toast.error(errorMessage, { id: toastId });
+    } finally {
+      setPrereqToRemove(null);
     }
   };
 
@@ -311,6 +323,8 @@ const CourseDetailView = ({
         error?.message ||
         "Failed to remove dependent course";
       toast.error(errorMessage, { id: toastId });
+    } finally {
+      setDependentToRemove(null);
     }
   };
 
@@ -775,7 +789,10 @@ const CourseDetailView = ({
                               {canEdit && (
                                 <Button
                                   onClick={() =>
-                                    handleRemovePrerequisite(prereq.id)
+                                    setPrereqToRemove({
+                                      id: prereq.id,
+                                      code: prereq.course_code,
+                                    })
                                   }
                                   variant="ghost"
                                   size="sm"
@@ -976,7 +993,10 @@ const CourseDetailView = ({
                               {canEdit && (
                                 <Button
                                   onClick={() =>
-                                    handleRemoveDependent(dependent.id)
+                                    setDependentToRemove({
+                                      id: dependent.id,
+                                      code: dependent.course_code,
+                                    })
                                   }
                                   variant="ghost"
                                   size="sm"
@@ -1029,6 +1049,73 @@ const CourseDetailView = ({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Alert Dialog for Prerequisite Removal */}
+      <AlertDialog
+        open={!!prereqToRemove}
+        onOpenChange={(open) => !open && setPrereqToRemove(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">
+              Remove Prerequisite
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              Are you sure you want to remove{" "}
+              <span className="font-semibold">{prereqToRemove?.code}</span> as a
+              prerequisite for {course?.course_code}? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-border bg-background hover:bg-accent">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                prereqToRemove && handleRemovePrerequisite(prereqToRemove.id)
+              }
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Alert Dialog for Dependent Removal */}
+      <AlertDialog
+        open={!!dependentToRemove}
+        onOpenChange={(open) => !open && setDependentToRemove(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">
+              Remove Dependent Course
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              Are you sure you want to remove {course?.course_code} as a
+              prerequisite from{" "}
+              <span className="font-semibold">{dependentToRemove?.code}</span>?
+              This will allow students to take {dependentToRemove?.code} without
+              completing {course?.course_code} first. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-border bg-background hover:bg-accent">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                dependentToRemove && handleRemoveDependent(dependentToRemove.id)
+              }
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Remove
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

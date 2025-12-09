@@ -514,3 +514,79 @@ export const toggleUserStatus = async (
   const { password, ...userWithoutPassword } = updatedUser;
   return userWithoutPassword;
 };
+
+export const updatePersonalInfo = async (
+  userId: string,
+  data: { name?: string; email?: string }
+): Promise<Omit<User, "password">> => {
+  if (data.email) {
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email: data.email,
+        NOT: { id: userId },
+      },
+    });
+
+    if (existingUser) {
+      throw new Error("Email is already in use by another user");
+    }
+  }
+
+  const updateData: any = {};
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.email !== undefined) updateData.email = data.email;
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+  });
+
+  if (!updatedUser) {
+    throw new Error("User not found");
+  }
+
+  const { password, ...userWithoutPassword} = updatedUser;
+  return userWithoutPassword;
+};
+
+export const updateUserClassification = async (
+  userId: string,
+  newClassification: string
+): Promise<Omit<User, "password">> => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true, classification: true },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.role !== "STUDENT" && user.role !== "MENTOR") {
+    throw new Error("Only students and mentors can have a classification");
+  }
+
+  // If student is changing from FRESHMAN to another classification, remove mentor assignment
+  if (
+    user.role === "STUDENT" &&
+    user.classification === "FRESHMAN" &&
+    newClassification !== "FRESHMAN"
+  ) {
+    await prisma.mentorAssignment.deleteMany({
+      where: { studentId: userId },
+    });
+  }
+
+  // Prevent mentors from being FRESHMAN
+  if (user.role === "MENTOR" && newClassification === "FRESHMAN") {
+    throw new Error("Mentors cannot be FRESHMAN");
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { classification: newClassification as any },
+  });
+
+  const { password, ...userWithoutPassword } = updatedUser;
+  return userWithoutPassword;
+};

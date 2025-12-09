@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-picker";
 import type { SignUpFormData } from "@/schemas/auth.schema";
 import { useGetAllMinorsQuery } from "@/store";
 
@@ -116,11 +117,13 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="joinDate">Join Date *</Label>
-        <Input
-          id="joinDate"
-          type="date"
-          {...register("joinDate")}
-          className="bg-background border-border"
+        <DatePicker
+          date={watch("joinDate") ? new Date(watch("joinDate")) : undefined}
+          onDateChange={(date) => {
+            setValue("joinDate", date ? date.toISOString() : "");
+            trigger("joinDate");
+          }}
+          placeholder="Select join date"
         />
         {errors.joinDate && (
           <p className="text-sm text-destructive">{errors.joinDate.message}</p>
@@ -129,11 +132,17 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
 
       <div className="space-y-2">
         <Label htmlFor="expectedGraduation">Expected Graduation *</Label>
-        <Input
-          id="expectedGraduation"
-          type="date"
-          {...register("expectedGraduation")}
-          className="bg-background border-border"
+        <DatePicker
+          date={
+            watch("expectedGraduation")
+              ? new Date(watch("expectedGraduation"))
+              : undefined
+          }
+          onDateChange={(date) => {
+            setValue("expectedGraduation", date ? date.toISOString() : "");
+            trigger("expectedGraduation");
+          }}
+          placeholder="Select expected graduation date"
         />
         {errors.expectedGraduation && (
           <p className="text-sm text-destructive">

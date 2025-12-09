@@ -112,6 +112,32 @@ export const authApi = apiSlice.injectEndpoints({
       query: (userId) => `/auth/users/${userId}`,
       providesTags: (_result, _error, userId) => [{ type: "User", id: userId }],
     }),
+
+    // PATCH /api/auth/profile
+    updatePersonalInfo: builder.mutation<
+      { data: User },
+      { name?: string; email?: string }
+    >({
+      query: (data) => ({
+        url: `/auth/profile`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // PATCH /api/auth/users/:userId/classification
+    updateUserClassification: builder.mutation<
+      { data: User },
+      { userId: string; classification: string }
+    >({
+      query: ({ userId, classification }) => ({
+        url: `/auth/users/${userId}/classification`,
+        method: "PATCH",
+        body: { classification },
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -127,4 +153,6 @@ export const {
   useUpdateUserRoleMutation,
   useToggleUserStatusMutation,
   useGetUserByIdQuery,
+  useUpdatePersonalInfoMutation,
+  useUpdateUserClassificationMutation,
 } = authApi;

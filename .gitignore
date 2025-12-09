@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 .claude
 .husky
-server/scripts
 CLAUDE.md
 *.md
 .env
+scripts

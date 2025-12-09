@@ -1,7 +1,7 @@
 import { Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-
+// import DegreePlannerIcon from "public/DegreePlannerLogo.png"
 export default function Header() {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -24,6 +24,12 @@ export default function SignUpPage() {
   const dispatch = useAppDispatch();
   const [signup, { isLoading }] = useSignupMutation();
 
+  // Calculate default dates
+  const defaultJoinDate = new Date();
+  const defaultExpectedGraduation = new Date(defaultJoinDate);
+  defaultExpectedGraduation.setFullYear(defaultExpectedGraduation.getFullYear() + 3);
+  defaultExpectedGraduation.setMonth(defaultExpectedGraduation.getMonth() + 8);
+
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
@@ -33,11 +39,11 @@ export default function SignUpPage() {
       password: "",
       confirmPassword: "",
       major: "Computer Science",
-      minor: "",
+      minor: undefined,
       classification: undefined,
       isFYEStudent: false,
-      joinDate: "",
-      expectedGraduation: "",
+      joinDate: defaultJoinDate.toISOString(),
+      expectedGraduation: defaultExpectedGraduation.toISOString(),
     },
   });
 

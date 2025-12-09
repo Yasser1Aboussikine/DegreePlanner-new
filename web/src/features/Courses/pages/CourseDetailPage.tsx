@@ -21,6 +21,16 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { ArrowLeft, BookOpen, GraduationCap, Network, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -41,6 +51,16 @@ export const CourseDetailPage = () => {
   const [selectedPrerequisite, setSelectedPrerequisite] = useState<{
     value: string;
     label: string;
+  } | null>(null);
+
+  // State for alert dialogs
+  const [prereqToRemove, setPrereqToRemove] = useState<{
+    id: string;
+    code: string;
+  } | null>(null);
+  const [dependentToRemove, setDependentToRemove] = useState<{
+    id: string;
+    code: string;
   } | null>(null);
 
   // Mutations
@@ -126,6 +146,23 @@ export const CourseDetailPage = () => {
       toast.success("Prerequisite removed successfully");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to remove prerequisite");
+    } finally {
+      setPrereqToRemove(null);
+    }
+  };
+
+  // Handle removing a dependent (removes the prerequisite relationship from the dependent course)
+  const handleRemoveDependent = async (dependentId: string) => {
+    if (!id) return;
+
+    try {
+      // Remove the current course as a prerequisite from the dependent course
+      await removePrerequisite({ id: dependentId, prerequisiteId: id }).unwrap();
+      toast.success("Dependent course relationship removed successfully");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to remove dependent");
+    } finally {
+      setDependentToRemove(null);
     }
   };
 
@@ -481,7 +518,10 @@ export const CourseDetailPage = () => {
                                     className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      handleRemovePrerequisite(prereq.id);
+                                      setPrereqToRemove({
+                                        id: prereq.id,
+                                        code: prereq.course_code,
+                                      });
                                     }}
                                     disabled={isRemovingPrereq}
                                   >
@@ -527,30 +567,50 @@ export const CourseDetailPage = () => {
               ) : dependents.length > 0 ? (
                 <div className="space-y-3">
                   {dependents.map((dependent) => (
-                    <div
-                      key={dependent.id}
-                      onClick={() =>
-                        navigate(`${basePath}/courses/${dependent.id}`)
-                      }
-                      className="block cursor-pointer"
-                    >
-                      <Card className="hover:bg-accent transition-colors">
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="font-semibold text-base">
-                                {dependent.course_code}
+                    <div key={dependent.id} className="relative group">
+                      <div
+                        onClick={() =>
+                          navigate(`${basePath}/courses/${dependent.id}`)
+                        }
+                        className="block cursor-pointer"
+                      >
+                        <Card className="hover:bg-accent transition-colors">
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="font-semibold text-base">
+                                  {dependent.course_code}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {dependent.course_title}
+                                </div>
                               </div>
-                              <div className="text-sm text-muted-foreground">
-                                {dependent.course_title}
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline">
+                                  {dependent.n_credits} credits
+                                </Badge>
+                                {isAdmin && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setDependentToRemove({
+                                        id: dependent.id,
+                                        code: dependent.course_code,
+                                      });
+                                    }}
+                                    disabled={isRemovingPrereq}
+                                  >
+                                    <X className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                )}
                               </div>
                             </div>
-                            <Badge variant="outline">
-                              {dependent.n_credits} credits
-                            </Badge>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -564,6 +624,65 @@ export const CourseDetailPage = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Alert Dialog for Prerequisite Removal */}
+      <AlertDialog
+        open={!!prereqToRemove}
+        onOpenChange={(open) => !open && setPrereqToRemove(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Prerequisite</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove{" "}
+              <span className="font-semibold">{prereqToRemove?.code}</span> as a
+              prerequisite for {course.course_code}? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                prereqToRemove && handleRemovePrerequisite(prereqToRemove.id)
+              }
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Alert Dialog for Dependent Removal */}
+      <AlertDialog
+        open={!!dependentToRemove}
+        onOpenChange={(open) => !open && setDependentToRemove(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Dependent Course</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove {course.course_code} as a
+              prerequisite from{" "}
+              <span className="font-semibold">{dependentToRemove?.code}</span>?
+              This will allow students to take {dependentToRemove?.code} without
+              completing {course.course_code} first. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                dependentToRemove && handleRemoveDependent(dependentToRemove.id)
+              }
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

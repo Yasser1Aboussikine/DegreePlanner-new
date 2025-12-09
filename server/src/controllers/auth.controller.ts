@@ -181,3 +181,50 @@ export const toggleUserStatus = async (
     sendError(res, 400, message);
   }
 };
+
+export const updatePersonalInfo = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      sendError(res, 401, "Unauthorized");
+      return;
+    }
+
+    const { name, email } = req.body;
+
+    const user = await authService.updatePersonalInfo(req.user.userId, {
+      name,
+      email,
+    });
+
+    sendSuccess(res, 200, "Personal information updated successfully", user);
+  } catch (error) {
+    logger.error("Update personal info error:", error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to update personal information";
+    sendError(res, 400, message);
+  }
+};
+
+export const updateUserClassification = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { classification } = req.body;
+
+    const user = await authService.updateUserClassification(userId, classification);
+
+    sendSuccess(res, 200, "User classification updated successfully", user);
+  } catch (error) {
+    logger.error("Update user classification error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to update user classification";
+    sendError(res, 400, message);
+  }
+};

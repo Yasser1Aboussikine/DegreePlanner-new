@@ -10,6 +10,8 @@ import {
   refreshTokenSchema,
   updateUserRoleSchema,
   toggleUserStatusSchema,
+  updatePersonalInfoSchema,
+  updateUserClassificationSchema,
 } from "../schemas/auth.schema";
 import { Role } from "@/generated/prisma/enums";
 
@@ -55,6 +57,19 @@ authRouter.patch(
   authorizeWithDbCheck([Role.ADMIN]),
   validate(toggleUserStatusSchema),
   authController.toggleUserStatus
+);
+authRouter.patch(
+  "/profile",
+  authenticate,
+  validate(updatePersonalInfoSchema),
+  authController.updatePersonalInfo
+);
+authRouter.patch(
+  "/users/:userId/classification",
+  authenticate,
+  authorizeWithDbCheck([Role.ADMIN]),
+  validate(updateUserClassificationSchema),
+  authController.updateUserClassification
 );
 
 export default authRouter;

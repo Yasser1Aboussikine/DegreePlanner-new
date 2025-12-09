@@ -38,8 +38,26 @@ export const toggleUserStatusSchema = z.object({
   }),
 });
 
+export const updatePersonalInfoSchema = z.object({
+  body: z.object({
+    name: z.string().min(1).optional(),
+    email: z.email("Invalid email address").optional(),
+  }),
+});
+
+export const updateUserClassificationSchema = z.object({
+  params: z.object({
+    userId: z.string(),
+  }),
+  body: z.object({
+    classification: z.enum(Classification),
+  }),
+});
+
 export type SignupInput = z.infer<typeof signupSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>;
 export type UpdateUserRoleInput = z.infer<typeof updateUserRoleSchema>;
 export type ToggleUserStatusInput = z.infer<typeof toggleUserStatusSchema>;
+export type UpdatePersonalInfoInput = z.infer<typeof updatePersonalInfoSchema>;
+export type UpdateUserClassificationInput = z.infer<typeof updateUserClassificationSchema>;

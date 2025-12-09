@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { MentorAssignment } from "@/generated/prisma/client";
 import * as chatService from "./chat.service";
+import logger from "../config/logger";
 
 export async function getAllMentorAssignments(): Promise<MentorAssignment[]> {
   return await prisma.mentorAssignment.findMany({
@@ -124,13 +125,8 @@ export async function createMentorAssignment(
     throw new Error("Student not found");
   }
 
-  if (
-    student.classification !== "FRESHMAN" &&
-    student.classification !== "SOPHOMORE"
-  ) {
-    throw new Error(
-      "Only FRESHMAN and SOPHOMORE students can be assigned a mentor"
-    );
+  if (student.classification !== "FRESHMAN") {
+    throw new Error("Only FRESHMAN students can be assigned a mentor");
   }
 
   const existingAssignment = await prisma.mentorAssignment.findUnique({
@@ -184,16 +180,18 @@ export async function createMentorAssignment(
       },
     })
     .then(async (assignment) => {
-      // Add student to mentor's group chat and create direct chat
+      // Add student to mentor's group chat only (not creating direct 1-on-1 chat)
       try {
         await chatService.addStudentToMentorGroup(
           data.mentorId,
           data.studentId
         );
-        await chatService.getOrCreateDirectChat(data.mentorId, data.studentId);
+        logger.info(
+          `✅ Added student ${data.studentId} to mentor ${data.mentorId}'s group chat`
+        );
       } catch (error) {
         // Log error but don't fail the assignment creation
-        console.error("Failed to create chat threads:", error);
+        console.error("Failed to add student to mentor group chat:", error);
       }
       return assignment;
     });
@@ -257,9 +255,7 @@ export async function getUnassignedStudents() {
     where: {
       role: "STUDENT",
       mentorAssignmentAsStudent: null,
-      classification: {
-        in: ["FRESHMAN", "SOPHOMORE"],
-      },
+      classification: "FRESHMAN",
     },
     select: {
       id: true,

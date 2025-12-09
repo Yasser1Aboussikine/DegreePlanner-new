@@ -5,6 +5,7 @@ import {
   useUpdateUserRoleMutation,
   useToggleUserStatusMutation,
   useGetMeQuery,
+  useUpdateUserClassificationMutation,
 } from "@/store/api/authApi";
 import {
   Table,
@@ -46,6 +47,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const ROLES = ["STUDENT", "ADMIN", "ADVISOR", "MENTOR", "REGISTRAR"];
+const CLASSIFICATIONS = ["FRESHMAN", "SOPHOMORE", "JUNIOR", "SENIOR"];
 const PAGE_SIZE = 10;
 
 export const UsersPage = () => {
@@ -59,6 +61,13 @@ export const UsersPage = () => {
     email: string;
     currentRole: string;
     newRole: string;
+  } | null>(null);
+
+  const [classificationDialog, setClassificationDialog] = useState<{
+    userId: string;
+    name: string;
+    currentClassification: string;
+    newClassification: string;
   } | null>(null);
 
   const { data: currentUser } = useGetMeQuery();
@@ -80,6 +89,8 @@ export const UsersPage = () => {
     useUpdateUserRoleMutation();
   const [toggleUserStatus, { isLoading: isTogglingStatus }] =
     useToggleUserStatusMutation();
+  const [updateUserClassification, { isLoading: isUpdatingClassification }] =
+    useUpdateUserClassificationMutation();
 
   const users = usersData?.data?.users || [];
   const totalPages = usersData?.data?.totalPages || 1;
@@ -96,6 +107,49 @@ export const UsersPage = () => {
       currentRole: targetUser.role,
       newRole: newRole,
     });
+  };
+
+  const getRoleChangeWarning = () => {
+    if (!selectedUser) return null;
+
+    const { currentRole, newRole } = selectedUser;
+
+    if (currentRole === "STUDENT" && newRole === "MENTOR") {
+      return "Changing this user from STUDENT to MENTOR will remove their mentor assignment (if any).";
+    } else if (currentRole === "STUDENT" && newRole === "ADVISOR") {
+      return "Changing this user from STUDENT to ADVISOR will remove both their mentor and advisor assignments (if any).";
+    } else if (currentRole === "MENTOR" && newRole === "ADVISOR") {
+      return "Changing this user from MENTOR to ADVISOR will remove their mentor assignment (if any) and advisor assignment (if any).";
+    } else if (
+      currentRole === "STUDENT" &&
+      ["ADMIN", "REGISTRAR"].includes(newRole)
+    ) {
+      return (
+        "Changing this user from STUDENT to " +
+        newRole +
+        " will remove both their mentor and advisor assignments (if any)."
+      );
+    } else if (
+      currentRole === "MENTOR" &&
+      ["ADMIN", "REGISTRAR", "STUDENT"].includes(newRole)
+    ) {
+      return (
+        "Changing this user from MENTOR to " +
+        newRole +
+        " will remove their mentor assignment (if any)."
+      );
+    } else if (
+      currentRole === "ADVISOR" &&
+      ["ADMIN", "REGISTRAR", "STUDENT", "MENTOR"].includes(newRole)
+    ) {
+      return (
+        "Changing this user from ADVISOR to " +
+        newRole +
+        " will remove their advisor assignment (if any)."
+      );
+    }
+
+    return null;
   };
 
   const confirmRoleChange = async () => {
@@ -160,6 +214,68 @@ export const UsersPage = () => {
         duration: 5000,
       });
     }
+  };
+
+  const handleClassificationChange = async (
+    userId: string,
+    newClassification: string,
+    userName: string,
+    currentClassification: string
+  ) => {
+    // Show dialog only if changing FROM freshman
+    if (
+      currentClassification === "FRESHMAN" &&
+      newClassification !== "FRESHMAN"
+    ) {
+      setClassificationDialog({
+        userId,
+        name: userName,
+        currentClassification,
+        newClassification,
+      });
+      return;
+    }
+
+    // If not changing from freshman, update directly
+    await performClassificationUpdate(userId, newClassification, userName);
+  };
+
+  const performClassificationUpdate = async (
+    userId: string,
+    newClassification: string,
+    userName: string
+  ) => {
+    const toastId = toast.loading(`Updating classification for ${userName}...`);
+
+    try {
+      await updateUserClassification({
+        userId,
+        classification: newClassification,
+      }).unwrap();
+      toast.success(
+        `Classification updated successfully! ${userName} is now a ${newClassification}.`,
+        { id: toastId, duration: 3000 }
+      );
+    } catch (error: any) {
+      console.error("Error updating classification:", error);
+      const errorMessage =
+        error?.data?.message || error?.message || "Unknown error occurred";
+      toast.error(`Failed to update classification: ${errorMessage}`, {
+        id: toastId,
+        duration: 5000,
+      });
+    }
+  };
+
+  const confirmClassificationChange = async () => {
+    if (!classificationDialog) return;
+
+    await performClassificationUpdate(
+      classificationDialog.userId,
+      classificationDialog.newClassification,
+      classificationDialog.name
+    );
+    setClassificationDialog(null);
   };
 
   const handleUserClick = (userId: string) => {
@@ -312,8 +428,42 @@ export const UsersPage = () => {
                     <TableCell className="text-muted-foreground">
                       {user.major || "-"}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {user.classification || "-"}
+                    <TableCell>
+                      {(user.role === "STUDENT" || user.role === "MENTOR") &&
+                      user.classification ? (
+                        <Select
+                          value={user.classification}
+                          onValueChange={(newClassification) =>
+                            handleClassificationChange(
+                              user.id,
+                              newClassification,
+                              user.name || user.email,
+                              user.classification || "FRESHMAN"
+                            )
+                          }
+                          disabled={isUpdatingClassification}
+                        >
+                          <SelectTrigger className="w-[140px] bg-input border-border text-foreground">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CLASSIFICATIONS.filter((c) =>
+                              user.role === "MENTOR" ? c !== "FRESHMAN" : true
+                            ).map((classification) => (
+                              <SelectItem
+                                key={classification}
+                                value={classification}
+                              >
+                                {classification}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          {user.classification || "-"}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {user.role === "MENTOR" &&
@@ -493,6 +643,17 @@ export const UsersPage = () => {
                   {selectedUser?.newRole}
                 </p>
               </div>
+              {getRoleChangeWarning() && (
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md border border-yellow-200 dark:border-yellow-800">
+                  <p className="text-sm font-medium text-yellow-900 dark:text-yellow-200 flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4" />
+                    Warning
+                  </p>
+                  <p className="text-xs mt-1 text-yellow-800 dark:text-yellow-300">
+                    {getRoleChangeWarning()}
+                  </p>
+                </div>
+              )}
               <div className="mt-4 p-3 bg-muted rounded-md border border-border">
                 <p className="text-sm font-medium text-foreground flex items-center gap-2">
                   <AlertCircle className="h-4 w-4" />
@@ -515,6 +676,67 @@ export const UsersPage = () => {
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmRoleChange}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Confirm Change
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={!!classificationDialog}
+        onOpenChange={(open) => !open && setClassificationDialog(null)}
+      >
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-card-foreground">
+              Confirm Classification Change
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground space-y-2">
+              <p>
+                Are you sure you want to change the classification for{" "}
+                <span className="font-semibold text-foreground">
+                  {classificationDialog?.name}
+                </span>
+                ?
+              </p>
+              <div className="mt-4 space-y-1 text-sm">
+                <p>
+                  <span className="font-medium text-foreground">
+                    Current classification:
+                  </span>{" "}
+                  {classificationDialog?.currentClassification}
+                </p>
+                <p>
+                  <span className="font-medium text-foreground">
+                    New classification:
+                  </span>{" "}
+                  {classificationDialog?.newClassification}
+                </p>
+              </div>
+              <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md border border-yellow-200 dark:border-yellow-800">
+                <p className="text-sm font-medium text-yellow-900 dark:text-yellow-200 flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4" />
+                  Notice
+                </p>
+                <p className="text-xs mt-1 text-yellow-800 dark:text-yellow-300">
+                  This student is currently a FRESHMAN. Changing their
+                  classification may affect their eligibility for certain
+                  programs or courses.
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => setClassificationDialog(null)}
+              className="bg-background border-border text-foreground hover:bg-accent"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmClassificationChange}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               Confirm Change

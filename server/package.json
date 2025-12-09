@@ -14,7 +14,8 @@
     "prisma:migrate": "prisma migrate dev",
     "seed:neo4j": "ts-node src/db/seeders/seedCourses.ts",
     "seed:pg": "ts-node -r tsconfig-paths/register src/db/seeders/index.ts",
-    "seed": "pnpm seed:pg && pnpm seed:neo4j"
+    "seed": "pnpm seed:pg && pnpm seed:neo4j",
+    "fix:chat-duplicates": "ts-node -r tsconfig-paths/register scripts/fix-duplicate-chat-threads.ts"
   },
   "license": "ISC",
   "dependencies": {

@@ -78,10 +78,10 @@
     "isActive": true,
     "major": "BSCSC",
     "minor": "Communication",
-    "classification": "SOPHOMORE",
-    "isFYEStudent": false,
-    "joinDate": "2023-09-01T00:00:00Z",
-    "expectedGraduation": "2027-05-31T00:00:00Z"
+    "classification": "FRESHMAN",
+    "isFYEStudent": true,
+    "joinDate": "2024-09-01T00:00:00Z",
+    "expectedGraduation": "2028-05-31T00:00:00Z"
   },
   {
     "id": "user_010",
@@ -129,11 +129,38 @@
     "password": "student6",
     "name": "Zineb El Ouardi",
     "role": "STUDENT",
-    "isActive": false,
+    "isActive": true,
     "major": "BSCSC",
-    "classification": "SOPHOMORE",
-    "isFYEStudent": false,
-    "joinDate": "2023-09-01T00:00:00Z",
-    "expectedGraduation": "2027-05-31T00:00:00Z"
+    "classification": "FRESHMAN",
+    "isFYEStudent": true,
+    "joinDate": "2024-09-01T00:00:00Z",
+    "expectedGraduation": "2028-05-31T00:00:00Z"
+  },
+  {
+    "id": "user_014",
+    "email": "student7@aui.ma",
+    "password": "student7",
+    "name": "Yassine Berrada",
+    "role": "STUDENT",
+    "isActive": true,
+    "major": "BSCSC",
+    "classification": "FRESHMAN",
+    "isFYEStudent": true,
+    "joinDate": "2024-09-01T00:00:00Z",
+    "expectedGraduation": "2028-05-31T00:00:00Z"
+  },
+  {
+    "id": "user_015",
+    "email": "student8@aui.ma",
+    "password": "student8",
+    "name": "Imane Zaki",
+    "role": "STUDENT",
+    "isActive": true,
+    "major": "BSCSC",
+    "minor": "Mathematics",
+    "classification": "FRESHMAN",
+    "isFYEStudent": true,
+    "joinDate": "2024-09-01T00:00:00Z",
+    "expectedGraduation": "2028-05-31T00:00:00Z"
   }
 ]

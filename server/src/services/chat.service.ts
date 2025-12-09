@@ -300,6 +300,7 @@ export const sendMessage = async (
 
 /**
  * Mark specific messages as read by updating their status
+ * For group chats, only mark as READ when ALL participants (except sender) have read it
  */
 export const markMessagesAsRead = async (
   messageIds: string[],
@@ -310,23 +311,67 @@ export const markMessagesAsRead = async (
       return { success: true, updatedCount: 0 };
     }
 
-    // Update status to READ for specific messages (not sent by this user)
-    const result = await prisma.message.updateMany({
+    // Update lastReadAt for this participant
+    const messages = await prisma.message.findMany({
       where: {
         id: { in: messageIds },
-        senderId: { not: userId }, // don't mark your own messages as read
-        status: { not: "READ" }, // only update if not already read
+        senderId: { not: userId },
       },
-      data: {
-        status: "READ",
+      include: {
+        thread: {
+          include: {
+            participants: {
+              select: {
+                userId: true,
+                lastReadAt: true,
+              },
+            },
+          },
+        },
       },
     });
 
+    const now = new Date();
+    let updatedCount = 0;
+
+    for (const message of messages) {
+      // Update participant's lastReadAt
+      await prisma.chatParticipant.updateMany({
+        where: {
+          threadId: message.threadId,
+          userId: userId,
+        },
+        data: {
+          lastReadAt: now,
+        },
+      });
+
+      // Check if all participants (except sender) have read this message
+      const participants = message.thread.participants;
+      const otherParticipants = participants.filter(
+        (p) => p.userId !== message.senderId
+      );
+      const messageSentAt = new Date(message.sentAt);
+
+      const allHaveRead = otherParticipants.every((p) => {
+        return p.lastReadAt && new Date(p.lastReadAt) >= messageSentAt;
+      });
+
+      // Only update to READ if all participants have read it
+      if (allHaveRead && message.status !== "READ") {
+        await prisma.message.update({
+          where: { id: message.id },
+          data: { status: "READ" },
+        });
+        updatedCount++;
+      }
+    }
+
     logger.info(
-      `[Chat] Marked ${result.count} messages as READ for user ${userId}`
+      `[Chat] Updated lastReadAt for user ${userId}, marked ${updatedCount} messages as fully READ`
     );
 
-    return { success: true, updatedCount: result.count };
+    return { success: true, updatedCount };
   } catch (error) {
     logger.error("Error in markMessagesAsRead:", error);
     throw error;
@@ -375,7 +420,6 @@ export const addStudentToMentorGroup = async (
 
     logger.info(`Thread ${thread.id} retrieved/created for mentor ${mentorId}`);
 
-    // Check if student is already a participant
     const existingParticipant = await prisma.chatParticipant.findUnique({
       where: {
         threadId_userId: {
@@ -389,16 +433,40 @@ export const addStudentToMentorGroup = async (
       logger.info(
         `Student ${studentId} is already a participant in thread ${thread.id}`
       );
-    } else {
+      return thread;
+    }
+
+    await prisma.chatParticipant.create({
+      data: {
+        threadId: thread.id,
+        userId: studentId,
+      },
+    });
+
+    logger.info(
+      `Successfully added student ${studentId} as participant in thread ${thread.id}`
+    );
+
+    const mentorParticipant = await prisma.chatParticipant.findUnique({
+      where: {
+        threadId_userId: {
+          threadId: thread.id,
+          userId: mentorId,
+        },
+      },
+    });
+
+    if (!mentorParticipant) {
+      logger.warn(
+        `Mentor ${mentorId} was not a participant in thread ${thread.id}. Adding them now.`
+      );
       await prisma.chatParticipant.create({
         data: {
           threadId: thread.id,
-          userId: studentId,
+          userId: mentorId,
         },
       });
-      logger.info(
-        `Successfully added student ${studentId} as participant in thread ${thread.id}`
-      );
+      logger.info(`Added mentor ${mentorId} to thread ${thread.id}`);
     }
 
     return thread;
@@ -416,26 +484,88 @@ export const getOrCreateDirectChat = async (
   userId2: string
 ) => {
   try {
-    // Check if a direct chat already exists between these two users
-    let thread = await prisma.chatThread.findFirst({
+    logger.info(
+      `Getting or creating direct chat between ${userId1} and ${userId2}`
+    );
+
+    // First, find all DIRECT threads that include userId1
+    const threadsWithUser1 = await prisma.chatThread.findMany({
       where: {
         type: ChatThreadType.DIRECT,
-        AND: [
-          {
-            participants: {
-              some: {
-                userId: userId1,
+        participants: {
+          some: {
+            userId: userId1,
+          },
+        },
+      },
+      include: {
+        participants: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    });
+
+    // Then filter to find thread that has exactly both users
+    let existingThread = threadsWithUser1.find((thread) => {
+      const participantIds = thread.participants.map((p) => p.userId);
+      return (
+        participantIds.length === 2 &&
+        participantIds.includes(userId1) &&
+        participantIds.includes(userId2)
+      );
+    });
+
+    if (existingThread) {
+      logger.info(`Found existing direct chat: ${existingThread.id}`);
+
+      // Fetch the complete thread with all necessary includes
+      const thread = await prisma.chatThread.findUnique({
+        where: { id: existingThread.id },
+        include: {
+          participants: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  role: true,
+                },
               },
             },
           },
-          {
-            participants: {
-              some: {
-                userId: userId2,
+          messages: {
+            orderBy: { sentAt: "desc" },
+            take: 1,
+            include: {
+              sender: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
               },
             },
           },
-        ],
+        },
+      });
+
+      return thread;
+    }
+
+    logger.info(`No existing direct chat found, creating new one`);
+
+    logger.info(`No existing direct chat found, creating new one`);
+
+    // Create a new direct chat thread
+    const thread = await prisma.chatThread.create({
+      data: {
+        type: ChatThreadType.DIRECT,
+        participants: {
+          create: [{ userId: userId1 }, { userId: userId2 }],
+        },
       },
       include: {
         participants: {
@@ -466,47 +596,9 @@ export const getOrCreateDirectChat = async (
       },
     });
 
-    if (!thread) {
-      // Create a new direct chat thread
-      thread = await prisma.chatThread.create({
-        data: {
-          type: ChatThreadType.DIRECT,
-          participants: {
-            create: [{ userId: userId1 }, { userId: userId2 }],
-          },
-        },
-        include: {
-          participants: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                  role: true,
-                },
-              },
-            },
-          },
-          messages: {
-            orderBy: { sentAt: "desc" },
-            take: 1,
-            include: {
-              sender: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                },
-              },
-            },
-          },
-        },
-      });
-
-      logger.info(`Created direct chat between ${userId1} and ${userId2}`);
-    }
-
+    logger.info(
+      `Created direct chat ${thread.id} between ${userId1} and ${userId2}`
+    );
     return thread;
   } catch (error) {
     logger.error("Error in getOrCreateDirectChat:", error);

@@ -31,10 +31,10 @@ export interface SignupInput {
   email: string;
   password: string;
   name: string;
-  major: string;
+  major?: string;
   minor?: string;
   classification: Classification;
-  isFYEStudent: boolean;
+  isFYEStudent?: boolean;
   joinDate: string;
   expectedGraduation: string;
   transcriptFile?: File;

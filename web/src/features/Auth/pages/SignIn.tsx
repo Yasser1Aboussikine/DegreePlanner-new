@@ -63,18 +63,35 @@ export default function SignInPage() {
         })
       );
 
-      console.log(`Credentials stored, navigating to ${from}`);
-
       toast.success("Login successful!", { id: toastId });
 
-      // Navigate to previous route or home page
-      navigate(from, { replace: true });
+      // Always redirect to role-specific dashboard after login
+      const dashboardPath = getDashboardPath(authData.user.role);
+      console.log(`Navigating to dashboard: ${dashboardPath}`);
+      navigate(dashboardPath, { replace: true });
     } catch (err: any) {
       console.error("Login error:", err);
       toast.error(
         err?.data?.message || "Login failed. Please check your credentials.",
         { id: toastId }
       );
+    }
+  };
+
+  const getDashboardPath = (role: string) => {
+    switch (role) {
+      case "STUDENT":
+        return "/student/dashboard";
+      case "ADMIN":
+        return "/admin/dashboard";
+      case "ADVISOR":
+        return "/advisor/dashboard";
+      case "REGISTRAR":
+        return "/registrar/dashboard";
+      case "MENTOR":
+        return "/mentor/dashboard";
+      default:
+        return "/";
     }
   };
 
@@ -123,7 +140,9 @@ export default function SignInPage() {
                 className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary [&:-webkit-autofill]:bg-background [&:-webkit-autofill]:text-foreground [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_hsl(var(--background))] [&:-webkit-autofill]:[-webkit-text-fill-color:hsl(var(--foreground))]"
               />
               {errors.email && (
-                <p className="text-sm text-destructive">{errors.email.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -148,7 +167,9 @@ export default function SignInPage() {
                 className="bg-background border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary [&:-webkit-autofill]:bg-background [&:-webkit-autofill]:text-foreground [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_hsl(var(--background))] [&:-webkit-autofill]:[-webkit-text-fill-color:hsl(var(--foreground))]"
               />
               {errors.password && (
-                <p className="text-sm text-destructive">{errors.password.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 

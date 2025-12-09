@@ -24,26 +24,23 @@ export function useLogoutHandler() {
   const handleLogout = async () => {
     try {
       // Use withToast to handle loading/success/error states
-      await withToast(
-        logoutMutation().unwrap(),
-        {
-          loading: "Logging out...",
-          success: "Logged out successfully",
-          error: "Logout failed",
-        }
-      );
+      await withToast(logoutMutation().unwrap(), {
+        loading: "Logging out...",
+        success: "Logged out successfully",
+        error: "Logout failed",
+      });
 
       // Clear local state
       dispatch(logoutAction());
 
-      // Navigate to sign in page
-      navigate("/signin");
+      // Navigate to sign in page and replace history to prevent back navigation
+      navigate("/signin", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
 
       // Still clear local state even if API call fails
       dispatch(logoutAction());
-      navigate("/signin");
+      navigate("/signin", { replace: true });
     }
   };
 
