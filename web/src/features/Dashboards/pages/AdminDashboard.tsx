@@ -52,12 +52,12 @@ export const AdminDashboard = () => {
           data={data?.degreeProgress || []}
           isLoading={isLoading}
         />
-        <ProgressCard
+        {/* <ProgressCard
           title="Approval Workflow Status"
           icon={TrendingUp}
           data={data?.approvalWorkflow || []}
           isLoading={isLoading}
-        />
+        /> */}
       </div>
     </div>
   );

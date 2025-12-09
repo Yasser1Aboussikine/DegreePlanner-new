@@ -5,6 +5,7 @@ import { useGetAllCoursesQuery } from "@/store/api";
 import CardLayout from "@/shared/CardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { normalizeSearchQuery } from "@/utils/searchHelpers";
 import {
   Select,
   SelectContent,
@@ -34,7 +35,8 @@ const StudentCourses = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
+      const normalized = searchQuery ? normalizeSearchQuery(searchQuery) : "";
+      setDebouncedSearch(normalized);
       setCurrentPage(1);
     }, 400);
 
