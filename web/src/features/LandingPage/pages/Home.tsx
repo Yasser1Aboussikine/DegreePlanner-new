@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import FeaturesSection from "../components/FeaturesSection";
 import TechStackSection from "../components/TechStackSection";
-import Footer from "../components/Footer";
+import FeaturesTimeline from "../components/FeaturesTimeline";
 import PremiumBackground from "../components/PremiumBackground";
 import CursorSpark from "../components/CursorSpark";
 
@@ -15,7 +15,9 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <TechStackSection />
-      <Footer />
+      <FeaturesTimeline />
+
+      {/* <Footer /> */}
     </div>
   );
 }

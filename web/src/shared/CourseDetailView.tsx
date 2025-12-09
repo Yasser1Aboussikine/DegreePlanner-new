@@ -66,7 +66,13 @@ const CourseDetailView = ({
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isAddingPrerequisite, setIsAddingPrerequisite] = useState(false);
+  const [isAddingDependent, setIsAddingDependent] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<{
+    value: string;
+    label: string;
+    subtitle: string;
+  } | null>(null);
+  const [selectedDependentCourse, setSelectedDependentCourse] = useState<{
     value: string;
     label: string;
     subtitle: string;
@@ -112,6 +118,21 @@ const CourseDetailView = ({
         subtitle: c.course_title,
       }));
   }, [allCoursesData, prerequisites, courseId]);
+
+  const dependentCourseOptions = useMemo(() => {
+    if (!allCoursesData?.data) return [];
+
+    const dependentIds = new Set(dependents.map((d: Course) => d.id));
+    dependentIds.add(courseId);
+
+    return allCoursesData.data
+      .filter((c: Course) => !dependentIds.has(c.id))
+      .map((c: Course) => ({
+        value: c.id,
+        label: c.course_code,
+        subtitle: c.course_title,
+      }));
+  }, [allCoursesData, dependents, courseId]);
 
   const [formData, setFormData] = useState({
     course_code: "",
@@ -244,6 +265,49 @@ const CourseDetailView = ({
         error?.data?.message ||
         error?.message ||
         "Failed to remove prerequisite";
+      toast.error(errorMessage, { id: toastId });
+    }
+  };
+
+  const handleAddDependent = async () => {
+    if (!selectedDependentCourse) {
+      toast.error("Please select a course");
+      return;
+    }
+
+    const toastId = toast.loading("Adding dependent course...");
+
+    try {
+      await addPrerequisite({
+        id: selectedDependentCourse.value,
+        prerequisiteId: courseId,
+      }).unwrap();
+
+      toast.success("Dependent course added successfully!", { id: toastId });
+      setSelectedDependentCourse(null);
+      setIsAddingDependent(false);
+    } catch (error: any) {
+      const errorMessage =
+        error?.data?.message || error?.message || "Failed to add dependent course";
+      toast.error(errorMessage, { id: toastId });
+    }
+  };
+
+  const handleRemoveDependent = async (dependentId: string) => {
+    const toastId = toast.loading("Removing dependent course...");
+
+    try {
+      await removePrerequisite({
+        id: dependentId,
+        prerequisiteId: courseId,
+      }).unwrap();
+
+      toast.success("Dependent course removed successfully!", { id: toastId });
+    } catch (error: any) {
+      const errorMessage =
+        error?.data?.message ||
+        error?.message ||
+        "Failed to remove dependent course";
       toast.error(errorMessage, { id: toastId });
     }
   };
@@ -739,15 +803,145 @@ const CourseDetailView = ({
         <TabsContent value="dependents" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Network className="h-5 w-5" />
-                Dependent Courses
-              </CardTitle>
-              <CardDescription>
-                Courses that require {course.course_code} as a prerequisite
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Network className="h-5 w-5" />
+                    Dependent Courses
+                  </CardTitle>
+                  <CardDescription>
+                    Courses that require {course.course_code} as a prerequisite
+                  </CardDescription>
+                </div>
+                {canEdit && !isAddingDependent && (
+                  <Button
+                    onClick={() => setIsAddingDependent(true)}
+                    variant="outline"
+                    size="sm"
+                    className="gap-1"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Add
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
+              {isAddingDependent && (
+                <div className="mb-4 space-y-3 p-4 border border-border rounded-lg bg-muted/50">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Search and select a course to add as dependent
+                    </label>
+                    <Select
+                      value={selectedDependentCourse}
+                      onChange={(option) => setSelectedDependentCourse(option)}
+                      options={dependentCourseOptions}
+                      isLoading={allCoursesLoading}
+                      isDisabled={isAddingPrereq}
+                      placeholder="Type to search courses (e.g., CSC 3302)..."
+                      isClearable
+                      isSearchable
+                      formatOptionLabel={(option) => (
+                        <div className="py-1">
+                          <div className="font-bold text-base">
+                            {option.label}
+                          </div>
+                          <div className="text-sm text-muted-foreground mt-0.5">
+                            {option.subtitle}
+                          </div>
+                        </div>
+                      )}
+                      styles={{
+                        control: (base, state) => ({
+                          ...base,
+                          backgroundColor: "white",
+                          borderColor: state.isFocused ? "#16a34a" : "#16a34a",
+                          borderWidth: "2px",
+                          borderRadius: "0.5rem",
+                          minHeight: "44px",
+                          boxShadow: state.isFocused
+                            ? "0 0 0 2px rgba(22, 163, 74, 0.2)"
+                            : "none",
+                          "&:hover": {
+                            borderColor: "#16a34a",
+                          },
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          backgroundColor: "white",
+                          border: "1px solid #16a34a",
+                          borderRadius: "0.5rem",
+                          boxShadow:
+                            "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+                          overflow: "hidden",
+                        }),
+                        menuList: (base) => ({
+                          ...base,
+                          padding: "0.25rem",
+                        }),
+                        option: (base, state) => ({
+                          ...base,
+                          backgroundColor: state.isFocused
+                            ? "#bbf7d0"
+                            : "white",
+                          color: state.isFocused
+                            ? "#166534"
+                            : "hsl(var(--foreground))",
+                          cursor: "pointer",
+                          padding: "12px 16px",
+                          borderRadius: "0.375rem",
+                          transition: "all 0.15s ease",
+                          fontWeight: "600",
+                          "&:active": {
+                            backgroundColor: "#86efac",
+                          },
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          color: "hsl(var(--foreground))",
+                          fontSize: "0.95rem",
+                          fontWeight: "600",
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          color: "hsl(var(--foreground))",
+                          fontSize: "0.95rem",
+                          fontWeight: "600",
+                        }),
+                        placeholder: (base) => ({
+                          ...base,
+                          color: "hsl(var(--muted-foreground))",
+                          fontSize: "0.95rem",
+                        }),
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleAddDependent}
+                      disabled={isAddingPrereq || !selectedDependentCourse}
+                      size="sm"
+                      className="flex-1"
+                    >
+                      {isAddingPrereq ? "Adding..." : "Add Dependent"}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setIsAddingDependent(false);
+                        setSelectedDependentCourse(null);
+                      }}
+                      variant="outline"
+                      disabled={isAddingPrereq}
+                      size="sm"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {dependentsLoading ? (
                 <div className="space-y-2">
                   <Skeleton className="h-16 w-full" />
@@ -756,15 +950,14 @@ const CourseDetailView = ({
               ) : dependents.length > 0 ? (
                 <div className="space-y-3">
                   {dependents.map((dependent: Course) => (
-                    <div
-                      key={dependent.id}
-                      onClick={() => handleNavigateToCourse(dependent.id)}
-                      className="block cursor-pointer"
-                    >
+                    <div key={dependent.id} className="block cursor-pointer">
                       <Card className="hover:bg-accent transition-colors">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between">
-                            <div className="flex-1">
+                            <div
+                              className="flex-1"
+                              onClick={() => handleNavigateToCourse(dependent.id)}
+                            >
                               <div className="font-semibold text-base">
                                 {dependent.course_code}
                               </div>
@@ -772,9 +965,24 @@ const CourseDetailView = ({
                                 {dependent.course_title}
                               </div>
                             </div>
-                            <Badge variant="outline">
-                              {dependent.n_credits} credits
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline">
+                                {dependent.n_credits} credits
+                              </Badge>
+                              {canEdit && (
+                                <Button
+                                  onClick={() =>
+                                    handleRemoveDependent(dependent.id)
+                                  }
+                                  variant="ghost"
+                                  size="sm"
+                                  disabled={isRemovingPrereq}
+                                  className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </CardContent>
                       </Card>

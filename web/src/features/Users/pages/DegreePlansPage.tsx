@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { useGetAllDegreePlansQuery } from "@/store/api/degreePlanApi";
 import CardLayout from "@/shared/CardLayout";
 import { Input } from "@/components/ui/input";
