@@ -47,6 +47,7 @@ import {
   ChevronRight,
   Loader2,
   Calendar,
+  Download,
 } from "lucide-react";
 import type {
   DraggableCourse,
@@ -76,6 +77,7 @@ import {
   validateCourseAddition,
 } from "@/utils/semesterValidation";
 import { normalizeSearchQuery } from "@/utils/searchHelpers";
+import { exportDegreePlanToWord } from "@/utils/exportDegreePlan";
 
 export function DegreePlanBuilder() {
   const user = useAppSelector((state) => state.auth.user);
@@ -99,11 +101,12 @@ export function DegreePlanBuilder() {
   const [showAddSemesterDialog, setShowAddSemesterDialog] = useState(false);
   const [selectedTerm, setSelectedTerm] = useState<Term | null>(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [isExporting, setIsExporting] = useState(false);
 
   const {
     data: degreePlanData,
     isLoading: isLoadingPlan,
-    refetch: refetchDegreePlan,
+    // refetch: refetchDegreePlan,
   } = useGetMyDegreePlanQuery();
   const { data: allRelationships } = useGetAllCourseRelationshipsQuery();
   const { data: reviewRequestsData } = useGetReviewRequestsByStudentIdQuery(
@@ -118,6 +121,41 @@ export function DegreePlanBuilder() {
   const reviewRequestsMap = new Map(
     (reviewRequestsData?.data || []).map((req) => [req.planSemesterId, req])
   );
+
+  // Calculate overall degree plan status (latest status from all review requests)
+  const getOverallStatus = (): string | null => {
+    const allRequests = reviewRequestsData?.data || [];
+    if (allRequests.length === 0) return null;
+
+    // Check if any are rejected
+    if (allRequests.some((req) => req.status === "REJECTED")) {
+      return "REJECTED";
+    }
+
+    // Check if all are approved
+    if (allRequests.every((req) => req.status === "APPROVED")) {
+      return "APPROVED";
+    }
+
+    // Check if any are pending advisor (after mentor approval)
+    if (allRequests.some((req) => req.status === "PENDING_ADVISOR")) {
+      return "PENDING_ADVISOR";
+    }
+
+    // Otherwise, pending mentor
+    if (allRequests.some((req) => req.status === "PENDING_MENTOR")) {
+      return "PENDING_MENTOR";
+    }
+
+    return null;
+  };
+
+  const overallStatus = getOverallStatus();
+
+  // Get general rejection reason from any rejected request (they all have the same one)
+  const generalRejectionReason =
+    reviewRequestsData?.data?.find((req) => req.rejectionReason)
+      ?.rejectionReason || null;
 
   const normalizedSearchQuery = searchQuery
     ? normalizeSearchQuery(searchQuery)
@@ -618,13 +656,10 @@ export function DegreePlanBuilder() {
       setShowAddSemesterDialog(false);
       toast.success(`New semester added: ${result.term} ${result.year}`);
 
-      await refetchDegreePlan();
-
+      // Wait for the cache to update automatically via invalidation
       setTimeout(() => {
-        if (degreePlanData && degreePlanData.semesters) {
-          setCurrentSemesterIndex(degreePlanData.semesters.length - 1);
-        }
-      }, 100);
+        setCurrentSemesterIndex(semesters.length); // Will be the new last index
+      }, 200);
     } catch (error: any) {
       const errorMessage = error?.data?.message || "Failed to add semester";
       toast.error(errorMessage);
@@ -676,6 +711,29 @@ export function DegreePlanBuilder() {
     }
   };
 
+  const handleExportPlan = async () => {
+    if (!degreePlanData || !user) {
+      toast.error("Unable to export degree plan");
+      return;
+    }
+
+    if (semesters.length === 0) {
+      toast.error("Cannot export an empty degree plan");
+      return;
+    }
+
+    setIsExporting(true);
+    try {
+      await exportDegreePlanToWord(degreePlanData, user);
+      toast.success("Degree plan exported successfully");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to export degree plan");
+      console.error("Error exporting degree plan:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const totalCreditsPlanned = semesters.reduce(
     (sum, sem) => sum + sem.totalCredits,
     0
@@ -710,6 +768,19 @@ export function DegreePlanBuilder() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              onClick={handleExportPlan}
+              variant="outline"
+              disabled={isExporting || semesters.length === 0}
+              className="flex items-center gap-2"
+            >
+              {isExporting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              Export Plan
+            </Button>
             <Button
               onClick={handleRequestReview}
               variant="default"
@@ -821,11 +892,8 @@ export function DegreePlanBuilder() {
                             ?.advisorComment
                         : undefined
                     }
-                    reviewStatus={
-                      currentSemester
-                        ? reviewRequestsMap.get(currentSemester.id)?.status
-                        : undefined
-                    }
+                    reviewStatus={overallStatus}
+                    rejectionReason={generalRejectionReason}
                   />
                 </div>
               ) : (

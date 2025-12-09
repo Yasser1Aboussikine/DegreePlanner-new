@@ -33,6 +33,21 @@ export interface PlanSemesterExtended extends PlanSemester {
 export const createPlanSemester = async (
   data: CreatePlanSemesterInput
 ): Promise<PlanSemesterExtended> => {
+  // Check for duplicate semester (same degree plan, year, and term)
+  const existingSemester = await prisma.planSemester.findFirst({
+    where: {
+      degreePlanId: data.degreePlanId,
+      year: data.year,
+      term: data.term,
+    },
+  });
+
+  if (existingSemester) {
+    throw new Error(
+      `A semester for ${data.term} ${data.year} already exists in this degree plan`
+    );
+  }
+
   const planSemester = await prisma.planSemester.create({
     data: {
       degreePlanId: data.degreePlanId,

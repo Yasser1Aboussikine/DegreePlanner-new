@@ -47,7 +47,6 @@ export const AdvisorReviewRequestsPage = () => {
   >([]);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [generalRejectionReason, setGeneralRejectionReason] = useState("");
-  const [, setSemesterComments] = useState<Record<string, string>>({});
   const [isApproving, setIsApproving] = useState(true);
 
   const reviewRequests = data?.data || [];
@@ -68,7 +67,6 @@ export const AdvisorReviewRequestsPage = () => {
     setSelectedRequests(requests);
     setIsApproving(approve);
     setGeneralRejectionReason("");
-    setSemesterComments({});
     setShowReviewDialog(true);
   };
 
@@ -119,7 +117,6 @@ export const AdvisorReviewRequestsPage = () => {
       setShowReviewDialog(false);
       setSelectedRequests([]);
       setGeneralRejectionReason("");
-      setSemesterComments({});
       refetch();
     } catch (error: any) {
       const errorMessage = error?.data?.message || "Failed to submit review";
@@ -287,8 +284,8 @@ export const AdvisorReviewRequestsPage = () => {
             </DialogTitle>
             <DialogDescription>
               {isApproving
-                ? "You are about to give final approval to this degree plan. Comments should be added from the View Degree Plan page."
-                : "Please provide a general reason for rejection. Individual semester comments should be added from the View Degree Plan page."}
+                ? "You are about to give final approval to this degree plan. Comments can be added from the View Degree Plan page."
+                : "Please provide a general reason for rejection. Semester-specific comments can be added from the View Degree Plan page."}
             </DialogDescription>
           </DialogHeader>
 

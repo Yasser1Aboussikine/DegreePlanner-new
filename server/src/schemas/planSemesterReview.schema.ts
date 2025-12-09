@@ -99,6 +99,16 @@ export const submitBulkMentorReviewSchema = z.object({
   }),
 });
 
+export const updateCommentSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+  body: z.object({
+    role: z.enum(["mentor", "advisor"]),
+    comment: z.string(),
+  }),
+});
+
 export const submitBulkAdvisorReviewSchema = z.object({
   body: z.object({
     degreePlanId: z.string(),
@@ -119,3 +129,4 @@ export type SubmitBulkMentorReviewInput = z.infer<
 export type SubmitBulkAdvisorReviewInput = z.infer<
   typeof submitBulkAdvisorReviewSchema
 >;
+export type UpdateCommentInput = z.infer<typeof updateCommentSchema>;

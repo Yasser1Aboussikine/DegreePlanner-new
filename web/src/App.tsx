@@ -1,10 +1,15 @@
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "./Layouts";
-// import Home from './features/LandingPage/pages/Home'
 import { SignIn as SignInPage, SignUp as SignUpPage } from "./features/Auth";
 import { DegreePlanBuilder } from "./features/DegreePlan/pages/DegreePlanBuilder";
-import { StudentDashboard } from "./features/Dashboards/pages/StudentDashboard";
+import {
+  StudentDashboard,
+  MentorDashboard,
+  AdvisorDashboard,
+  RegistrarDashboard,
+  AdminDashboard,
+} from "./features/Dashboards/pages";
 import AdminCourses from "./features/Courses/pages/AdminCourses";
 import ViewOnlyCourses from "./features/Courses/pages/ViewOnlyCourses";
 import { CourseDetailPage } from "./features/Courses/pages/CourseDetailPage";
@@ -36,16 +41,8 @@ import {
   AdvisorStudentDegreePlanPage,
 } from "./features/Assignments";
 import { ClassificationProtectedRoute } from "./components/ClassificationProtectedRoute";
-
-// Placeholder Dashboard component
-const DashboardPlaceholder = () => (
-  <div>
-    <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-    <p className="text-muted-foreground">Dashboard content coming soon...</p>
-  </div>
-);
-
-
+import { RoleBasedRedirect } from "./components/RoleBasedRedirect";
+import Home from "./features/LandingPage/pages/Home";
 
 function App() {
   return (
@@ -55,13 +52,11 @@ function App() {
         {/* Public Routes */}
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/home" element={<Home />} />
 
         {/* Protected Routes - Role-based Layout will handle routing */}
         <Route path="/" element={<RoleBasedLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-
-          {/* Common routes for all roles */}
-          <Route path="dashboard" element={<DashboardPlaceholder />} />
+          <Route index element={<RoleBasedRedirect />} />
 
           {/* Student routes */}
           <Route path="student">
@@ -86,7 +81,7 @@ function App() {
           {/* Admin routes */}
           <Route path="admin">
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPlaceholder />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="profile" element={<AdminProfilePage />} />
             <Route path="courses" element={<AdminCourses />} />
             <Route path="courses/create" element={<AdminCreateCourse />} />
@@ -104,7 +99,7 @@ function App() {
           {/* Advisor routes */}
           <Route path="advisor">
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPlaceholder />} />
+            <Route path="dashboard" element={<AdvisorDashboard />} />
             <Route path="profile" element={<AdvisorProfilePage />} />
             <Route path="students" element={<AdvisorStudentsPage />} />
             <Route
@@ -117,7 +112,6 @@ function App() {
             />
             <Route path="courses" element={<ViewOnlyCourses />} />
             <Route path="courses/:id" element={<CourseDetailPage />} />
-            <Route path="chat" element={<div>Advisor Chat</div>} />
             <Route
               path="review-requests"
               element={<AdvisorReviewRequestsPage />}
@@ -127,7 +121,7 @@ function App() {
           {/* Registrar routes */}
           <Route path="registrar">
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPlaceholder />} />
+            <Route path="dashboard" element={<RegistrarDashboard />} />
             <Route path="profile" element={<RegistrarProfilePage />} />
             <Route path="courses" element={<AdminCourses />} />
             <Route path="courses/create" element={<RegistrarCreateCourse />} />
@@ -138,7 +132,7 @@ function App() {
           {/* Mentor routes */}
           <Route path="mentor">
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<DashboardPlaceholder />} />
+            <Route path="dashboard" element={<MentorDashboard />} />
             <Route path="profile" element={<MentorProfilePage />} />
             <Route path="courses" element={<ViewOnlyCourses />} />
             <Route path="courses/:id" element={<CourseDetailPage />} />

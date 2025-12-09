@@ -845,3 +845,37 @@ export async function fixJuniorSeniorReviews(): Promise<any[]> {
 
   return updatedRequests;
 }
+
+interface UpdateCommentData {
+  mentorComment?: string;
+  advisorComment?: string;
+}
+
+export async function updateReviewRequestComment(
+  id: string,
+  role: "mentor" | "advisor",
+  comment: string
+): Promise<PlanSemesterReviewRequest> {
+  const updateData: UpdateCommentData = {};
+
+  if (role === "mentor") {
+    updateData.mentorComment = comment;
+  } else {
+    updateData.advisorComment = comment;
+  }
+
+  return await prisma.planSemesterReviewRequest.update({
+    where: { id },
+    data: updateData,
+    include: {
+      planSemester: {
+        include: {
+          plannedCourses: true,
+        },
+      },
+      student: true,
+      mentor: true,
+      advisor: true,
+    },
+  });
+}

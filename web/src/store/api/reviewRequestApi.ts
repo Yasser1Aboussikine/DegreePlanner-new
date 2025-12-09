@@ -162,6 +162,21 @@ export const reviewRequestApi = apiSlice.injectEndpoints({
       invalidatesTags: ["ReviewRequest"],
     }),
 
+    updateReviewRequestComment: builder.mutation<
+      { data: PlanSemesterReviewRequest },
+      { id: string; role: "mentor" | "advisor"; comment: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/review-requests/${id}/comment`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "ReviewRequest", id },
+        "ReviewRequest",
+      ],
+    }),
+
     deleteReviewRequest: builder.mutation<{ data: null }, string>({
       query: (id) => ({
         url: `/review-requests/${id}`,
@@ -186,5 +201,6 @@ export const {
   useSubmitAdvisorReviewMutation,
   useSubmitBulkMentorReviewMutation,
   useSubmitBulkAdvisorReviewMutation,
+  useUpdateReviewRequestCommentMutation,
   useDeleteReviewRequestMutation,
 } = reviewRequestApi;

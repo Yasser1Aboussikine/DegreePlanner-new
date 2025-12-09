@@ -46,9 +46,6 @@ export const MentorReviewRequestsPage = () => {
   >([]);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [generalRejectionReason, setGeneralRejectionReason] = useState("");
-  const [semesterComments, setSemesterComments] = useState<
-    Record<string, string>
-  >({});
   const [isApproving, setIsApproving] = useState(true);
 
   const reviewRequests = data?.data || [];
@@ -69,15 +66,7 @@ export const MentorReviewRequestsPage = () => {
     setSelectedRequests(requests);
     setIsApproving(approve);
     setGeneralRejectionReason("");
-    setSemesterComments({});
     setShowReviewDialog(true);
-  };
-
-  const handleUpdateSemesterComment = (requestId: string, comment: string) => {
-    setSemesterComments((prev) => ({
-      ...prev,
-      [requestId]: comment,
-    }));
   };
 
   const handleSubmitReview = async () => {
@@ -100,10 +89,7 @@ export const MentorReviewRequestsPage = () => {
       await submitBulkMentorReview({
         degreePlanId,
         approve: isApproving,
-        semesterComments: selectedRequests.map((req) => ({
-          requestId: req.id,
-          comment: semesterComments[req.id] || undefined,
-        })),
+        semesterComments: [], // Comments are now added from View Degree Plan page
         generalRejectionReason: !isApproving
           ? generalRejectionReason.trim()
           : undefined,
@@ -117,7 +103,6 @@ export const MentorReviewRequestsPage = () => {
       setShowReviewDialog(false);
       setSelectedRequests([]);
       setGeneralRejectionReason("");
-      setSemesterComments({});
       refetch();
     } catch (error: any) {
       const errorMessage = error?.data?.message || "Failed to submit review";
@@ -261,8 +246,8 @@ export const MentorReviewRequestsPage = () => {
             </DialogTitle>
             <DialogDescription>
               {isApproving
-                ? "You are about to approve this degree plan and forward it to the advisor. Comments should be added from the View Degree Plan page."
-                : "Please provide a reason for rejection and optionally add comments for specific semesters."}
+                ? "You are about to approve this degree plan and forward it to the advisor. Comments can be added from the View Degree Plan page."
+                : "Please provide a general reason for rejection. Semester-specific comments can be added from the View Degree Plan page."}
             </DialogDescription>
           </DialogHeader>
 
@@ -280,44 +265,6 @@ export const MentorReviewRequestsPage = () => {
                   rows={3}
                   className="mt-2"
                 />
-              </div>
-            )}
-
-            {!isApproving && (
-              <div className="border-t pt-4">
-                <Label className="text-base font-semibold">
-                  Semester Comments (Optional)
-                </Label>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Add specific feedback for individual semesters
-                </p>
-
-                <div className="space-y-3">
-                  {selectedRequests.map((request) => (
-                    <div key={request.id} className="border rounded-lg p-3">
-                      <Label
-                        htmlFor={`semester-${request.id}`}
-                        className="text-sm font-medium"
-                      >
-                        {request.planSemester?.term}{" "}
-                        {request.planSemester?.year}
-                      </Label>
-                      <Textarea
-                        id={`semester-${request.id}`}
-                        value={semesterComments[request.id] || ""}
-                        onChange={(e) =>
-                          handleUpdateSemesterComment(
-                            request.id,
-                            e.target.value
-                          )
-                        }
-                        placeholder="Comments for this semester..."
-                        rows={2}
-                        className="mt-2"
-                      />
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
           </div>

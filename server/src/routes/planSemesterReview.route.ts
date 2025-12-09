@@ -109,6 +109,14 @@ router.post(
   reviewController.submitAdvisorReview
 );
 
+router.patch(
+  "/:id/comment",
+  authenticate,
+  authorize(["ADMIN", "MENTOR", "ADVISOR"]),
+  validate(reviewSchema.updateCommentSchema),
+  reviewController.updateReviewRequestComment
+);
+
 router.delete(
   "/:id",
   authenticate,

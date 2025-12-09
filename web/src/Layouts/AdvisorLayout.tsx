@@ -5,7 +5,6 @@ import {
   User,
   LayoutDashboard,
   Users,
-  MessageSquare,
   CheckCircle,
   LogOut,
   UserCog,
@@ -32,13 +31,6 @@ export const AdvisorLayout = () => {
       href: "/advisor/students",
       icon: (
         <Users className="text-sidebar-foreground group-hover/sidebar:text-sidebar-primary h-5 w-5 flex-shrink-0 transition-colors" />
-      ),
-    },
-    {
-      label: "Chat",
-      href: "/advisor/chat",
-      icon: (
-        <MessageSquare className="text-sidebar-foreground group-hover/sidebar:text-sidebar-primary h-5 w-5 flex-shrink-0 transition-colors" />
       ),
     },
     {

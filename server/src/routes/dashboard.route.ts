@@ -1,14 +1,19 @@
 import { Router } from "express";
-import { authenticate } from "@/middlewares/auth.middleware";
-import * as dashboardController from "@/controllers/dashboard.controller";
+import {
+  getStudentDashboardController,
+  getMentorDashboardController,
+  getAdvisorDashboardController,
+  getRegistrarDashboardController,
+  getAdminDashboardController,
+} from "../controllers/dashboard.controller";
+import { authenticate } from "../middlewares/auth.middleware";
 
-const router: Router = Router();
+const router = Router();
 
-// GET /api/dashboard/student/stats - Get student dashboard statistics
-router.get(
-  "/student/stats",
-  authenticate,
-  dashboardController.getStudentDashboardStats
-);
+router.get("/student", authenticate, getStudentDashboardController);
+router.get("/mentor", authenticate, getMentorDashboardController);
+router.get("/advisor", authenticate, getAdvisorDashboardController);
+router.get("/registrar", authenticate, getRegistrarDashboardController);
+router.get("/admin", authenticate, getAdminDashboardController);
 
 export default router;

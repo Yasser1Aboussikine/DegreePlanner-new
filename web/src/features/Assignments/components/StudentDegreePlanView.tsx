@@ -22,8 +22,12 @@ import {
   User2,
 } from "lucide-react";
 import { useGetDegreePlanByUserIdQuery } from "@/store/api/degreePlanApi";
-import { useGetReviewRequestsByStudentIdQuery } from "@/store/api/reviewRequestApi";
+import {
+  useGetReviewRequestsByStudentIdQuery,
+  useUpdateReviewRequestCommentMutation,
+} from "@/store/api/reviewRequestApi";
 import { getCategoryColor } from "@/utils/categoryColors";
+import { toast } from "sonner";
 import type { Category, PlanSemesterWithCourses } from "@/store/types";
 
 interface StudentDegreePlanViewProps {
@@ -37,6 +41,7 @@ export const StudentDegreePlanView = ({ role }: StudentDegreePlanViewProps) => {
   const [semesterComments, setSemesterComments] = useState<
     Record<string, string>
   >({});
+  const [isSaving, setIsSaving] = useState(false);
 
   const { data: degreePlanData, isLoading } = useGetDegreePlanByUserIdQuery(
     studentId || "",
@@ -47,6 +52,8 @@ export const StudentDegreePlanView = ({ role }: StudentDegreePlanViewProps) => {
     studentId || "",
     { skip: !studentId }
   );
+
+  const [updateComment] = useUpdateReviewRequestCommentMutation();
 
   const degreePlan = degreePlanData;
   const semesters = degreePlan?.semesters || [];
@@ -81,6 +88,38 @@ export const StudentDegreePlanView = ({ role }: StudentDegreePlanViewProps) => {
       ...prev,
       [semesterId]: comment,
     }));
+  };
+
+  const handleSaveComment = async () => {
+    if (!currentSemester || !currentReviewRequest) return;
+
+    const comment = semesterComments[currentSemester.id];
+    if (comment === undefined) {
+      toast.info("No changes to save");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await updateComment({
+        id: currentReviewRequest.id,
+        role,
+        comment,
+      }).unwrap();
+
+      toast.success("Comment saved successfully");
+
+      // Clear the local comment state after successful save
+      setSemesterComments((prev) => {
+        const newState = { ...prev };
+        delete newState[currentSemester.id];
+        return newState;
+      });
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to save comment");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getTotalCredits = (semester: PlanSemesterWithCourses) => {
@@ -240,11 +279,11 @@ export const StudentDegreePlanView = ({ role }: StudentDegreePlanViewProps) => {
                           {course.courseTitle}
                         </p>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
                         <Badge variant="secondary" className="text-xs">
                           {course.category?.replace(/_/g, " ")}
                         </Badge>
-                        <span className="text-sm font-medium text-card-foreground">
+                        <span className="text-sm font-medium text-card-foreground whitespace-nowrap">
                           {course.credits || 0} credits
                         </span>
                       </div>
@@ -309,10 +348,11 @@ export const StudentDegreePlanView = ({ role }: StudentDegreePlanViewProps) => {
                     <Textarea
                       id={`comment-${currentSemester.id}`}
                       value={
-                        semesterComments[currentSemester.id] ||
-                        (role === "mentor"
+                        semesterComments[currentSemester.id] !== undefined
+                          ? semesterComments[currentSemester.id]
+                          : role === "mentor"
                           ? currentReviewRequest?.mentorComment || ""
-                          : currentReviewRequest?.advisorComment || "")
+                          : currentReviewRequest?.advisorComment || ""
                       }
                       onChange={(e) =>
                         handleUpdateComment(currentSemester.id, e.target.value)
@@ -320,14 +360,26 @@ export const StudentDegreePlanView = ({ role }: StudentDegreePlanViewProps) => {
                       placeholder={`Enter your feedback for ${currentSemester.term} ${currentSemester.year}...`}
                       rows={4}
                       className="resize-none bg-background"
+                      disabled={isSaving}
                     />
-                    <div className="flex items-start gap-2 text-xs text-muted-foreground mt-3 p-3 bg-muted/50 rounded">
-                      <MessageSquare className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <p>
-                        <strong>Note:</strong> Comments are saved locally as you
-                        type. To submit and persist your comments, return to the
-                        review requests page and use the Approve/Reject dialog.
-                      </p>
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <MessageSquare className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                        <p>
+                          <strong>Note:</strong> Click Save to persist your
+                          comment for this semester
+                        </p>
+                      </div>
+                      <Button
+                        onClick={handleSaveComment}
+                        disabled={
+                          isSaving ||
+                          semesterComments[currentSemester.id] === undefined
+                        }
+                        size="sm"
+                      >
+                        {isSaving ? "Saving..." : "Save Comment"}
+                      </Button>
                     </div>
                   </div>
                 )}

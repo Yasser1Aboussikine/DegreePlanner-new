@@ -379,6 +379,36 @@ export async function submitBulkAdvisorReview(
   }
 }
 
+export async function updateReviewRequestComment(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    const { role, comment } = req.body;
+
+    if (!role || (role !== "mentor" && role !== "advisor")) {
+      return errorResponse(
+        res,
+        "Invalid role. Must be 'mentor' or 'advisor'",
+        400
+      );
+    }
+
+    const updatedRequest = await reviewService.updateReviewRequestComment(
+      id,
+      role,
+      comment || ""
+    );
+
+    return successResponse(res, updatedRequest, "Comment updated successfully");
+  } catch (error: any) {
+    logger.error("Error updating review request comment:", error);
+    return errorResponse(res, error.message || "Failed to update comment", 500);
+  }
+}
+
 // Temporary endpoint to fix junior/senior reviews
 export async function fixJuniorSeniorReviews(
   req: Request,

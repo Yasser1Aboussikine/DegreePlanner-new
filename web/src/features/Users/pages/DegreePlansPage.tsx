@@ -131,16 +131,21 @@ export const DegreePlansPage = () => {
   };
 
   const handleNextSemester = () => {
-    if (selectedPlan && currentSemesterIndex < (selectedPlan.semesters?.length || 0) - 1) {
+    if (
+      selectedPlan &&
+      currentSemesterIndex < (selectedPlan.semesters?.length || 0) - 1
+    ) {
       setCurrentSemesterIndex(currentSemesterIndex + 1);
     }
   };
 
   const getTotalCredits = (semester: any) => {
-    return semester.plannedCourses?.reduce(
-      (sum: number, course: any) => sum + (course.credits || 0),
-      0
-    ) || 0;
+    return (
+      semester.plannedCourses?.reduce(
+        (sum: number, course: any) => sum + (course.credits || 0),
+        0
+      ) || 0
+    );
   };
 
   if (error) {
@@ -406,7 +411,9 @@ export const DegreePlansPage = () => {
             </DialogDescription>
           </DialogHeader>
 
-          {selectedPlan && selectedPlan.semesters && selectedPlan.semesters.length > 0 ? (
+          {selectedPlan &&
+          selectedPlan.semesters &&
+          selectedPlan.semesters.length > 0 ? (
             <div className="flex-1 overflow-y-auto space-y-4">
               {/* Semester Navigation */}
               <Card className="p-4">
@@ -430,17 +437,24 @@ export const DegreePlansPage = () => {
                       <SelectValue placeholder="Select semester" />
                     </SelectTrigger>
                     <SelectContent>
-                      {selectedPlan.semesters.map((semester: any, index: number) => (
-                        <SelectItem key={semester.id} value={index.toString()}>
-                          {semester.term} {semester.year}
-                        </SelectItem>
-                      ))}
+                      {selectedPlan.semesters.map(
+                        (semester: any, index: number) => (
+                          <SelectItem
+                            key={semester.id}
+                            value={index.toString()}
+                          >
+                            {semester.term} {semester.year}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
 
                   <Button
                     onClick={handleNextSemester}
-                    disabled={currentSemesterIndex === selectedPlan.semesters.length - 1}
+                    disabled={
+                      currentSemesterIndex === selectedPlan.semesters.length - 1
+                    }
                     variant="outline"
                     size="icon"
                   >
@@ -458,15 +472,24 @@ export const DegreePlansPage = () => {
                       {selectedPlan.semesters[currentSemesterIndex].year}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      {selectedPlan.semesters[currentSemesterIndex].plannedCourses?.length || 0} courses •{" "}
-                      {getTotalCredits(selectedPlan.semesters[currentSemesterIndex])} credits
+                      {selectedPlan.semesters[currentSemesterIndex]
+                        .plannedCourses?.length || 0}{" "}
+                      courses •{" "}
+                      {getTotalCredits(
+                        selectedPlan.semesters[currentSemesterIndex]
+                      )}{" "}
+                      credits
                     </p>
                   </div>
 
-                  {selectedPlan.semesters[currentSemesterIndex].plannedCourses &&
-                  selectedPlan.semesters[currentSemesterIndex].plannedCourses!.length > 0 ? (
+                  {selectedPlan.semesters[currentSemesterIndex]
+                    .plannedCourses &&
+                  selectedPlan.semesters[currentSemesterIndex].plannedCourses!
+                    .length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedPlan.semesters[currentSemesterIndex].plannedCourses!.map((course: any) => (
+                      {selectedPlan.semesters[
+                        currentSemesterIndex
+                      ].plannedCourses!.map((course: any) => (
                         <Card
                           key={course.id}
                           className="p-4 border-l-4"
@@ -514,7 +537,8 @@ export const DegreePlansPage = () => {
                   No Semesters Planned
                 </h2>
                 <p className="text-muted-foreground">
-                  This student hasn't added any semesters to their degree plan yet.
+                  This student hasn't added any semesters to their degree plan
+                  yet.
                 </p>
               </div>
             </div>
