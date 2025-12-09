@@ -56,7 +56,6 @@ interface ReviewStatusData {
 }
 
 export const DegreePlansPage = () => {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlan, setSelectedPlan] = useState<DegreePlanWithUser | null>(
     null
