@@ -21,6 +21,7 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
     formState: { errors },
     setValue,
     watch,
+    trigger,
   } = form;
 
   const { data: minorsData, isLoading: minorsLoading } = useGetAllMinorsQuery();
@@ -76,7 +77,10 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
         <Label htmlFor="classification">Classification *</Label>
         <Select
           value={selectedClassification || ""}
-          onValueChange={(value) => setValue("classification", value as any)}
+          onValueChange={(value) => {
+            setValue("classification", value as any);
+            trigger("classification");
+          }}
         >
           <SelectTrigger className="bg-background border-border">
             <SelectValue placeholder="Select classification" />
