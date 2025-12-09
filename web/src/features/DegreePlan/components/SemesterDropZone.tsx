@@ -244,36 +244,13 @@ export const SemesterDropZone = memo(function SemesterDropZone({
           </div>
         ) : (
           semester.courses.map((course) => (
-            <div key={course.id} className="flex items-center gap-2">
-              <div className="flex-1">
-                <CourseCard
-                  course={course}
-                  isDraggable={true}
-                  isInSemester={true}
-                />
-              </div>
-              {onRemoveCourse && (
-                <button
-                  onClick={() => onRemoveCourse(course.id)}
-                  className="flex-shrink-0 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-full p-2 transition-colors"
-                  aria-label="Remove course"
-                >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              )}
-            </div>
+            <CourseCard
+              key={course.id}
+              course={course}
+              isDraggable={true}
+              isInSemester={true}
+              onRemove={onRemoveCourse ? () => onRemoveCourse(course.id) : undefined}
+            />
           ))
         )}
       </div>

@@ -1,21 +1,24 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { Card } from "@/components/ui/card";
-import { Lock } from "lucide-react";
+import { Lock, X } from "lucide-react";
 import type { DraggableCourse } from "../types/dndTypes";
 import { getCategoryBorderClass } from "@/utils/categoryColors";
 import { memo } from "react";
+import { Button } from "@/components/ui/button";
 
 interface CourseCardProps {
   course: DraggableCourse;
   isDraggable?: boolean;
   isInSemester?: boolean;
+  onRemove?: () => void;
 }
 
 export const CourseCard = memo(function CourseCard({
   course,
   isDraggable = true,
   isInSemester = false,
+  onRemove,
 }: CourseCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -67,6 +70,20 @@ export const CourseCard = memo(function CourseCard({
                   {course.courseTitle}
                 </p>
               </div>
+              {isInSemester && onRemove && (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemove();
+                  }}
+                  variant="destructive"
+                  size="icon"
+                  className="h-6 w-6 flex-shrink-0"
+                  aria-label="Remove course"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
 
             <div className="flex items-center gap-2 flex-wrap mt-2">

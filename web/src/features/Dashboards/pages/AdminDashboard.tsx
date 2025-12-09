@@ -1,4 +1,4 @@
-import { Users, BookOpen, GraduationCap, TrendingUp, Shield } from "lucide-react";
+import { Users, BookOpen, GraduationCap, Shield } from "lucide-react";
 import { ProgressCard } from "@/shared/components/ProgressCard";
 import { useGetAdminDashboardQuery } from "@/store/api/dashboardApi";
 

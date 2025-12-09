@@ -3,7 +3,7 @@ import { useGetStudentDashboardQuery } from "@/store/api/dashboardApi";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, Label } from "recharts";
 import { useMemo } from "react";
 import { getCategoryColor } from "@/utils/categoryColors";

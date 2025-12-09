@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useLogoutHandler } from "@/hooks/useLogoutHandler";
 
 export const AdminLayout = () => {
@@ -104,9 +103,6 @@ export const AdminLayout = () => {
       <div className="flex flex-1 h-full">
         <div className="flex flex-col flex-1 h-full">
           <div className="bg-background rounded-l-2xl shadow-lg border-l border-t border-b border-border p-4 md:p-6 lg:p-8 flex flex-col gap-4 h-full overflow-auto">
-            <div className="flex justify-end">
-              <ThemeToggle />
-            </div>
             <Outlet />
           </div>
         </div>
