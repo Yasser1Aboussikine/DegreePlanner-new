@@ -14,11 +14,10 @@ let io: Server;
 let connectionHandler: ((socket: AuthenticatedSocket) => void) | null = null;
 
 export const initializeSocketIO = (httpServer: HttpServer): Server => {
-  const FRONTEND_URL =
-    process.env.FRONTEND_URL ||
-    (process.env.NODE_ENV === "production"
-      ? "https://your-frontend-domain.com"
-      : "http://localhost:3000");
+const FRONTEND_URL =
+  process.env.NODE_ENV === "dev"
+    ? process.env.FRONTEND_URL_DEV
+    : process.env.FRONTEND_URL_PROD;
 
   io = new Server(httpServer, {
     cors: {
