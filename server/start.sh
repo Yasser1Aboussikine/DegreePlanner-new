@@ -9,5 +9,14 @@ fi
 # Install dependencies
 pnpm install
 
-# Run the dev server (as you're using pnpm dev)
+# Generate Prisma client
+pnpm prisma:generate
+
+# Run database migrations
+pnpm prisma:migrate
+
+# Build the TypeScript code
+pnpm build
+
+# Start the production server
 pnpm dev
