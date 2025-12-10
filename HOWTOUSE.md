@@ -36,12 +36,7 @@
 ---
 
 ## 🔑 Test Accounts
-
-### Student Account
-- **Email**: `h.khalafalla@aui.ma`
-- **Password**: `Drhoda123`
-
-### Other Role Accounts
+## Role-B Accounts
 For Mentor, Advisor, Registrar, and Admin accounts:
 - **Email Format**: `{role}1@aui.ma`
   - Mentor: `mentor1@aui.ma`
@@ -59,7 +54,7 @@ For Mentor, Advisor, Registrar, and Admin accounts:
 When you log in as a student, you'll see:
 - **Credits Progress**: Total credits earned vs. required
 - **GPA Summary**: Current GPA and academic standing
-- **Assigned Mentor**: Your mentor's information (for Freshmen/Sophomores)
+- **Assigned Mentor**: Your mentor's information (for Freshmen)
 - **Assigned Advisor**: Your advisor's information
 - **Review Status**: Current status of your degree plan review
 
@@ -109,8 +104,8 @@ When you log in as a student, you'll see:
    - Click the "Submit for Review" button
    - The system creates review requests for all semesters
    - Your plan will be sent to:
-     - **Mentor** (if you're a Freshman or Sophomore)
-     - **Advisor** (directly for Juniors/Seniors, or after mentor approval)
+     - **Mentor** (if you're a Freshman)
+     - **Advisor** (directly for Sophomore/Juniors/Seniors, or after mentor approval)
 
 3. **Review Status**
    - **PENDING_MENTOR**: Waiting for mentor review
@@ -144,14 +139,14 @@ When you log in as a student, you'll see:
    - Changes are saved immediately
 
 3. **Academic Information**
-   - **Major**: Display only (set by admin)
+   - **Major**: Display only (Computer Science for now: Proof of Concept)
    - **Minor**: Use the dropdown to select or change your minor
      - Select "None" to clear your minor
-   - **Classification**: Display only (Freshman, Sophomore, Junior, Senior)
+   - **Classification**: Display only (Freshman, Sophomore, Junior, Senior), only edited by admin
    - **Expected Graduation**: Display only
 
 4. **Mentor & Advisor Cards**
-   - View your assigned mentor (Freshmen/Sophomores only)
+   - View your assigned mentor (Sophomores only)
    - View your assigned advisor
    - Contact information is displayed
 
