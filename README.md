@@ -11,6 +11,7 @@ The project is **ready for production deployment** with all core features implem
 ### ✅ **Completed Features**
 
 #### Authentication & Security
+
 - ✅ JWT authentication (access + refresh tokens)
 - ✅ Password reset with email verification (24-hour expiration)
 - ✅ Role-based access control (5 roles: Student, Mentor, Advisor, Registrar, Admin)
@@ -20,6 +21,7 @@ The project is **ready for production deployment** with all core features implem
 - ✅ Authorization middleware with ownership checks
 
 #### Real-Time Communication
+
 - ✅ Socket.IO WebSocket integration
 - ✅ Real-time chat (group + direct messages)
 - ✅ Message read tracking (blue checkmark when ALL participants read)
@@ -28,12 +30,14 @@ The project is **ready for production deployment** with all core features implem
 - ✅ Unread message counts
 
 #### User Management
+
 - ✅ Multi-role system with RBAC
 - ✅ Mentor assignment (one per student, DB-enforced)
 - ✅ Advisor assignment (one per student, DB-enforced)
 - ✅ Email notifications
 
 #### Academic Features
+
 - ✅ Program management (Computer Science major + Minors)
 - ✅ Semester review workflow (Student → Mentor → Advisor)
 - ✅ Role-specific dashboards with analytics
@@ -41,6 +45,7 @@ The project is **ready for production deployment** with all core features implem
 - ✅ FYE (First Year Experience) student support
 
 #### UI/UX
+
 - ✅ Complete dark/light theme support
 - ✅ Multi-step signup with real-time validation
 - ✅ Date pickers with year/month dropdowns
@@ -52,6 +57,7 @@ The project is **ready for production deployment** with all core features implem
 ### 📋 **Pre-Deployment Checklist**
 
 #### Backend Environment Variables Required
+
 ```env
 NODE_ENV=production
 PORT=5000
@@ -70,12 +76,14 @@ SMTP_FROM=DegreePlanner <noreply@degreeplanner.com>
 ```
 
 #### Frontend Environment Variables Required
+
 ```env
 # .env.production
 VITE_API_URL=https://your-api.com/api
 ```
 
 ### ⚠️ **Recommended Before Launch**
+
 - Add rate limiting (express-rate-limit)
 - Set up monitoring (Sentry, LogRocket)
 - Configure production database backups
@@ -87,12 +95,14 @@ VITE_API_URL=https://your-api.com/api
 ## 🎯 **Core Features**
 
 ### 1. Authentication System
+
 - **Multi-step signup** with validation at each step
 - **JWT-based authentication** with refresh tokens
 - **Password reset** via email with secure tokens
 - **Role-based access control** (RBAC)
 
 ### 2. Real-Time Chat
+
 - **Group chats**: Mentor + all assigned students
 - **Direct messages**: One-on-one conversations
 - **Read receipts**: Blue checkmark only when all participants read
@@ -100,12 +110,14 @@ VITE_API_URL=https://your-api.com/api
 - **Unread counts**: Per-thread unread message tracking
 
 ### 3. Assignment System
+
 - **Mentor Assignment**: One mentor per student (DB-enforced)
 - **Advisor Assignment**: One advisor per student (DB-enforced)
 - Auto-creates group chat when mentor is assigned
 - Unassigned student tracking
 
 ### 4. Semester Review Workflow
+
 1. Student creates semester plan
 2. Student submits for mentor review → `PENDING_MENTOR`
 3. Mentor approves/rejects → `MENTOR_APPROVED` or `MENTOR_REJECTED`
@@ -113,6 +125,7 @@ VITE_API_URL=https://your-api.com/api
 5. Advisor gives final approval → `ADVISOR_APPROVED` or `ADVISOR_REJECTED`
 
 ### 5. Role-Based Dashboards
+
 - **Student**: Credits earned, GPA, plan status, assigned mentor/advisor
 - **Mentor**: Assigned students, pending reviews, plan statistics
 - **Advisor**: Assigned students, review queue, student analytics
@@ -120,11 +133,13 @@ VITE_API_URL=https://your-api.com/api
 - **Admin**: Full system access, user management, catalog management
 
 ### 6. Program Management
+
 - Computer Science major (currently available)
 - Minors: Math, Data Science, Business, Psychology, and more
 - Classification system: Freshman (with FYE), Sophomore, Junior, Senior
 
 ### 7. Email Notifications
+
 - Password reset emails
 - Review status updates (mentor approval/rejection)
 - Advisor approval/rejection notifications
@@ -135,6 +150,7 @@ VITE_API_URL=https://your-api.com/api
 ## 💾 **Technology Stack**
 
 ### Backend
+
 - **Node.js + TypeScript**
 - **Express.js** (HTTP server)
 - **Socket.IO** (WebSockets)
@@ -145,6 +161,7 @@ VITE_API_URL=https://your-api.com/api
 - **Zod** (validation)
 
 ### Frontend
+
 - **React 19 + TypeScript**
 - **Vite** (build tool)
 - **Redux Toolkit + RTK Query**
@@ -156,6 +173,7 @@ VITE_API_URL=https://your-api.com/api
 - **Framer Motion** (animations)
 
 ### Databases
+
 - **PostgreSQL**: Users, plans, chat, assignments
 - **Neo4j**: Course catalog, prerequisites
 
@@ -194,6 +212,7 @@ DegreePlanner-new/
 ## 🚀 **Getting Started**
 
 ### Prerequisites
+
 - Node.js 18+
 - pnpm
 - PostgreSQL 14+
@@ -248,6 +267,7 @@ pnpm build
 ## 🔒 **Security**
 
 ✅ Implemented:
+
 - JWT authentication with refresh tokens
 - Password hashing (bcrypt)
 - Role-based authorization
@@ -258,6 +278,7 @@ pnpm build
 - Secure password reset tokens
 
 ⚠️ Recommended additions:
+
 - Rate limiting
 - Helmet.js security headers
 - 2FA (future enhancement)
@@ -267,6 +288,7 @@ pnpm build
 ## 📚 **API Endpoints**
 
 ### Authentication
+
 ```
 POST   /api/auth/signup
 POST   /api/auth/login
@@ -276,6 +298,7 @@ GET    /api/auth/me
 ```
 
 ### Chat
+
 ```
 GET    /api/chat/threads
 GET    /api/chat/threads/:id/messages
@@ -284,6 +307,7 @@ GET    /api/chat/unread-count
 ```
 
 ### Assignments
+
 ```
 GET    /api/mentor-assignments
 POST   /api/mentor-assignments
@@ -292,6 +316,7 @@ POST   /api/advisor-assignments
 ```
 
 ### Dashboards
+
 ```
 GET    /api/dashboard/student/:id
 GET    /api/dashboard/mentor/:id
@@ -301,6 +326,7 @@ GET    /api/dashboard/admin
 ```
 
 ### Reviews
+
 ```
 GET    /api/reviews/semester/:id
 POST   /api/reviews
@@ -343,18 +369,20 @@ See `web/UI.md` for complete theme guidelines.
 ## 🔄 **WebSocket Events**
 
 ### Client → Server
+
 ```javascript
-socket.emit('thread:join', { threadId })
-socket.emit('message:send', { threadId, content })
-socket.emit('message:read', { threadId, messageIds })
-socket.emit('typing:start', { threadId })
+socket.emit("thread:join", { threadId });
+socket.emit("message:send", { threadId, content });
+socket.emit("message:read", { threadId, messageIds });
+socket.emit("typing:start", { threadId });
 ```
 
 ### Server → Client
+
 ```javascript
-socket.on('new:message', messageData)
-socket.on('message:read:update', { messageIds, readerId })
-socket.on('user:typing', { threadId, userId, userName })
+socket.on("new:message", messageData);
+socket.on("message:read:update", { messageIds, readerId });
+socket.on("user:typing", { threadId, userId, userName });
 ```
 
 **Production Note**: WebSockets run on the same port as HTTP (default: 5000)
@@ -387,6 +415,7 @@ pnpm test
 ## 🗺️ **Roadmap**
 
 ### Phase 1: Core Platform ✅ (COMPLETED)
+
 - ✅ Authentication & RBAC
 - ✅ Real-time chat
 - ✅ Mentor/Advisor assignments
@@ -396,22 +425,26 @@ pnpm test
 - ✅ Dark/light theme
 
 ### Phase 2: Advanced Planning (In Progress)
+
 - ⚠️ Drag-and-drop semester planner
 - ⚠️ Course prerequisite validation
 - ⚠️ Eligibility computation
 - ⚠️ Auto-scheduling
 
 ### Phase 3: Visualizations (Planned)
+
 - 📅 React Flow dependency graphs
 - 📅 Student progress visualization
 - 📅 Admin knowledge graph
 
 ### Phase 4: AI Integration (Planned)
+
 - 📅 ChatBase AI advisor
 - 📅 Natural language queries
 - 📅 Smart recommendations
 
 ### Phase 5: Mobile & Advanced (Future)
+
 - 📅 React Native mobile app
 - 📅 Calendar integration
 - 📅 GPA calculator
