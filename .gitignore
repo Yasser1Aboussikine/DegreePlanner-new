@@ -26,5 +26,8 @@ dist-ssr
 .husky
 CLAUDE.md
 *.md
+!README.md
+!REQUIREMENTS.md
+!HOWTOUSE.md
 .env
 scripts

@@ -155,9 +155,9 @@ export function DegreePlanBuilder() {
   const overallStatus = getOverallStatus();
 
   // Get general rejection reason from any rejected request (they all have the same one)
-  const generalRejectionReason =
-    reviewRequestsData?.data?.find((req) => req.rejectionReason)
-      ?.rejectionReason || null;
+  // const generalRejectionReason =
+  //   reviewRequestsData?.data?.find((req) => req.rejectionReason)
+  //     ?.rejectionReason || null;
 
   const normalizedSearchQuery = searchQuery
     ? normalizeSearchQuery(searchQuery)
