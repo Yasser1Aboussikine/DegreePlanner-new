@@ -241,13 +241,18 @@ export const updateUserClassification = async (
     const { userId } = req.params;
     const { classification } = req.body;
 
-    const user = await authService.updateUserClassification(userId, classification);
+    const user = await authService.updateUserClassification(
+      userId,
+      classification
+    );
 
     sendSuccess(res, 200, "User classification updated successfully", user);
   } catch (error) {
     logger.error("Update user classification error:", error);
     const message =
-      error instanceof Error ? error.message : "Failed to update user classification";
+      error instanceof Error
+        ? error.message
+        : "Failed to update user classification";
     sendError(res, 400, message);
   }
 };

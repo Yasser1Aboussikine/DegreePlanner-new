@@ -1,8 +1,13 @@
-
 import CardLayout from "@/shared/CardLayout";
 import { GraduationCap, BookOpen, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import { useGetAllMinorsQuery } from "@/store/api/minorApi";
 import { useUpdatePersonalInfoMutation } from "@/store/api/authApi";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
@@ -31,7 +36,8 @@ export const AcademicInfoCard = ({
 }: AcademicInfoCardProps) => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.auth.user);
-  const [updatePersonalInfo, { isLoading: isUpdating }] = useUpdatePersonalInfoMutation();
+  const [updatePersonalInfo, { isLoading: isUpdating }] =
+    useUpdatePersonalInfoMutation();
   const { data: minorsData } = useGetAllMinorsQuery();
   const [selectedMinor, setSelectedMinor] = useState(minor || "");
   const getClassificationColor = (classification?: string) => {
@@ -52,7 +58,9 @@ export const AcademicInfoCard = ({
   const handleMinorChange = async (value: string) => {
     setSelectedMinor(value);
     try {
-      const result = await updatePersonalInfo({ minor: value === "none" ? null : value }).unwrap();
+      const result = await updatePersonalInfo({
+        minor: value === "none" ? null : value,
+      }).unwrap();
       dispatch(updateUser(result.data));
       toast.success("Minor updated successfully");
     } catch (e: any) {
@@ -84,7 +92,11 @@ export const AcademicInfoCard = ({
           <BookOpen className="h-5 w-5 text-muted-foreground mt-0.5" />
           <div className="flex-1">
             <p className="text-sm font-medium text-muted-foreground">Minor</p>
-            {editableMinor && currentUser && currentUser.id === userId && (currentUser.role === "STUDENT" || currentUser.role === "MENTOR") ? (
+            {editableMinor &&
+            currentUser &&
+            currentUser.id === userId &&
+            (currentUser.role === "STUDENT" ||
+              currentUser.role === "MENTOR") ? (
               <Select
                 value={selectedMinor || "none"}
                 onValueChange={handleMinorChange}

@@ -546,7 +546,7 @@ export const updatePersonalInfo = async (
     throw new Error("User not found");
   }
 
-  const { password, ...userWithoutPassword} = updatedUser;
+  const { password, ...userWithoutPassword } = updatedUser;
   return userWithoutPassword;
 };
 

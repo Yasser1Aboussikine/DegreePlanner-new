@@ -61,4 +61,6 @@ export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>;
 export type UpdateUserRoleInput = z.infer<typeof updateUserRoleSchema>;
 export type ToggleUserStatusInput = z.infer<typeof toggleUserStatusSchema>;
 export type UpdatePersonalInfoInput = z.infer<typeof updatePersonalInfoSchema>;
-export type UpdateUserClassificationInput = z.infer<typeof updateUserClassificationSchema>;
+export type UpdateUserClassificationInput = z.infer<
+  typeof updateUserClassificationSchema
+>;

@@ -207,7 +207,10 @@ export const UserProfilePage = () => {
                 : undefined
             }
             isFYEStudent={user.isFYEStudent}
-            editableMinor={currentUser?.id === user.id && (user.role === "STUDENT" || user.role === "MENTOR")}
+            editableMinor={
+              currentUser?.id === user.id &&
+              (user.role === "STUDENT" || user.role === "MENTOR")
+            }
             userId={user.id}
           />
         )}
