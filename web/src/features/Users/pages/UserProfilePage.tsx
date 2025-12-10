@@ -8,6 +8,7 @@ import {
   AccountStatusCard,
 } from "@/features/Profile/components";
 import { ArrowLeft, User, Flag } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 import {
