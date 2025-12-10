@@ -5,6 +5,7 @@ import { useGetAllCoursesQuery } from "@/store/api";
 import CardLayout from "@/shared/CardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui";
 import { normalizeSearchQuery } from "@/utils/searchHelpers";
 import {
   Select,
@@ -279,14 +280,7 @@ const StudentCourses = () => {
         </div>
       </div>
 
-      {isLoading && (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center space-y-2">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-muted-foreground">Loading courses...</p>
-          </div>
-        </div>
-      )}
+      {isLoading && <LoadingSpinner message="Loading courses..." />}
 
       {error && (
         <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4">

@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, GraduationCap } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui";
+import { GraduationCap } from "lucide-react";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -85,11 +86,7 @@ export const AdvisorStudentsPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <LoadingSpinner message="Loading students..." />;
   }
 
   if (error) {

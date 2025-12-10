@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { MessageCircle, Loader2 } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { LoadingSpinner } from "@/components/ui";
 import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { getSocket } from "@/lib/socket";
@@ -316,9 +317,7 @@ export const ChatWindow = ({
         )}
 
         {isLoading ? (
-          <div className="flex-1 flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          </div>
+          <LoadingSpinner message="Loading messages..." />
         ) : (
           <>
             <MessageList

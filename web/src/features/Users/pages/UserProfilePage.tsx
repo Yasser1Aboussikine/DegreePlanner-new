@@ -7,7 +7,8 @@ import {
   AcademicInfoCard,
   AccountStatusCard,
 } from "@/features/Profile/components";
-import { ArrowLeft, User, Loader2, Flag } from "lucide-react";
+import { ArrowLeft, User, Flag } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -83,11 +84,7 @@ export const UserProfilePage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <LoadingSpinner message="Loading user profile..." />;
   }
 
   if (error || !user) {

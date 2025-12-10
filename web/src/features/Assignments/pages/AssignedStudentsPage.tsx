@@ -14,6 +14,7 @@ import { AlertCircle, ArrowLeft, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { LoadingSpinner } from "@/components/ui";
 
 export const AssignedStudentsPage = () => {
   const { type, id } = useParams<{
@@ -153,9 +154,7 @@ export const AssignedStudentsPage = () => {
 
       <div className="mt-6">
         {studentsLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
+          <LoadingSpinner message="Loading assigned students..." />
         ) : students.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 space-y-4">
             <AlertCircle className="h-16 w-16 text-muted-foreground" />

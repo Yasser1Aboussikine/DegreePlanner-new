@@ -2,8 +2,9 @@ import { useAppSelector } from "@/store/hooks";
 import { useGetUserThreadsQuery } from "@/store/api/chatApi";
 import { ChatWindow } from "@/components/chat";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, MessageCircle, Users } from "lucide-react";
+import { MessageCircle, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { LoadingSpinner } from "@/components/ui";
 
 export const StudentChatPage = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -19,11 +20,7 @@ export const StudentChatPage = () => {
   const mentorThread = threads[0];
 
   if (isLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <LoadingSpinner message="Loading chat..." />;
   }
 
   if (error) {

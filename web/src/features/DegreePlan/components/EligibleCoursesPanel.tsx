@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui";
 import { CourseCard } from "./CourseCard";
 import { Search, ChevronDown, ChevronRight, BookOpen } from "lucide-react";
 import type { CoursesByCategory } from "../types/dndTypes";
@@ -91,10 +92,7 @@ export function EligibleCoursesPanel({
 
       <div className="flex-1 overflow-y-auto space-y-3 pr-2">
         {isLoading ? (
-          <Card className="p-8 text-center bg-card">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-3"></div>
-            <p className="text-muted-foreground">Searching courses...</p>
-          </Card>
+          <LoadingSpinner message="Searching courses..." />
         ) : Object.keys(coursesByCategory).length === 0 ? (
           <Card className="p-8 text-center bg-card">
             <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-3" />

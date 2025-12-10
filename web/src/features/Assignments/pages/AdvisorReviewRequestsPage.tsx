@@ -22,6 +22,7 @@ import {
   XCircle,
   MessageSquare,
 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui";
 import {
   useGetPendingAdvisorReviewsQuery,
   useSubmitBulkAdvisorReviewMutation,
@@ -137,12 +138,7 @@ export const AdvisorReviewRequestsPage = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground">
-            Loading review requests...
-          </p>
-        </div>
+        <LoadingSpinner message="Loading review requests..." />
       </div>
     );
   }

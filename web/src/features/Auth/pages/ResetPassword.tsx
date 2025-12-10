@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingSpinner } from "@/components/ui";
 import {
   Card,
   CardContent,
@@ -113,10 +114,7 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-sidebar flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-xl border-border">
           <CardContent className="pt-6">
-            <div className="flex flex-col items-center justify-center py-8 space-y-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-              <p className="text-muted-foreground">Verifying reset link...</p>
-            </div>
+            <LoadingSpinner message="Verifying reset link..." />
           </CardContent>
         </Card>
       </div>

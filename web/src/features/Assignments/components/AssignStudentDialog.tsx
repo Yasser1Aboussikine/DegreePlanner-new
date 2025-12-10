@@ -21,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { UserPlus } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui";
 
 interface AssignStudentDialogProps {
   onAssign: (studentId: string) => void;
@@ -87,9 +88,7 @@ export const AssignStudentDialog = ({
 
         <div className="py-4">
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
+            <LoadingSpinner message="Loading students..." size={30} />
           ) : availableStudents.length === 0 ? (
             <p className="text-center text-muted-foreground py-4">
               {type === "advisor"

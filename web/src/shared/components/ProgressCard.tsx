@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { LoadingSpinner } from "@/components/ui";
 import type { LucideIcon } from "lucide-react";
 import { useMemo } from "react";
 
@@ -41,9 +42,7 @@ export const ProgressCard = ({ title, icon: Icon, data, isLoading }: ProgressCar
         <h3 className="text-lg font-semibold text-card-foreground">{title}</h3>
       </div>
       {isLoading ? (
-        <div className="flex items-center justify-center h-[200px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpinner message="Loading progress data..." size={32} />
       ) : !data || data.length === 0 ? (
         <div className="flex items-center justify-center h-[200px]">
           <p className="text-muted-foreground">No data available</p>

@@ -45,6 +45,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { LoadingSpinner } from "@/components/ui";
 
 const ROLES = ["STUDENT", "ADMIN", "ADVISOR", "MENTOR", "REGISTRAR"];
 const CLASSIFICATIONS = ["FRESHMAN", "SOPHOMORE", "JUNIOR", "SENIOR"];
@@ -362,9 +363,7 @@ export const UsersPage = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
+        <LoadingSpinner message="Loading users..." />
       ) : users.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 space-y-4">
           <AlertCircle className="h-16 w-16 text-muted-foreground" />

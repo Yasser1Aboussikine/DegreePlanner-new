@@ -6,6 +6,7 @@ import {
 } from "@/store/api";
 import { MentorAdvisorCard } from "../components";
 import { AlertCircle } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui";
 
 export const AssignmentPage = () => {
   const [activeTab, setActiveTab] = useState<"mentors" | "advisors">("mentors");
@@ -71,9 +72,7 @@ export const AssignmentPage = () => {
 
       <div className="mt-6">
         {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
+          <LoadingSpinner message={`Loading ${activeTab}...`} />
         ) : isEmpty ? (
           <div className="flex flex-col items-center justify-center h-64 space-y-4">
             <AlertCircle className="h-16 w-16 text-muted-foreground" />

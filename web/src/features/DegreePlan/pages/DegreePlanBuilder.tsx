@@ -12,6 +12,7 @@ import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui";
 import {
   Select,
   SelectContent,
@@ -747,14 +748,7 @@ export function DegreePlanBuilder() {
   );
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading courses...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading degree plan..." fullScreen />;
   }
 
   return (

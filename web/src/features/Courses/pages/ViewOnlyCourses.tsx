@@ -4,6 +4,7 @@ import { Search, Filter, X } from "lucide-react";
 import { useGetAllCoursesQuery } from "@/store/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui";
 import { formatCourseCode } from "@/utils/formatters";
 import {
   Select,
@@ -109,11 +110,7 @@ const ViewOnlyCourses = () => {
     selectedType !== "all";
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading courses..." />;
   }
 
   if (error) {
