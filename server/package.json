@@ -17,6 +17,7 @@
     "seed": "pnpm seed:pg && pnpm seed:neo4j",
     "fix:chat-duplicates": "ts-node -r tsconfig-paths/register scripts/fix-duplicate-chat-threads.ts"
   },
+  "packageManager": "pnpm@9.15.4",
   "license": "ISC",
   "dependencies": {
     "@pnpm/logger": "^1001.0.1",
