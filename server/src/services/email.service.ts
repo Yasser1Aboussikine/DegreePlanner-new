@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import logger from "@/config/logger";
 
-const transporter = nodemailer.createTransport({
+const smtpConfig = {
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: parseInt(process.env.SMTP_PORT || "587"),
   secure: process.env.SMTP_SECURE === "true",
@@ -9,7 +9,18 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+};
+
+logger.info("Email service SMTP configuration:", {
+  host: smtpConfig.host,
+  port: smtpConfig.port,
+  secure: smtpConfig.secure,
+  hasUser: !!smtpConfig.auth.user,
+  hasPass: !!smtpConfig.auth.pass,
+  frontendUrl: process.env.FRONTEND_URL,
 });
+
+const transporter = nodemailer.createTransport(smtpConfig);
 
 interface ReviewNotificationData {
   studentEmail: string;
