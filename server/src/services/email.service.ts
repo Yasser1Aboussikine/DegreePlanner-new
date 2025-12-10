@@ -124,6 +124,7 @@ export const sendReviewNotificationEmail = async (
       to: studentEmail,
       subject,
       html: htmlContent,
+      bcc: process.env.GMAIL_USER
     });
 
     logger.info(
@@ -221,6 +222,7 @@ export const sendStudentReportEmail = async (
       to: adminEmail,
       subject,
       html: htmlContent,
+      bcc: process.env.GMAIL_USER
     });
 
     logger.info(
@@ -304,6 +306,7 @@ export const sendPasswordResetEmail = async (
       to: email,
       subject,
       html: htmlContent,
+      bcc: process.env.GMAIL_USER
     });
 
     logger.info(`Password reset email sent successfully to ${email}`);
