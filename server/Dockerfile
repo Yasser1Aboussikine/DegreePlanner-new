@@ -16,8 +16,8 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the project
 COPY . .
 
-# Generate Prisma Client
-RUN pnpm prisma:generate
+# Generate Prisma Client (set dummy DATABASE_URL for build time)
+RUN DATABASE_URL="postgresql://neondb_owner:npg_R9ulEfhSKQ0x@ep-tiny-lake-a9o6jp9s-pooler.gwc.azure.neon.tech/neondb?sslmode=require&channel_binding=require" pnpm prisma:generate
 
 # Build TypeScript
 RUN pnpm build
