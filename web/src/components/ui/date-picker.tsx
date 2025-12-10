@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ interface DatePickerProps {
   disabled?: boolean;
   className?: string;
   error?: boolean;
+  fromYear?: number;
+  toYear?: number;
 }
 
 export const DatePicker = ({
@@ -26,38 +28,50 @@ export const DatePicker = ({
   disabled = false,
   className,
   error = false,
+  fromYear = 1900,
+  toYear = new Date().getFullYear() + 10,
 }: DatePickerProps) => {
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           disabled={disabled}
           className={cn(
-            "w-full justify-start text-left font-normal h-10 px-3",
+            "w-full justify-between text-left font-normal h-10 px-3",
             "bg-background border-input hover:bg-accent hover:text-accent-foreground",
             !date && "text-muted-foreground",
             error && "border-destructive focus-visible:ring-destructive",
             className
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 flex-shrink-0" />
           {date ? (
             <span className="truncate">{format(date, "MMMM d, yyyy")}</span>
           ) : (
             <span className="truncate">{placeholder}</span>
           )}
+          <ChevronDownIcon className="ml-2 h-4 w-4 flex-shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 shadow-lg" align="start">
+      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
         <Calendar
           mode="single"
           selected={date}
-          onSelect={onDateChange}
-          initialFocus
+          captionLayout="dropdown"
+          onSelect={(selectedDate) => {
+            onDateChange(selectedDate);
+            setOpen(false);
+          }}
           disabled={disabled}
+          fromYear={fromYear}
+          toYear={toYear}
+          defaultMonth={date}
         />
       </PopoverContent>
     </Popover>
   );
 };
+
+import * as React from "react";
