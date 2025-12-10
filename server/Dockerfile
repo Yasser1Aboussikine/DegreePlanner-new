@@ -16,11 +16,14 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the project
 COPY . .
 
+# Generate Prisma Client
+RUN pnpm prisma:generate
+
 # Build TypeScript
 RUN pnpm build
 
-# Copy generated Prisma files into dist so runtime code can find them
-RUN cp -r src/generated/prisma dist/generated/prisma
+# Copy generated Prisma files to dist to match the path alias at runtime
+RUN mkdir -p dist/generated && cp -r src/generated/prisma dist/generated/prisma
 
 # Set environment
 ENV NODE_ENV=production
