@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUpdatePersonalInfoMutation } from "@/store/api/authApi";
+import { useAppDispatch } from "@/store/hooks";
+import { updateUser } from "@/store";
 import { toast } from "sonner";
 
 interface PersonalInfoCardProps {
@@ -22,6 +24,7 @@ export const PersonalInfoCard = ({
   joinDate,
   emailVerified,
 }: PersonalInfoCardProps) => {
+  const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(name || "");
   const [editEmail, setEditEmail] = useState(email);
@@ -29,10 +32,12 @@ export const PersonalInfoCard = ({
 
   const handleSave = async () => {
     try {
-      await updatePersonalInfo({
+      const result = await updatePersonalInfo({
         name: editName,
         email: editEmail,
       }).unwrap();
+
+      dispatch(updateUser(result.data));
 
       toast.success("Personal information updated successfully");
       setIsEditing(false);

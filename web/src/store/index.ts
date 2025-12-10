@@ -13,6 +13,7 @@ export * from "./api";
 // Export auth slice actions and selectors
 export {
   setCredentials,
+  updateUser,
   logout,
   selectCurrentUser,
   selectAccessToken,
