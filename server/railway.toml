@@ -1,0 +1,5 @@
+[build]
+command = "corepack enable && pnpm install && pnpm build"
+
+[start]
+command = "pnpm start"
