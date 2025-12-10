@@ -12,7 +12,7 @@ const app: Express = express();
 const FRONTEND_URL =
   process.env.NODE_ENV === "dev"
     ? process.env.FRONTEND_URL_DEV
-    : process.env.FRONTEND_URL_DEV;
+    : process.env.FRONTEND_URL_PROD;
 
 app.use(
   cors({
