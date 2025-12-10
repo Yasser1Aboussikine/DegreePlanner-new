@@ -92,7 +92,7 @@ export function EligibleCoursesPanel({
 
       <div className="flex-1 overflow-y-auto space-y-3 pr-2">
         {isLoading ? (
-          <LoadingSpinner message="Searching courses..." />
+          <LoadingSpinner />
         ) : Object.keys(coursesByCategory).length === 0 ? (
           <Card className="p-8 text-center bg-card">
             <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-3" />

@@ -18,7 +18,7 @@ export const MentorGroupChatPage = () => {
   });
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading group chat..." />;
+    return <LoadingSpinner />;
   }
 
   if (error) {

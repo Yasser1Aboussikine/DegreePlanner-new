@@ -72,7 +72,7 @@ export const AssignmentPage = () => {
 
       <div className="mt-6">
         {isLoading ? (
-          <LoadingSpinner message={`Loading ${activeTab}...`} />
+          <LoadingSpinner />
         ) : isEmpty ? (
           <div className="flex flex-col items-center justify-center h-64 space-y-4">
             <AlertCircle className="h-16 w-16 text-muted-foreground" />

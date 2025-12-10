@@ -114,7 +114,7 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-sidebar flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-xl border-border">
           <CardContent className="pt-6">
-            <LoadingSpinner message="Verifying reset link..." />
+            <LoadingSpinner />
           </CardContent>
         </Card>
       </div>

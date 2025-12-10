@@ -86,7 +86,7 @@ export const AdvisorStudentsPage = () => {
   };
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading students..." />;
+    return <LoadingSpinner />;
   }
 
   if (error) {

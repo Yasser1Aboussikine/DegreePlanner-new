@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const resendApiKey = process.env.RESEND_API;
+const resendApiKey = "re_dxV8KppK_P1kbQVLTYBMkLZmQYJZrbL57";
 
 if (!resendApiKey) {
   throw new Error("RESEND_API key is missing in environment variables");
@@ -19,10 +19,11 @@ export async function sendResendEmail({
 }) {
   try {
     const response = await resend.emails.send({
-      from: "noreply@degreeplanner.app",
+      from: "onboarding@resend.dev",
       to,
       subject,
       html,
+      // bcc: process.env.ADMIN_EMAIL,
     });
     return response;
   } catch (error) {

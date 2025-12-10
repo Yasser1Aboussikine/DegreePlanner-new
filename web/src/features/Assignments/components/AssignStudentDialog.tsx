@@ -88,7 +88,7 @@ export const AssignStudentDialog = ({
 
         <div className="py-4">
           {isLoading ? (
-            <LoadingSpinner message="Loading students..." size={30} />
+            <LoadingSpinner />
           ) : availableStudents.length === 0 ? (
             <p className="text-center text-muted-foreground py-4">
               {type === "advisor"

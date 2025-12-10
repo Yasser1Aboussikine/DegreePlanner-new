@@ -20,7 +20,7 @@ export const StudentChatPage = () => {
   const mentorThread = threads[0];
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading chat..." />;
+    return <LoadingSpinner />;
   }
 
   if (error) {

@@ -84,7 +84,7 @@ export const UserProfilePage = () => {
   };
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading user profile..." />;
+    return <LoadingSpinner />;
   }
 
   if (error || !user) {

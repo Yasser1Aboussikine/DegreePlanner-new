@@ -15,6 +15,7 @@ export * from "./loading-spinner";
 export * from "./pagination";
 export * from "./popover";
 export * from "./progress";
+export * from "./screen-size-warning";
 export * from "./select";
 export * from "./separator";
 export * from "./sidebar";

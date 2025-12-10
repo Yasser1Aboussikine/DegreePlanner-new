@@ -748,46 +748,105 @@ export async function createDegreePlanReview(
     );
   }
 
+  const oldProcessedRequests = await prisma.planSemesterReviewRequest.findMany({
+    where: {
+      planSemester: {
+        degreePlanId,
+      },
+      status: {
+        in: ["APPROVED", "REJECTED"],
+      },
+    },
+  });
+
+  const semesterIdMap = new Map(
+    oldProcessedRequests.map((req) => [req.planSemesterId, req])
+  );
+
   const reviewRequests = await Promise.all(
-    degreePlan.semesters.map((semester) =>
-      prisma.planSemesterReviewRequest.create({
-        data: {
-          planSemesterId: semester.id,
-          studentId,
-          mentorId: requiresMentorReview ? mentorAssignment?.mentorId : null,
-          advisorId: advisorAssignment.advisorId,
-          status: requiresMentorReview ? "PENDING_MENTOR" : "PENDING_ADVISOR",
-        },
-        include: {
-          planSemester: {
-            include: {
-              plannedCourses: true,
+    degreePlan.semesters.map((semester) => {
+      const existingRequest = semesterIdMap.get(semester.id);
+
+      if (existingRequest) {
+        return prisma.planSemesterReviewRequest.update({
+          where: { id: existingRequest.id },
+          data: {
+            mentorId: requiresMentorReview ? mentorAssignment?.mentorId : null,
+            advisorId: advisorAssignment.advisorId,
+            status: requiresMentorReview ? "PENDING_MENTOR" : "PENDING_ADVISOR",
+            requestedAt: new Date(),
+            mentorReviewedAt: null,
+            advisorReviewedAt: null,
+          },
+          include: {
+            planSemester: {
+              include: {
+                plannedCourses: true,
+              },
+            },
+            student: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            mentor: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            advisor: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
             },
           },
-          student: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
+        });
+      } else {
+        return prisma.planSemesterReviewRequest.create({
+          data: {
+            planSemesterId: semester.id,
+            studentId,
+            mentorId: requiresMentorReview ? mentorAssignment?.mentorId : null,
+            advisorId: advisorAssignment.advisorId,
+            status: requiresMentorReview ? "PENDING_MENTOR" : "PENDING_ADVISOR",
+          },
+          include: {
+            planSemester: {
+              include: {
+                plannedCourses: true,
+              },
+            },
+            student: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            mentor: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            advisor: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
             },
           },
-          mentor: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          advisor: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      })
-    )
+        });
+      }
+    })
   );
 
   return reviewRequests;

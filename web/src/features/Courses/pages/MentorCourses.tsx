@@ -98,7 +98,7 @@ const MentorCourses = () => {
     selectedType !== "all";
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading courses..." />;
+    return <LoadingSpinner />;
   }
 
   if (error) {

@@ -317,13 +317,13 @@ export const ChatWindow = ({
         )}
 
         {isLoading ? (
-          <LoadingSpinner message="Loading messages..." />
+          <LoadingSpinner />
         ) : (
           <>
             <MessageList
               messages={messages}
               currentUserId={currentUserId}
-              loading={isLoading}
+              loading={false}
               typingUsers={typingUsers}
               onMessageViewed={handleMessageViewed}
             />

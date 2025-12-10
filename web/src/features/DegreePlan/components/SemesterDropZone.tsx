@@ -21,7 +21,6 @@ interface SemesterDropZoneProps {
   userRole?: "mentor" | "advisor" | "student";
   onCommentChange?: (semesterId: string, comment: string) => void;
 }
-
 export const SemesterDropZone = memo(function SemesterDropZone({
   semester,
   onRemoveCourse,
@@ -55,9 +54,7 @@ export const SemesterDropZone = memo(function SemesterDropZone({
   });
 
   const hasComments = mentorComment || advisorComment;
-  const hasFeedback =
-    hasComments ||
-    rejectionReason
+  const hasFeedback = hasComments || rejectionReason;
   const canAddComment =
     canEditComment && (userRole === "mentor" || userRole === "advisor");
   const existingComment =
@@ -81,27 +78,9 @@ export const SemesterDropZone = memo(function SemesterDropZone({
   };
 
   return (
-    <Card className="p-4 transition-all duration-200 h-full flex flex-col bg-card border-border relative">
-      {/* Status Badge - Top Right */}
-      {reviewStatus && (
-        <div className="absolute top-3 right-3">
-          <span
-            className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-              reviewStatus === "APPROVED"
-                ? "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
-                : reviewStatus === "REJECTED"
-                ? "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
-                : reviewStatus === "PENDING_ADVISOR"
-                ? "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
-                : "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800"
-            }`}
-          >
-            {reviewStatus.replace("_", " ")}
-          </span>
-        </div>
-      )}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 flex-1 pr-24">
+    <Card className="p-4 transition-all duration-200 h-full flex flex-col bg-card border-border">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-2 flex-1">
           <Calendar className="h-5 w-5 text-muted-foreground" />
           <div>
             <h3 className="font-semibold text-card-foreground">
@@ -122,13 +101,31 @@ export const SemesterDropZone = memo(function SemesterDropZone({
           </div>
         </div>
 
-        <div className="text-right flex flex-col items-end gap-1">
-          <p className="text-sm font-medium text-card-foreground">
-            {semester.totalCredits} Credits
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {semester.courses.length} Courses
-          </p>
+        <div className="flex flex-col items-end gap-2 ml-4">
+          <div className="text-right flex flex-col items-end gap-1">
+            <p className="text-sm font-medium text-card-foreground">
+              {semester.totalCredits} Credits
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {semester.courses.length} Courses
+            </p>
+          </div>
+
+          {reviewStatus && (
+            <span
+              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
+                reviewStatus === "APPROVED"
+                  ? "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
+                  : reviewStatus === "REJECTED"
+                  ? "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
+                  : reviewStatus === "PENDING_ADVISOR"
+                  ? "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+                  : "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800"
+              }`}
+            >
+              {reviewStatus.replace("_", " ")}
+            </span>
+          )}
         </div>
       </div>
       {/* View Feedback button - full width row for students */}
@@ -249,7 +246,9 @@ export const SemesterDropZone = memo(function SemesterDropZone({
               course={course}
               isDraggable={true}
               isInSemester={true}
-              onRemove={onRemoveCourse ? () => onRemoveCourse(course.id) : undefined}
+              onRemove={
+                onRemoveCourse ? () => onRemoveCourse(course.id) : undefined
+              }
             />
           ))
         )}

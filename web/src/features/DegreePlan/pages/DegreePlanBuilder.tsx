@@ -12,7 +12,7 @@ import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LoadingSpinner } from "@/components/ui";
+import { LoadingSpinner, ScreenSizeWarning } from "@/components/ui";
 import {
   Select,
   SelectContent,
@@ -82,6 +82,7 @@ import { exportDegreePlanToWord } from "@/utils/exportDegreePlan";
 
 export function DegreePlanBuilder() {
   const user = useAppSelector((state) => state.auth.user);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [semesters, setSemesters] = useState<SemesterData[]>([]);
   const [currentSemesterIndex, setCurrentSemesterIndex] = useState(0);
   const [coursesByCategory, setCoursesByCategory] = useState<CoursesByCategory>(
@@ -192,6 +193,17 @@ export function DegreePlanBuilder() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   useEffect(() => {
     if (degreePlanData && degreePlanData.semesters) {
@@ -748,7 +760,11 @@ export function DegreePlanBuilder() {
   );
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading degree plan..." fullScreen />;
+    return <LoadingSpinner />;
+  }
+
+  if (isSmallScreen) {
+    return <ScreenSizeWarning />;
   }
 
   return (

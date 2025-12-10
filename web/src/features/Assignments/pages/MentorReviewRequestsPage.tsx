@@ -119,7 +119,7 @@ export const MentorReviewRequestsPage = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
-        <LoadingSpinner message="Loading review requests..." />
+        <LoadingSpinner />
       </div>
     );
   }

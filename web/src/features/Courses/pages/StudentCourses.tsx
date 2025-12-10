@@ -280,7 +280,7 @@ const StudentCourses = () => {
         </div>
       </div>
 
-      {isLoading && <LoadingSpinner message="Loading courses..." />}
+      {isLoading && <LoadingSpinner />}
 
       {error && (
         <div className="bg-destructive/10 border border-destructive text-destructive rounded-lg p-4">
