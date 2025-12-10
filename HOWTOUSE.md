@@ -361,12 +361,10 @@ As an admin, you have full system access:
 ### Real-Time Chat
 
 1. **Navigate to "Chat"**
-   - See all your chat threads
    - Group chats (Mentor + Students)
-   - Direct messages
+   - View and Received life statuses update (Read if all group members viewed the message)
 
 2. **Sending Messages**
-   - Click on a thread
    - Type your message
    - Press Enter to send
 
@@ -387,7 +385,7 @@ As an admin, you have full system access:
 - Email notifications for:
   - Review approvals
   - Review rejections
-  - Mentor/Advisor assignments
+  - Mentor reports for Mentees misbehaviour
   - Password resets
 
 ### Password Management
@@ -396,7 +394,7 @@ As an admin, you have full system access:
    - Click "Forgot Password" on login page
    - Enter your email
    - Check email for reset link (expires in 24 hours)
-   - Create new password
+   - Create new password, make sure it's a strong one :)
 
 2. **Change Password**
    - Currently done through password reset flow
@@ -467,7 +465,7 @@ As an admin, you have full system access:
 For technical issues or questions:
 - Contact your system administrator
 - Report bugs via the GitHub issues page
-- Email: support@degreeplanner.com
+- Email: yasser1aboussikine@gmail.com
 
 ---
 
@@ -476,8 +474,7 @@ For technical issues or questions:
 1. **Never share your password**
 2. **Log out when using shared computers**
 3. **Use a strong, unique password**
-4. **Report suspicious activity immediately**
-5. **Keep your email secure**
+4. **Use "forget password" if you forgot about it!**
 
 ---
 
@@ -505,6 +502,7 @@ Not recommended:
 - Keep your profile information up to date
 
 ### For Mentors
+- Mentors are students with a part-time job, so students features apply.
 - Review student plans thoroughly
 - Provide constructive feedback
 - Respond to review requests promptly
@@ -536,7 +534,7 @@ Not recommended:
    - Approves → ✅ APPROVED
    - Rejects → Back to step 1
 
-### Junior/Senior Fast Track
+### Sophomore/Junior/Senior Fast Track
 
 1. **Student** creates degree plan
    ↓
@@ -550,29 +548,18 @@ Not recommended:
 
 ## 🎓 Getting Help
 
-### Quick Links
-
-- **Documentation**: See README.md for technical details
-- **Implementation Status**: See DONE.md for feature list
-- **GitHub Issues**: Report bugs or request features
-- **Contact Admin**: Use in-app chat to reach administrators
-
 ### Common Questions
 
 **Q: How do I know if my plan is approved?**
-A: Check the review status badge on your degree plan. It will show "APPROVED" when finalized.
+A: Check the review status badge on your degree plan. It will show "APPROVED" when finalized, you will also be notified by email, check your Inbox :).
 
 **Q: Can I edit my plan after submission?**
-A: No, you must wait for feedback. If rejected, you can revise and resubmit.
+A: yes, but we recommend to wait for feedback.
 
 **Q: Who do I contact about course eligibility?**
-A: Contact your advisor through the chat feature or your academic department.
+A: Contact your mentor through the chat feature or your academic department or our Gradly AI ChatBot.
 
-**Q: Can I change my minor after graduation?**
-A: Contact the registrar's office for post-graduation changes.
 
-**Q: How long does review take?**
-A: Review times vary. Check with your mentor/advisor for estimated timelines.
 
 ---
 
@@ -582,4 +569,4 @@ A: Review times vary. Check with your mentor/advisor for estimated timelines.
 
 ---
 
-🎓 **Happy Planning!** 🎓
+🎓 **Made with Love -by DegreePlanner Team!** 🎓
