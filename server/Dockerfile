@@ -22,9 +22,6 @@ RUN DATABASE_URL="postgresql://neondb_owner:npg_R9ulEfhSKQ0x@ep-tiny-lake-a9o6jp
 # Build TypeScript
 RUN pnpm build
 
-# Copy generated Prisma files to dist to match the path alias at runtime
-RUN mkdir -p dist/generated && cp -r src/generated/prisma dist/generated/prisma
-
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=3000
