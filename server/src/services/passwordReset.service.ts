@@ -41,13 +41,15 @@ export const requestPasswordReset = async (
     },
   });
 
-  await sendPasswordResetEmail({
+  sendPasswordResetEmail({
     email: user.email,
     name: user.name || user.email,
     resetToken: rawToken,
+  }).catch((error) => {
+    logger.error(`Failed to send password reset email to ${user.email}:`, error);
   });
 
-  logger.info(`Password reset email sent to user: ${user.email}`);
+  logger.info(`Password reset token created for user: ${user.email}`);
 };
 
 export const verifyResetToken = async (
