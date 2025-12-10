@@ -513,22 +513,20 @@ export async function submitBulkMentorReview(
       .map((sc) => sc.comment)
       .filter((c): c is string => !!c);
 
-    try {
-      await sendReviewNotificationEmail({
-        studentEmail: firstRequest.student.email,
-        studentName: firstRequest.student.name || "Student",
-        reviewerName: firstRequest.mentor?.name || "Your Mentor",
-        reviewerRole: "Mentor",
-        approved: data.approve,
-        rejectionReason: data.generalRejectionReason,
-        comments: comments.length > 0 ? comments : undefined,
-      });
-    } catch (emailError: any) {
+    sendReviewNotificationEmail({
+      studentEmail: firstRequest.student.email,
+      studentName: firstRequest.student.name || "Student",
+      reviewerName: firstRequest.mentor?.name || "Your Mentor",
+      reviewerRole: "Mentor",
+      approved: data.approve,
+      rejectionReason: data.generalRejectionReason,
+      comments: comments.length > 0 ? comments : undefined,
+    }).catch((emailError: any) => {
       logger.warn("Failed to send mentor review email notification:", {
         error: emailError.message || emailError,
         studentEmail: firstRequest.student.email,
       });
-    }
+    });
   }
 
   return updatedRequests;
@@ -666,22 +664,20 @@ export async function submitBulkAdvisorReview(
       .map((sc) => sc.comment)
       .filter((c): c is string => !!c);
 
-    try {
-      await sendReviewNotificationEmail({
-        studentEmail: firstRequest.student.email,
-        studentName: firstRequest.student.name || "Student",
-        reviewerName: firstRequest.advisor?.name || "Your Advisor",
-        reviewerRole: "Advisor",
-        approved: data.approve,
-        rejectionReason: data.generalRejectionReason,
-        comments: comments.length > 0 ? comments : undefined,
-      });
-    } catch (emailError: any) {
+    sendReviewNotificationEmail({
+      studentEmail: firstRequest.student.email,
+      studentName: firstRequest.student.name || "Student",
+      reviewerName: firstRequest.advisor?.name || "Your Advisor",
+      reviewerRole: "Advisor",
+      approved: data.approve,
+      rejectionReason: data.generalRejectionReason,
+      comments: comments.length > 0 ? comments : undefined,
+    }).catch((emailError: any) => {
       logger.warn("Failed to send advisor review email notification:", {
         error: emailError.message || emailError,
         studentEmail: firstRequest.student.email,
       });
-    }
+    });
   }
 
   return updatedRequests;

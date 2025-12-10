@@ -14,6 +14,7 @@ import categoryRouter from "./category.route";
 import chatRouter from "./chat.route";
 import passwordResetRouter from "./passwordReset.route";
 import minorRouter from "./minor.route";
+import testRouter from "./test.route";
 
 const router: Router = Router();
 
@@ -37,4 +38,5 @@ router.use("/catalog", categoryRouter);
 router.use("/chat", chatRouter);
 router.use("/password-reset", passwordResetRouter);
 router.use("/minors", minorRouter);
+router.use("/test", testRouter);
 export default router;
