@@ -124,6 +124,9 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
             trigger("joinDate");
           }}
           placeholder="Select join date"
+          error={!!errors.joinDate}
+          fromYear={2000}
+          toYear={new Date().getFullYear() + 1}
         />
         {errors.joinDate && (
           <p className="text-sm text-destructive">{errors.joinDate.message}</p>
@@ -143,6 +146,9 @@ export const AcademicInfoStep = ({ form }: AcademicInfoStepProps) => {
             trigger("expectedGraduation");
           }}
           placeholder="Select expected graduation date"
+          error={!!errors.expectedGraduation}
+          fromYear={new Date().getFullYear()}
+          toYear={new Date().getFullYear() + 10}
         />
         {errors.expectedGraduation && (
           <p className="text-sm text-destructive">

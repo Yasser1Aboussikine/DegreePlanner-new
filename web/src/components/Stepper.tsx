@@ -5,7 +5,10 @@ import { motion, AnimatePresence } from "motion/react";
 interface StepperProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   initialStep?: number;
-  onStepChange?: (step: number) => void;
+  onStepChange?: (
+    newStep: number,
+    currentStep: number
+  ) => void | Promise<boolean>;
   onFinalStepCompleted?: () => void;
   stepCircleContainerClassName?: string;
   stepContainerClassName?: string;
@@ -47,12 +50,16 @@ export default function Stepper({
   const isCompleted = currentStep > totalSteps;
   const isLastStep = currentStep === totalSteps;
 
-  const updateStep = (newStep: number) => {
+  const updateStep = async (newStep: number) => {
+    const result = await onStepChange(newStep, currentStep);
+    // If onStepChange returns false, don't proceed
+    if (result === false) {
+      return;
+    }
+
     setCurrentStep(newStep);
     if (newStep > totalSteps) {
       onFinalStepCompleted();
-    } else {
-      onStepChange(newStep);
     }
   };
 
@@ -63,23 +70,20 @@ export default function Stepper({
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isLastStep) {
       setDirection(1);
-      updateStep(currentStep + 1);
+      await updateStep(currentStep + 1);
     }
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     setDirection(1);
-    updateStep(totalSteps + 1);
+    await updateStep(totalSteps + 1);
   };
 
   return (
-    <div
-      className="flex flex-col w-full"
-      {...rest}
-    >
+    <div className="flex flex-col w-full" {...rest}>
       <div className="w-full">
         <div
           className={`${stepContainerClassName} flex w-full items-center justify-center mb-8`}

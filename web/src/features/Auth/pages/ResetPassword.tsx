@@ -23,7 +23,9 @@ import { toast } from "sonner";
 
 const resetPasswordSchema = z
   .object({
-    newPassword: z.string().min(8, "Password must be at least 8 characters long"),
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters long"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -39,9 +41,12 @@ export default function ResetPasswordPage() {
   const token = searchParams.get("token");
 
   const [verifyResetToken] = useVerifyResetTokenMutation();
-  const [resetPassword, { isLoading: isResetting }] = useResetPasswordMutation();
+  const [resetPassword, { isLoading: isResetting }] =
+    useResetPasswordMutation();
 
-  const [tokenStatus, setTokenStatus] = useState<"verifying" | "valid" | "invalid">("verifying");
+  const [tokenStatus, setTokenStatus] = useState<
+    "verifying" | "valid" | "invalid"
+  >("verifying");
 
   const {
     register,
@@ -131,7 +136,8 @@ export default function ResetPasswordPage() {
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                This password reset link is invalid or has expired. Reset links expire after 24 hours.
+                This password reset link is invalid or has expired. Reset links
+                expire after 24 hours.
               </AlertDescription>
             </Alert>
             <div className="flex flex-col gap-2">
@@ -177,7 +183,7 @@ export default function ResetPasswordPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Alert className="mb-4 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30">
+          <Alert className="mb-4 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
             <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
             <AlertDescription className="text-green-700 dark:text-green-300">
               Your reset link is valid. Please enter your new password.

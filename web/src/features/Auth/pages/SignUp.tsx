@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +18,6 @@ import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store";
 
 export default function SignUpPage() {
-  const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [signup, { isLoading }] = useSignupMutation();
@@ -27,7 +25,9 @@ export default function SignUpPage() {
   // Calculate default dates
   const defaultJoinDate = new Date();
   const defaultExpectedGraduation = new Date(defaultJoinDate);
-  defaultExpectedGraduation.setFullYear(defaultExpectedGraduation.getFullYear() + 3);
+  defaultExpectedGraduation.setFullYear(
+    defaultExpectedGraduation.getFullYear() + 3
+  );
   defaultExpectedGraduation.setMonth(defaultExpectedGraduation.getMonth() + 8);
 
   const form = useForm<SignUpFormData>({
@@ -49,7 +49,10 @@ export default function SignUpPage() {
 
   const { handleSubmit, trigger } = form;
 
-  const handleStepChange = async (newStep: number) => {
+  const handleStepChange = async (
+    newStep: number,
+    currentStep: number
+  ): Promise<boolean> => {
     // Only validate when moving forward
     if (newStep > currentStep) {
       let isValid = false;
@@ -62,6 +65,11 @@ export default function SignUpPage() {
           "password",
           "confirmPassword",
         ]);
+
+        if (!isValid) {
+          toast.error("Please fix all validation errors before continuing");
+          return false;
+        }
       } else if (currentStep === 2) {
         // Validate academic info step
         isValid = await trigger([
@@ -69,16 +77,19 @@ export default function SignUpPage() {
           "joinDate",
           "expectedGraduation",
         ]);
+
+        if (!isValid) {
+          toast.error("Please complete all required fields before continuing");
+          return false;
+        }
       }
 
       // Only proceed if validation passed
-      if (isValid) {
-        setCurrentStep(newStep);
-      }
-    } else {
-      // Allow going back without validation
-      setCurrentStep(newStep);
+      return isValid;
     }
+
+    // Allow going back without validation
+    return true;
   };
 
   const onSubmit = async (data: SignUpFormData) => {
@@ -135,7 +146,6 @@ export default function SignUpPage() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stepper
-              initialStep={currentStep}
               onStepChange={handleStepChange}
               onFinalStepCompleted={handleFinalStepCompleted}
               backButtonText="Back"
