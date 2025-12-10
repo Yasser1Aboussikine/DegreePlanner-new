@@ -9,6 +9,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+RUN pnpm prisma:generate
 RUN pnpm build
 
 ENV NODE_ENV=production
