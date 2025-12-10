@@ -46,9 +46,9 @@ For Mentor, Advisor, Registrar, and Admin accounts:
 - **Email Format**: `{role}1@aui.ma`
   - Mentor: `mentor1@aui.ma`
   - Advisor: `advisor1@aui.ma`
-  - Registrar: `registrar1@aui.ma`
-  - Admin: `admin1@aui.ma`
-- **Password**: `role1` (for all)
+  - Registrar: `registrar@aui.ma`   
+  - Admin: `admin@aui.ma`  
+- **Password**: `whathever is before '@' is the password`
 
 ---
 
