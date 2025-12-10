@@ -11,6 +11,9 @@ jest.mock("../../config/prisma", () => ({
       update: jest.fn(),
       delete: jest.fn(),
     },
+    program: {
+      findUnique: jest.fn(),
+    },
   },
 }));
 
@@ -40,7 +43,19 @@ describe("DegreePlan Service", () => {
         semesters: [],
       };
 
+      const mockProgram = {
+        id: "program-1",
+        code: "BSCSC",
+        name: "Bachelor of Science in Computer Science",
+        level: "BACHELOR",
+        totalCredits: 136,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
       (prisma.degreePlan.findUnique as jest.Mock).mockResolvedValue(null);
+      (prisma.program.findUnique as jest.Mock).mockResolvedValue(mockProgram);
       (prisma.degreePlan.create as jest.Mock).mockResolvedValue(
         mockDegreePlanWithRelations
       );

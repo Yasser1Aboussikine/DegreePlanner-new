@@ -12,6 +12,12 @@ jest.mock("../../config/prisma", () => ({
       findUnique: jest.fn(),
       create: jest.fn(),
     },
+    program: {
+      findUnique: jest.fn(),
+    },
+    degreePlan: {
+      create: jest.fn(),
+    },
   },
 }));
 
@@ -36,6 +42,25 @@ describe("Auth Service", () => {
         updatedAt: new Date(),
       };
 
+      const mockProgram = {
+        id: "program-1",
+        code: "BSCSC",
+        name: "Bachelor of Science in Computer Science",
+        level: "BACHELOR",
+        totalCredits: 136,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const mockDegreePlan = {
+        id: "plan-1",
+        userId: "1",
+        programId: "program-1",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
       const mockToken = "mock-access-token";
       const mockRefreshToken = "mock-refresh-token";
 
@@ -44,6 +69,8 @@ describe("Auth Service", () => {
         "hashedPassword"
       );
       (prisma.user.create as jest.Mock).mockResolvedValue(mockUser);
+      (prisma.program.findUnique as jest.Mock).mockResolvedValue(mockProgram);
+      (prisma.degreePlan.create as jest.Mock).mockResolvedValue(mockDegreePlan);
       (jwtUtil.generateToken as jest.Mock).mockReturnValue(mockToken);
       (jwtUtil.generateRefreshToken as jest.Mock).mockReturnValue(
         mockRefreshToken

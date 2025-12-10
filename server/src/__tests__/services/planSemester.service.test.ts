@@ -9,6 +9,7 @@ jest.mock("../../config/prisma", () => ({
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
+      findFirst: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
     },
@@ -49,6 +50,7 @@ describe("PlanSemester Service", () => {
 
   describe("createPlanSemester", () => {
     it("should create a new plan semester", async () => {
+      (prisma.planSemester.findFirst as jest.Mock).mockResolvedValue(null);
       (prisma.planSemester.create as jest.Mock).mockResolvedValue(
         mockPlanSemesterWithRelations
       );
