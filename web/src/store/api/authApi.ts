@@ -116,7 +116,7 @@ export const authApi = apiSlice.injectEndpoints({
     // PATCH /api/auth/profile
     updatePersonalInfo: builder.mutation<
       { data: User },
-      { name?: string; email?: string }
+      { name?: string; email?: string; minor?: string | null }
     >({
       query: (data) => ({
         url: `/auth/profile`,

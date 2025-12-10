@@ -62,6 +62,8 @@ export const MentorProfilePage = () => {
               : undefined
           }
           isFYEStudent={user.isFYEStudent}
+          editableMinor={true}
+          userId={user.id}
         />
 
         <MyStudentsCard mentorId={user.id} />

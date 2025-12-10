@@ -1,6 +1,14 @@
+
 import CardLayout from "@/shared/CardLayout";
 import { GraduationCap, BookOpen, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { useGetAllMinorsQuery } from "@/store/api/minorApi";
+import { useUpdatePersonalInfoMutation } from "@/store/api/authApi";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
+import { updateUser } from "@/store";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface AcademicInfoCardProps {
   major?: string;
@@ -8,6 +16,8 @@ interface AcademicInfoCardProps {
   classification?: string;
   expectedGraduation?: string;
   isFYEStudent?: boolean;
+  editableMinor?: boolean;
+  userId?: string;
 }
 
 export const AcademicInfoCard = ({
@@ -16,7 +26,14 @@ export const AcademicInfoCard = ({
   classification,
   expectedGraduation,
   isFYEStudent,
+  editableMinor = false,
+  userId,
 }: AcademicInfoCardProps) => {
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const [updatePersonalInfo, { isLoading: isUpdating }] = useUpdatePersonalInfoMutation();
+  const { data: minorsData } = useGetAllMinorsQuery();
+  const [selectedMinor, setSelectedMinor] = useState(minor || "");
   const getClassificationColor = (classification?: string) => {
     switch (classification) {
       case "FRESHMAN":
@@ -29,6 +46,17 @@ export const AcademicInfoCard = ({
         return "bg-purple-100 text-purple-800 border-purple-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const handleMinorChange = async (value: string) => {
+    setSelectedMinor(value);
+    try {
+      const result = await updatePersonalInfo({ minor: value === "none" ? null : value }).unwrap();
+      dispatch(updateUser(result.data));
+      toast.success("Minor updated successfully");
+    } catch (e: any) {
+      toast.error(e?.data?.message || "Failed to update minor");
     }
   };
 
@@ -56,7 +84,27 @@ export const AcademicInfoCard = ({
           <BookOpen className="h-5 w-5 text-muted-foreground mt-0.5" />
           <div className="flex-1">
             <p className="text-sm font-medium text-muted-foreground">Minor</p>
-            <p className="text-base font-semibold">{minor || "None"}</p>
+            {editableMinor && currentUser && currentUser.id === userId && (currentUser.role === "STUDENT" || currentUser.role === "MENTOR") ? (
+              <Select
+                value={selectedMinor || "none"}
+                onValueChange={handleMinorChange}
+                disabled={isUpdating}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select minor" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  {minorsData?.data?.map((m) => (
+                    <SelectItem key={m.code} value={m.name}>
+                      {m.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <p className="text-base font-semibold">{minor || "None"}</p>
+            )}
           </div>
         </div>
 

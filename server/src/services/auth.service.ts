@@ -517,7 +517,7 @@ export const toggleUserStatus = async (
 
 export const updatePersonalInfo = async (
   userId: string,
-  data: { name?: string; email?: string }
+  data: { name?: string; email?: string; minor?: string | null }
 ): Promise<Omit<User, "password">> => {
   if (data.email) {
     const existingUser = await prisma.user.findFirst({
@@ -535,6 +535,7 @@ export const updatePersonalInfo = async (
   const updateData: any = {};
   if (data.name !== undefined) updateData.name = data.name;
   if (data.email !== undefined) updateData.email = data.email;
+  if (data.minor !== undefined) updateData.minor = data.minor;
 
   const updatedUser = await prisma.user.update({
     where: { id: userId },

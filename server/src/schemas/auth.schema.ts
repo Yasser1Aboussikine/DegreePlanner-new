@@ -42,6 +42,7 @@ export const updatePersonalInfoSchema = z.object({
   body: z.object({
     name: z.string().min(1).optional(),
     email: z.email("Invalid email address").optional(),
+    minor: z.string().nullable().optional(),
   }),
 });
 

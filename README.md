@@ -3,7 +3,7 @@
 **DegreePlanner** is an intelligent academic planning system designed for AUI students. It combines **real-time chat**, **mentor/advisor assignment**, **role-based dashboards**, and comprehensive **semester planning workflows** to help students build, validate, and optimize their degree progress.
 
 ---
-
+  
 ## 🚀 **Deployment Status: PRODUCTION READY** ✅
 
 The project is **ready for production deployment** with all core features implemented and tested.

@@ -62,6 +62,8 @@ export const StudentProfilePage = () => {
               : undefined
           }
           isFYEStudent={user.isFYEStudent}
+          editableMinor={true}
+          userId={user.id}
         />
 
         {(user.classification === "FRESHMAN" ||

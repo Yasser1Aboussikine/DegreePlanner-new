@@ -214,11 +214,12 @@ export const updatePersonalInfo = async (
       return;
     }
 
-    const { name, email } = req.body;
+    const { name, email, minor } = req.body;
 
     const user = await authService.updatePersonalInfo(req.user.userId, {
       name,
       email,
+      minor,
     });
 
     sendSuccess(res, 200, "Personal information updated successfully", user);
