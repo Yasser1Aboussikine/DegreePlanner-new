@@ -10,9 +10,31 @@ export const signup = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, password, name, role = Role.STUDENT } = req.body;
+    const {
+      email,
+      password,
+      name,
+      role = Role.STUDENT,
+      major,
+      minor,
+      classification,
+      isFYEStudent,
+      joinDate,
+      expectedGraduation,
+    } = req.body;
 
-    const result = await authService.signup({ email, password, name, role });
+    const result = await authService.signup({
+      email,
+      password,
+      name,
+      role,
+      major,
+      minor,
+      classification,
+      isFYEStudent,
+      joinDate,
+      expectedGraduation,
+    });
 
     sendSuccess(res, 201, "User created successfully", result);
   } catch (error) {

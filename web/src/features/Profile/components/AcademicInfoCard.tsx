@@ -94,7 +94,7 @@ export const AcademicInfoCard = ({
           </div>
         )}
 
-        {isFYEStudent !== undefined && (
+        {classification === "FRESHMAN" && isFYEStudent !== undefined && (
           <div className="flex items-start gap-3">
             <GraduationCap className="h-5 w-5 text-muted-foreground mt-0.5" />
             <div className="flex-1">
