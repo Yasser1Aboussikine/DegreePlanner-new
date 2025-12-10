@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useAppSelector } from "@/store/hooks";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "./Layouts";
@@ -47,9 +49,37 @@ import { RoleBasedRedirect } from "./components/RoleBasedRedirect";
 import Home from "./features/LandingPage/pages/Home";
 
 function App() {
+  const user = useAppSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    // Only inject Botpress if authenticated and role is STUDENT or MENTOR
+    if (user && (user.role === "STUDENT" || user.role === "MENTOR")) {
+      // Inject Botpress main script
+      if (!document.getElementById("botpress-inject")) {
+        const script = document.createElement("script");
+        script.src = "https://cdn.botpress.cloud/webchat/v3.5/inject.js";
+        script.id = "botpress-inject";
+        document.body.appendChild(script);
+      }
+      // Inject Botpress config script
+      if (!document.getElementById("botpress-config")) {
+        const configScript = document.createElement("script");
+        configScript.src =
+          "https://files.bpcontent.cloud/2025/12/01/00/20251201001255-2IYA2VOU.js";
+        configScript.defer = true;
+        configScript.id = "botpress-config";
+        document.body.appendChild(configScript);
+      }
+    } else {
+      // Remove Botpress scripts if present
+      const inject = document.getElementById("botpress-inject");
+      if (inject) inject.remove();
+      const config = document.getElementById("botpress-config");
+      if (config) config.remove();
+    }
+  }, [user]);
   return (
     <BrowserRouter>
-
       <Routes>
         {/* Public Routes */}
         <Route path="/signin" element={<SignInPage />} />
@@ -163,7 +193,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-  
 }
 
 export default App;
