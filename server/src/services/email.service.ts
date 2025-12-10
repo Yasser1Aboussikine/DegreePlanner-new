@@ -1,6 +1,10 @@
 import nodemailer from "nodemailer";
 import logger from "@/config/logger";
 
+const FRONTEND_URL =
+  process.env.NODE_ENV === "dev"
+    ? process.env.FRONTEND_URL_DEV
+    : process.env.FRONTEND_URL_PROD;
 const smtpConfig = {
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: parseInt(process.env.SMTP_PORT || "587"),
@@ -17,7 +21,7 @@ logger.info("Email service SMTP configuration:", {
   secure: smtpConfig.secure,
   hasUser: !!smtpConfig.auth.user,
   hasPass: !!smtpConfig.auth.pass,
-  frontendUrl: process.env.FRONTEND_URL,
+  frontendUrl:FRONTEND_URL,
 });
 
 const transporter = nodemailer.createTransport(smtpConfig);
@@ -135,7 +139,7 @@ export const sendReviewNotificationEmail = async (
       to: studentEmail,
       subject,
       html: htmlContent,
-      bcc: process.env.GMAIL_USER
+      bcc: process.env.GMAIL_USER,
     });
 
     logger.info(
@@ -233,7 +237,7 @@ export const sendStudentReportEmail = async (
       to: adminEmail,
       subject,
       html: htmlContent,
-      bcc: process.env.GMAIL_USER
+      bcc: process.env.GMAIL_USER,
     });
 
     logger.info(
@@ -256,12 +260,6 @@ export const sendPasswordResetEmail = async (
 ): Promise<void> => {
   try {
     const { email, name, resetToken } = data;
-
-    const FRONTEND_URL =
-      process.env.FRONTEND_URL ||
-      (process.env.NODE_ENV === "production"
-        ? "https://your-frontend-domain.com"
-        : "http://localhost:3000");
 
     const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
 
@@ -317,7 +315,7 @@ export const sendPasswordResetEmail = async (
       to: email,
       subject,
       html: htmlContent,
-      bcc: process.env.GMAIL_USER
+      bcc: process.env.GMAIL_USER,
     });
 
     logger.info(`Password reset email sent successfully to ${email}`);
