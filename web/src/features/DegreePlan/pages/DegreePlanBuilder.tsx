@@ -909,8 +909,18 @@ export function DegreePlanBuilder() {
                             ?.advisorComment
                         : undefined
                     }
-                    reviewStatus={overallStatus}
-                    rejectionReason={generalRejectionReason}
+                    reviewStatus={
+                      currentSemester
+                        ? reviewRequestsMap.get(currentSemester.id)?.status ||
+                          overallStatus
+                        : overallStatus
+                    }
+                    rejectionReason={
+                      currentSemester
+                        ? reviewRequestsMap.get(currentSemester.id)
+                            ?.rejectionReason
+                        : undefined
+                    }
                   />
                 </div>
               ) : (
