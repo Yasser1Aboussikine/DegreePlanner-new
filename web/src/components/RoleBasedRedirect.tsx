@@ -5,7 +5,7 @@ export const RoleBasedRedirect = () => {
   const user = useAppSelector((state) => state.auth.user);
 
   if (!user) {
-    return <Navigate to="/signin" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   switch (user.role) {
@@ -20,6 +20,6 @@ export const RoleBasedRedirect = () => {
     case "MENTOR":
       return <Navigate to="/mentor/dashboard" replace />;
     default:
-      return <Navigate to="/signin" replace />;
+      return <Navigate to="/home" replace />;
   }
 };

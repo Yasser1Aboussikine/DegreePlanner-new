@@ -26,14 +26,14 @@ export default function HeroSection() {
 
                 <div className="mt-12 flex flex-wrap gap-4">
                     <button
-                        onClick={() => navigate('/sign-up')}
+                        onClick={() => navigate('/signup')}
                         className="px-8 py-3 rounded-full font-medium transition-all duration-300 active:scale-95 text-sm tracking-wide bg-[#1c1917] text-[#FAFAF9] hover:bg-emerald-700 shadow-lg shadow-stone-200"
                     >
                         Start Planning
                     </button>
-                    <button className="px-8 py-3 rounded-full font-medium transition-all duration-300 active:scale-95 text-sm tracking-wide border border-[#d6d3d1] text-[#44403c] hover:bg-[#FAFAF9] hover:border-emerald-700">
+                    {/* <button className="px-8 py-3 rounded-full font-medium transition-all duration-300 active:scale-95 text-sm tracking-wide border border-[#d6d3d1] text-[#44403c] hover:bg-[#FAFAF9] hover:border-emerald-700">
                         Explore Catalog
-                    </button>
+                    </button> */}
                 </div>
             </motion.div>
         </main>

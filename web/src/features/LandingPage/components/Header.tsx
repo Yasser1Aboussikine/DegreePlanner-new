@@ -22,6 +22,14 @@ export default function Header() {
         setIsMenuOpen(false);
     };
 
+    const scrollToMotivation = () => {
+        const motivationSection = document.getElementById('motivation');
+        if (motivationSection) {
+            motivationSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        setIsMenuOpen(false);
+    };
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 backdrop-blur-md">
             {/* Logo */}
@@ -46,11 +54,17 @@ export default function Header() {
                 >
                     Tech Stack
                 </button>
+                <button
+                    onClick={scrollToMotivation}
+                    className="hover:text-[#1c1917] transition-colors"
+                >
+                    Motivation
+                </button>
             </div>
 
             {/* Sign In Button */}
             <button
-                onClick={() => navigate('/sign-up')}
+                onClick={() => navigate('/signin')}
                 className="hidden md:block text-sm font-medium text-[#1c1917] underline decoration-emerald-700 decoration-2 underline-offset-4 hover:text-emerald-700"
             >
                 Sign In
@@ -85,8 +99,14 @@ export default function Header() {
                         Tech Stack
                     </button>
                     <button
+                        onClick={scrollToMotivation}
+                        className="block w-full text-left px-8 py-2 text-sm font-medium text-[#57534e] hover:text-[#1c1917] transition-colors"
+                    >
+                        Motivation
+                    </button>
+                    <button
                         onClick={() => {
-                            navigate('/sign-up');
+                            navigate('/signin');
                             setIsMenuOpen(false);
                         }}
                         className="block w-full text-left px-8 py-2 text-sm font-medium text-[#1c1917] underline decoration-emerald-700 decoration-2 underline-offset-4"

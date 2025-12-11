@@ -33,14 +33,14 @@ export function useLogoutHandler() {
       // Clear local state
       dispatch(logoutAction());
 
-      // Navigate to sign in page and replace history to prevent back navigation
-      navigate("/signin", { replace: true });
+      // Navigate to home page and replace history to prevent back navigation
+      navigate("/home", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
 
       // Still clear local state even if API call fails
       dispatch(logoutAction());
-      navigate("/signin", { replace: true });
+      navigate("/home", { replace: true });
     }
   };
 
