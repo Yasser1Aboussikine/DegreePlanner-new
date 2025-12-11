@@ -716,15 +716,21 @@ export async function createDegreePlanReview(
   const advisorAssignment = degreePlan.user.advisorAssignmentAsStudent;
   const studentClassification = degreePlan.user.classification;
   const studentRole = degreePlan.user.role;
+  const isFYEStudent = degreePlan.user.isFYEStudent;
 
   if (!advisorAssignment) {
     throw new Error("Student must have an assigned advisor to request a review");
   }
 
-  // Determine if mentor review is required
-  // If the student is a MENTOR themselves, skip mentor review and go directly to advisor
-  // Otherwise, FRESHMAN and SOPHOMORE students require mentor review
   const isStudentAMentor = studentRole === "MENTOR";
+  const isFreshmanFYE = studentClassification === "FRESHMAN" && isFYEStudent;
+
+  if (isFreshmanFYE && !mentorAssignment) {
+    throw new Error(
+      "FYE FRESHMAN students must have an assigned mentor before requesting a degree plan review"
+    );
+  }
+
   const requiresMentorReview =
     !isStudentAMentor &&
     (studentClassification === "FRESHMAN" ||
