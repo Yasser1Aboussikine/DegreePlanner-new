@@ -25,14 +25,14 @@ export default function MotivationSection() {
             title: 'The Problem',
             description: 'Before DegreePlanner, students had to manually create their degree plans, often using a Word document. They would look up courses in separate course catalogs and try to track prerequisites and semester schedules on their own. This process was not only time-consuming but also frustrating and confusing. It was hard to keep the plan up to date, especially with all the different courses to manage and prerequisites to track. For first-year students, degree planning can be especially tricky, as it\'s an important assignment in the First-Year Experience (FYE) Seminar, and many students end up feeling overwhelmed.',
             icon: <FileText className="h-5 w-5 text-white" />,
-            image: '/assets/degreeplan_pic.png',
+            image: '/degreeplan_pic.png',
             imageTitle: 'Traditional Degree Planning'
         },
         {
             title: 'The Solution',
             description: 'DegreePlanner solves these problems by providing a streamlined, organized way to plan and track your degree, making the process smoother, faster, and much more reliable. Built with a modern architecture combining Neo4j graph database for prerequisite tracking, PostgreSQL for data management, and React with TypeScript for a seamless user experience, the platform offers real-time validation, AI-powered guidance, and interactive visualizations.',
             icon: <Network className="h-5 w-5 text-white" />,
-            image: '/assets/architecture_diagram.png',
+            image: '/architecture_diagram.png',
             imageTitle: 'DegreePlanner Architecture'
         }
     ];
