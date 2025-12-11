@@ -13,7 +13,6 @@ COPY package.json pnpm-lock.yaml ./
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the project
 COPY . .
 
 # Generate Prisma Client (set dummy DATABASE_URL for build time)
