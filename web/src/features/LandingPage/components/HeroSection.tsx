@@ -17,7 +17,7 @@ export default function HeroSection() {
                 </div>
                 <h1 className="font-serif text-6xl font-medium leading-[1.1] text-[#1c1917] md:text-8xl">
                     Simplify<br />
-                    <span className="italic text-emerald-700">Your Degree Journey.</span>
+                    <span className="italic text-emerald-700">Your Academic Journey.</span>
                 </h1>
                 <p className="mt-8 max-w-xl text-lg text-[#57534e] md:text-xl">
                 DegreePlanner helps you seamlessly organize, track, and optimize your courses, 
