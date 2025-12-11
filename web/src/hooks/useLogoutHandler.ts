@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "@/store";
 import { useAppDispatch } from "@/store/hooks";
 import { logout as logoutAction } from "@/store";
@@ -17,7 +16,6 @@ import { withToast } from "@/utils/toastHelpers";
  * </Button>
  */
 export function useLogoutHandler() {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [logoutMutation, { isLoading: isLoggingOut }] = useLogoutMutation();
 
@@ -33,14 +31,16 @@ export function useLogoutHandler() {
       // Clear local state
       dispatch(logoutAction());
 
-      // Navigate to home page and replace history to prevent back navigation
-      navigate("/home", { replace: true });
+      // Refresh the page to ensure complete cleanup
+      window.location.href = "/home";
     } catch (error) {
       console.error("Logout failed:", error);
 
       // Still clear local state even if API call fails
       dispatch(logoutAction());
-      navigate("/home", { replace: true });
+
+      // Refresh the page to ensure complete cleanup
+      window.location.href = "/home";
     }
   };
 
