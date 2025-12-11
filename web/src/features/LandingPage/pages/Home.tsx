@@ -1,8 +1,9 @@
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import FeaturesSection from "../components/FeaturesSection";
+import MotivationSection from "../components/MotivationSection";
 import TechStackSection from "../components/TechStackSection";
-import FeaturesTimeline from "../components/FeaturesTimeline";
+import Footer from "../components/Footer";
 import PremiumBackground from "../components/PremiumBackground";
 import CursorSpark from "../components/CursorSpark";
 
@@ -15,9 +16,8 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <TechStackSection />
-      <FeaturesTimeline />
-
-      {/* <Footer /> */}
+      <MotivationSection />
+      <Footer />
     </div>
   );
 }

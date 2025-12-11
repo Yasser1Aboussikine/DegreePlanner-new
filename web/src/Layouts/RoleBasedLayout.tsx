@@ -31,8 +31,8 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
 
   // Authentication check
   if (requireAuth && !isAuthenticated) {
-    console.log("Not authenticated, redirecting to /signin");
-    return <Navigate to="/signin" state={{ from: location }} replace />;
+    console.log("Not authenticated, redirecting to /home");
+    return <Navigate to="/home" state={{ from: location }} replace />;
   }
 
   // Role-based access control
@@ -42,7 +42,7 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
 
   // For unauthenticated users
   if (!user || !isAuthenticated) {
-    return <Navigate to="/signin" state={{ from: location }} replace />;
+    return <Navigate to="/home" state={{ from: location }} replace />;
   }
 
   // Role-based layout selection
@@ -58,6 +58,6 @@ export const RoleBasedLayout: React.FC<RoleBasedLayoutProps> = ({
     case "MENTOR":
       return <MentorLayout />;
     default:
-      return <Navigate to="/signin" replace />;
+      return <Navigate to="/home" replace />;
   }
 };
