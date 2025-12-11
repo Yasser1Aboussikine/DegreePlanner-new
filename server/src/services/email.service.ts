@@ -1,10 +1,20 @@
 import nodemailer from "nodemailer";
+import axios from "axios";
 import logger from "@/config/logger";
 
 const FRONTEND_URL =
   process.env.NODE_ENV === "dev"
     ? process.env.FRONTEND_URL_DEV
     : process.env.FRONTEND_URL_PROD;
+
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
+// Toggle to force Brevo usage in development (for testing)
+// Set USE_BREVO_IN_DEV=true in .env to test Brevo in development
+const FORCE_BREVO_IN_DEV = process.env.USE_BREVO_IN_DEV === "true";
+const USE_BREVO = IS_PRODUCTION || FORCE_BREVO_IN_DEV;
+
+// SMTP config for development
 const smtpConfig = {
   host: process.env.SMTP_HOST || "smtp.gmail.com",
   port: parseInt(process.env.SMTP_PORT || "587"),
@@ -15,16 +25,100 @@ const smtpConfig = {
   },
 };
 
-logger.info("Email service SMTP configuration:", {
-  host: smtpConfig.host,
-  port: smtpConfig.port,
-  secure: smtpConfig.secure,
-  hasUser: !!smtpConfig.auth.user,
-  hasPass: !!smtpConfig.auth.pass,
-  frontendUrl:FRONTEND_URL,
+// Brevo API config for production
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
+
+logger.info("Email service configuration:", {
+  environment: process.env.NODE_ENV,
+  isProduction: IS_PRODUCTION,
+  forceBrevoInDev: FORCE_BREVO_IN_DEV,
+  useBrevo: USE_BREVO,
+  ...(USE_BREVO
+    ? {
+        hasBrevoApiKey: !!BREVO_API_KEY,
+        brevoSenderEmail: process.env.BREVO_SENDER_EMAIL,
+      }
+    : {
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        secure: smtpConfig.secure,
+        hasUser: !!smtpConfig.auth.user,
+        hasPass: !!smtpConfig.auth.pass,
+      }),
+  frontendUrl: FRONTEND_URL,
 });
 
 const transporter = nodemailer.createTransport(smtpConfig);
+
+// Brevo email sender function
+const sendEmailViaBrevo = async (
+  to: string,
+  subject: string,
+  htmlContent: string,
+  bcc?: string
+): Promise<void> => {
+  if (!BREVO_API_KEY) {
+    throw new Error("BREVO_API_KEY is not configured");
+  }
+
+  const emailData: any = {
+    sender: {
+      name: "Degree Planner",
+      email: process.env.BREVO_SENDER_EMAIL || "noreply@degreeplanner.com",
+    },
+    to: [{ email: to }],
+    subject,
+    htmlContent,
+  };
+
+  if (bcc) {
+    emailData.bcc = [{ email: bcc }];
+  }
+
+  try {
+    const response = await axios.post(BREVO_API_URL, emailData, {
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": BREVO_API_KEY,
+      },
+    });
+
+    logger.info("Email sent via Brevo successfully", {
+      messageId: response.data.messageId,
+      to,
+    });
+  } catch (error: any) {
+    logger.error("Error sending email via Brevo:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+
+// Unified email sender that uses SMTP in dev and Brevo in prod
+// Can be toggled to use Brevo in dev by setting USE_BREVO_IN_DEV=true
+const sendEmail = async (
+  to: string,
+  subject: string,
+  htmlContent: string,
+  bcc?: string
+): Promise<void> => {
+  if (USE_BREVO) {
+    await sendEmailViaBrevo(to, subject, htmlContent, bcc);
+  } else {
+    await transporter.sendMail({
+      from:
+        process.env.SMTP_FROM || '"Degree Planner" <noreply@degreeplanner.com>',
+      to,
+      subject,
+      html: htmlContent,
+      bcc,
+    });
+  }
+};
 
 interface ReviewNotificationData {
   studentEmail: string;
@@ -133,14 +227,12 @@ export const sendReviewNotificationEmail = async (
       `Attempting to send review notification email to: ${studentEmail}`
     );
 
-    await transporter.sendMail({
-      from:
-        process.env.SMTP_FROM || '"Degree Planner" <noreply@degreeplanner.com>',
-      to: studentEmail,
+    await sendEmail(
+      studentEmail,
       subject,
-      html: htmlContent,
-      bcc: process.env.GMAIL_USER,
-    });
+      htmlContent,
+      process.env.GMAIL_USER
+    );
 
     logger.info(
       `Review notification email sent successfully to ${studentEmail} for ${
@@ -231,14 +323,7 @@ export const sendStudentReportEmail = async (
       `Attempting to send student report email to admin: ${adminEmail}`
     );
 
-    await transporter.sendMail({
-      from:
-        process.env.SMTP_FROM || '"Degree Planner" <noreply@degreeplanner.com>',
-      to: adminEmail,
-      subject,
-      html: htmlContent,
-      bcc: process.env.GMAIL_USER,
-    });
+    await sendEmail(adminEmail, subject, htmlContent, process.env.GMAIL_USER);
 
     logger.info(
       `Student report email sent successfully to admin for student: ${studentName}, reported by: ${mentorName}`
@@ -309,14 +394,7 @@ export const sendPasswordResetEmail = async (
 
     logger.info(`Attempting to send password reset email to: ${email}`);
 
-    await transporter.sendMail({
-      from:
-        process.env.SMTP_FROM || '"Degree Planner" <noreply@degreeplanner.com>',
-      to: email,
-      subject,
-      html: htmlContent,
-      bcc: process.env.GMAIL_USER,
-    });
+    await sendEmail(email, subject, htmlContent, process.env.GMAIL_USER);
 
     logger.info(`Password reset email sent successfully to ${email}`);
   } catch (error) {
