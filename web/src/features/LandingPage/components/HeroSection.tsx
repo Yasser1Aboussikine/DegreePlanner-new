@@ -16,12 +16,12 @@ export default function HeroSection() {
                     AUI Academic Suite v2.0
                 </div>
                 <h1 className="font-serif text-6xl font-medium leading-[1.1] text-[#1c1917] md:text-8xl">
-                    Curate your <br />
-                    <span className="italic text-emerald-700">intellectual path.</span>
+                    Simplify<br />
+                    <span className="italic text-emerald-700">Your Degree Journey.</span>
                 </h1>
                 <p className="mt-8 max-w-xl text-lg text-[#57534e] md:text-xl">
-                    An elegant intersection of graph theory and academic planning.
-                    Build your degree with the precision of an engineer and the foresight of an advisor.
+                DegreePlanner helps you seamlessly organize, track, and optimize your courses, 
+                making sure you're always on the right path to graduate on time and with ease.
                 </p>
 
                 <div className="mt-12 flex flex-wrap gap-4">
