@@ -46,125 +46,135 @@ import { ClassificationProtectedRoute } from "./components/ClassificationProtect
 import { RoleBasedRedirect } from "./components/RoleBasedRedirect";
 import Home from "./features/LandingPage/pages/Home";
 import { BotpressProvider } from "./contexts/BotpressProvider";
+import ClickSpark from "./components/ClickSpark";
 
 function App() {
   const user = useAppSelector((state) => state.auth.user);
-  const isBotpressEnabled = user && (user.role === "STUDENT" || user.role === "MENTOR");
+  const isBotpressEnabled =
+    user && (user.role === "STUDENT" || user.role === "MENTOR");
   return (
     <BotpressProvider enabled={!!isBotpressEnabled}>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/home" element={<Home />} />
+      <ClickSpark>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/home" element={<Home />} />
 
-          {/* Protected Routes - Role-based Layout will handle routing */}
-          <Route path="/" element={<RoleBasedLayout />}>
-            <Route index element={<RoleBasedRedirect />} />
+            {/* Protected Routes - Role-based Layout will handle routing */}
+            <Route path="/" element={<RoleBasedLayout />}>
+              <Route index element={<RoleBasedRedirect />} />
 
-            {/* Student routes */}
-            <Route path="student">
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<StudentDashboard />} />
-              <Route path="profile" element={<StudentProfilePage />} />
-              <Route path="courses" element={<ViewOnlyCourses />} />
-              <Route path="courses/:id" element={<CourseDetailPage />} />
-              <Route path="degree-plan" element={<DegreePlanBuilder />} />
-              <Route
-                path="chat"
-                element={
-                  <ClassificationProtectedRoute
-                    allowedClassifications={["FRESHMAN", "SOPHOMORE"]}
-                  >
-                    <StudentChatPage />
-                  </ClassificationProtectedRoute>
-                }
-              />
+              {/* Student routes */}
+              <Route path="student">
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<StudentDashboard />} />
+                <Route path="profile" element={<StudentProfilePage />} />
+                <Route path="courses" element={<ViewOnlyCourses />} />
+                <Route path="courses/:id" element={<CourseDetailPage />} />
+                <Route path="degree-plan" element={<DegreePlanBuilder />} />
+                <Route
+                  path="chat"
+                  element={
+                    <ClassificationProtectedRoute
+                      allowedClassifications={["FRESHMAN", "SOPHOMORE"]}
+                    >
+                      <StudentChatPage />
+                    </ClassificationProtectedRoute>
+                  }
+                />
+              </Route>
+
+              {/* Admin routes */}
+              <Route path="admin">
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="profile" element={<AdminProfilePage />} />
+                <Route path="courses" element={<AdminCourses />} />
+                <Route path="courses/create" element={<AdminCreateCourse />} />
+                <Route path="courses/:id" element={<AdminCourseDetail />} />
+                <Route path="degree-plans" element={<DegreePlansPage />} />
+                <Route path="users" element={<UsersPage />} />
+                <Route
+                  path="users/:userId/profile"
+                  element={<UserProfilePage />}
+                />
+                <Route path="assign" element={<AssignmentPage />} />
+                <Route
+                  path="assign/:type/:id/students"
+                  element={<AssignedStudentsPage />}
+                />
+              </Route>
+
+              {/* Advisor routes */}
+              <Route path="advisor">
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<AdvisorDashboard />} />
+                <Route path="profile" element={<AdvisorProfilePage />} />
+                <Route path="students" element={<AdvisorStudentsPage />} />
+                <Route
+                  path="students/:userId/profile"
+                  element={<UserProfilePage />}
+                />
+                <Route
+                  path="students/:studentId/degree-plan"
+                  element={<AdvisorStudentDegreePlanPage />}
+                />
+                <Route path="courses" element={<ViewOnlyCourses />} />
+                <Route path="courses/:id" element={<CourseDetailPage />} />
+                <Route
+                  path="review-requests"
+                  element={<AdvisorReviewRequestsPage />}
+                />
+              </Route>
+
+              {/* Registrar routes */}
+              <Route path="registrar">
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<RegistrarDashboard />} />
+                <Route path="profile" element={<RegistrarProfilePage />} />
+                <Route path="courses" element={<AdminCourses />} />
+                <Route
+                  path="courses/create"
+                  element={<RegistrarCreateCourse />}
+                />
+                <Route path="courses/:id" element={<RegistrarCourseDetail />} />
+                <Route path="assign" element={<div>Registrar Assign</div>} />
+              </Route>
+
+              {/* Mentor routes */}
+              <Route path="mentor">
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<MentorDashboard />} />
+                <Route path="profile" element={<MentorProfilePage />} />
+                <Route path="courses" element={<ViewOnlyCourses />} />
+                <Route path="courses/:id" element={<CourseDetailPage />} />
+                <Route path="degree-plan" element={<DegreePlanBuilder />} />
+                <Route path="students" element={<MentorStudentsPage />} />
+                <Route
+                  path="students/:userId/profile"
+                  element={<UserProfilePage />}
+                />
+                <Route
+                  path="students/:studentId/degree-plan"
+                  element={<MentorStudentDegreePlanPage />}
+                />
+                <Route path="chat" element={<MentorGroupChatPage />} />
+                <Route
+                  path="review-requests"
+                  element={<MentorReviewRequestsPage />}
+                />
+              </Route>
             </Route>
 
-            {/* Admin routes */}
-            <Route path="admin">
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="profile" element={<AdminProfilePage />} />
-              <Route path="courses" element={<AdminCourses />} />
-              <Route path="courses/create" element={<AdminCreateCourse />} />
-              <Route path="courses/:id" element={<AdminCourseDetail />} />
-              <Route path="degree-plans" element={<DegreePlansPage />} />
-              <Route path="users" element={<UsersPage />} />
-              <Route path="users/:userId/profile" element={<UserProfilePage />} />
-              <Route path="assign" element={<AssignmentPage />} />
-              <Route
-                path="assign/:type/:id/students"
-                element={<AssignedStudentsPage />}
-              />
-            </Route>
-
-            {/* Advisor routes */}
-            <Route path="advisor">
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<AdvisorDashboard />} />
-              <Route path="profile" element={<AdvisorProfilePage />} />
-              <Route path="students" element={<AdvisorStudentsPage />} />
-              <Route
-                path="students/:userId/profile"
-                element={<UserProfilePage />}
-              />
-              <Route
-                path="students/:studentId/degree-plan"
-                element={<AdvisorStudentDegreePlanPage />}
-              />
-              <Route path="courses" element={<ViewOnlyCourses />} />
-              <Route path="courses/:id" element={<CourseDetailPage />} />
-              <Route
-                path="review-requests"
-                element={<AdvisorReviewRequestsPage />}
-              />
-            </Route>
-
-            {/* Registrar routes */}
-            <Route path="registrar">
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<RegistrarDashboard />} />
-              <Route path="profile" element={<RegistrarProfilePage />} />
-              <Route path="courses" element={<AdminCourses />} />
-              <Route path="courses/create" element={<RegistrarCreateCourse />} />
-              <Route path="courses/:id" element={<RegistrarCourseDetail />} />
-              <Route path="assign" element={<div>Registrar Assign</div>} />
-            </Route>
-
-            {/* Mentor routes */}
-            <Route path="mentor">
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<MentorDashboard />} />
-              <Route path="profile" element={<MentorProfilePage />} />
-              <Route path="courses" element={<ViewOnlyCourses />} />
-              <Route path="courses/:id" element={<CourseDetailPage />} />
-              <Route path="degree-plan" element={<DegreePlanBuilder />} />
-              <Route path="students" element={<MentorStudentsPage />} />
-              <Route
-                path="students/:userId/profile"
-                element={<UserProfilePage />}
-              />
-              <Route
-                path="students/:studentId/degree-plan"
-                element={<MentorStudentDegreePlanPage />}
-              />
-              <Route path="chat" element={<MentorGroupChatPage />} />
-              <Route
-                path="review-requests"
-                element={<MentorReviewRequestsPage />}
-              />
-            </Route>
-          </Route>
-
-          {/* Catch all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+            {/* Catch all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ClickSpark>
     </BotpressProvider>
   );
 }
