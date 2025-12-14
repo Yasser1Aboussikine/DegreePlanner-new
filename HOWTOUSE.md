@@ -39,6 +39,7 @@
 ## Role-B Accounts
 For Mentor, Advisor, Registrar, and Admin accounts:
 - **Email Format**: `{role}1@aui.ma`
+  - Student: student1@aui.ma  
   - Mentor: `mentor1@aui.ma`
   - Advisor: `advisor1@aui.ma`
   - Registrar: `registrar@aui.ma`   
